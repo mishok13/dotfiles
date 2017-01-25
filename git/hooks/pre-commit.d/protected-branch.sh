@@ -3,11 +3,11 @@
 # Prevent commits to default (master) branch.
 
 # The branch that is to be protected
-PROTECTED_BRANCH="master"
-
-# A stub for future (so that hook is enabled for all by default, but
-# can be disabled per project config)
-allowprotected=$(git config --bool hooks.allowProtectedBranchCommit)
+PROTECTED_BRANCH=$(git config hooks.protectedBranchName)
+if test -z $PROTECTED_BRANCH
+then
+    PROTECTED_BRANCH="master"
+fi
 
 # Redirect all output to stderr
 exec 1>&2
