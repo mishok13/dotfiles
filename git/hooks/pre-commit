@@ -3,7 +3,9 @@
 HOOKS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)/$(basename "$BASH_SOURCE").d"
 echo "Executing hooks from $HOOKS_DIR"
 
-for f in $(find $HOOKS_DIR -type f -maxdepth 1)
-do
-    . "$f"
-done
+if [ -d "$HOOKS_DIR" ]; then
+    for f in $(find $HOOKS_DIR -type f -maxdepth 1)
+    do
+        . "$f"
+    done
+fi
