@@ -62,10 +62,18 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
 plugins=(
     git
     helm
+    ssh-agent
+    zsh-nvm
+    osx
+    kube-ps1
 )
+
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+zstyle :omz:plugins:ssh-agent identities id_rsa id_unix
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,11 +107,19 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 fpath=(/usr/local/share/zsh-completions $fpath)
+fpath=($fpath ~/.zsh/completion)
 
 autoload -U colors; colors
-source /usr/local/etc/zsh-kubectl-prompt/kubectl.zsh
-RPROMPT='%{$fg[cyan]%}($ZSH_KUBECTL_PROMPT)%{$reset_color%}'
+# source /usr/local/etc/zsh-kubectl-prompt/kubectl.zsh
+# RPROMPT='%{$fg[cyan]%}($ZSH_KUBECTL_PROMPT)%{$reset_color%}'
 
 if [ -f $HOME/.profile ]; then
     . $HOME/.profile
 fi
+
+eval "$(pyenv init -)"
+
+export TERM="xterm-256color"
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kubecontext status time)
+source /usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme
