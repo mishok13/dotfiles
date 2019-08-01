@@ -14,6 +14,9 @@
       - lastpass
       - slack
       - spotify
+      - telegram
+      - adoptopenjdk
+      - google-backup-and-sync
     brew_packages:
       - ansible
       - autoconf
@@ -25,6 +28,7 @@
       - coreutils
       - eksctl
       - eksctl-aws-iam-authenticator
+      - gnupg
       - go
       - htop
       - httpie
@@ -46,6 +50,7 @@
       - pyenv
       - python3
       - ripgrep
+      - rustup-init
       - stern
       - terraform
       - terragrunt
@@ -62,7 +67,45 @@
         name: '{{ item }}'
         state: present
       with_items: '{{ brew_cask_packages }}'
+      tags:
+        - bootstrap
+    - name: Prepare additional Homebrew taps
+      homebrew_tap:
+        name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt
+      tags:
+        - bootstrap
     - name: Install Homebrew packages
       homebrew:
         name: '{{ brew_packages }}'
         state: present
+      tags:
+        - bootstrap
+    - name: Setup directory structure
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ lookup('env','HOME') }}/nonwork"
+        - "{{ lookup('env','HOME') }}/work"
+    - name: Check if .emacs.d exists
+      stat: path="{{ lookup('env','HOME') }}/.emacs.d"
+      register: links
+    - name: Check out Emacs config
+      git:
+        repo: 'git@github.com:mishok13/emacsen.git'
+        dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
+    - name: Link .emacs.d to Emacs config
+      file: path="{{ lookup('env','HOME') }}/.emacs.d"
+            src="{{ lookup('env','HOME') }}/emacsen"
+            state=link
+      when: links.stat.islnk is undefined or not links.stat.islnk
+    - name: Download Oh My Zsh installer
+      get_url:
+        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+        dest: /tmp/zsh.install.sh
+        force: no
+      register: zsh_installer
+
+    - debug:
+        msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
+      when: zsh_installer.dest is defined
