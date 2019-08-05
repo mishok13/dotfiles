@@ -105,7 +105,6 @@
         dest: /tmp/zsh.install.sh
         force: no
       register: zsh_installer
-
     - debug:
         msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
       when: zsh_installer.dest is defined
