@@ -116,3 +116,7 @@
       file: path="{{ lookup('env','HOME') }}/.zshrc"
             src="{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
             state=link
+    - name: Install ZSH nvm plugin
+      git:
+        repo: "https://github.com/lukechilds/zsh-nvm"
+        dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
