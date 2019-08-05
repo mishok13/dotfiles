@@ -108,3 +108,11 @@
     - debug:
         msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
       when: zsh_installer.dest is defined
+    - name: Check out dotfiles
+      git:
+        repo: 'git@github.com:mishok13/dotfiles.git'
+        dest: "{{ lookup('env','HOME') }}/nonwork/dotfiles"
+    - name: Link .zshrc to dotfiles
+      file: path="{{ lookup('env','HOME') }}/.zshrc"
+            src="{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
+            state=link
