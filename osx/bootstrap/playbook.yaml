@@ -5,6 +5,7 @@
   vars:
     brew_cask_packages:
       - "1password"
+      - android-file-transfer
       - iterm2
       - firefox
       - google-chrome
@@ -16,6 +17,7 @@
       - spotify
       - telegram
       - adoptopenjdk
+      - google-cloud-sdk
       - google-backup-and-sync
     brew_packages:
       - ansible
@@ -40,18 +42,21 @@
       - kubernetes-cli
       - kubernetes-helm
       - md5sha1sum
+      - mycli
       - nmap
       - nvm
       - pgcli
       # - pinentry
       # - pinentry-mac
       - pipenv
+      - postgresql
       - powerlevel9k
       - pyenv
       - python3
       - ripgrep
       - rustup-init
       - stern
+      - telnet
       - terraform
       - terragrunt
       - tmux
@@ -68,11 +73,13 @@
         state: present
       with_items: '{{ brew_cask_packages }}'
       tags:
+        - packages
         - bootstrap
     - name: Prepare additional Homebrew taps
       homebrew_tap:
         name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt
       tags:
+        - packages
         - bootstrap
     - name: Install Homebrew packages
       homebrew:
@@ -94,6 +101,8 @@
       git:
         repo: 'git@github.com:mishok13/emacsen.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
+      tags:
+        - git
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
             src="{{ lookup('env','HOME') }}/emacsen"
@@ -105,6 +114,8 @@
         dest: /tmp/zsh.install.sh
         force: no
       register: zsh_installer
+      tags:
+        - download
     - debug:
         msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
       when: zsh_installer.dest is defined
@@ -112,6 +123,8 @@
       git:
         repo: 'git@github.com:mishok13/dotfiles.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/dotfiles"
+      tags:
+        - git
     - name: Link .zshrc to dotfiles
       file: path="{{ lookup('env','HOME') }}/.zshrc"
             src="{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
@@ -120,3 +133,21 @@
       git:
         repo: "https://github.com/lukechilds/zsh-nvm"
         dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
+      tags:
+        - git
+    - name: Setup automatic daily Homebrew package updates
+      cron:
+        name: "homebrew upgrade"
+        minute: "5"
+        hour: "12"
+        job: "/usr/local/bin/brew upgrade >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic daily Homebrew Cask package updates
+      cron:
+        name: "homebrew cask upgrade"
+        minute: "25"
+        hour: "12"
+        job: "/usr/local/bin/brew cask upgrade >/dev/null 2>&1"
+      tags:
+        - cron
