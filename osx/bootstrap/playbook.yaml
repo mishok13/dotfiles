@@ -32,6 +32,7 @@
       - eksctl-aws-iam-authenticator
       - gnupg
       - go
+      - graphviz
       - htop
       - httpie
       - imagemagick
@@ -94,6 +95,7 @@
       with_items:
         - "{{ lookup('env','HOME') }}/nonwork"
         - "{{ lookup('env','HOME') }}/work"
+        - "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
     - name: Check if .emacs.d exists
       stat: path="{{ lookup('env','HOME') }}/.emacs.d"
       register: links
@@ -135,6 +137,23 @@
         dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
       tags:
         - git
+    - name: Download Powerlevel fonts
+      git:
+        repo: "https://github.com/powerline/fonts.git"
+        dest: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
+      tags:
+        - git
+    - name: List all Powerline fonts
+      find:
+        paths: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
+        recurse: yes
+        patterns: "*.?tf"
+      register: powerline_fonts
+    - name: Copy Powerline fonts
+      copy:
+        src: "{{ item['path'] }}"
+        dest: "{{ lookup('env','HOME') }}/Library/Fonts/"
+      loop: "{{ powerline_fonts.files | flatten(levels=1) }}"
     - name: Setup automatic daily Homebrew package updates
       cron:
         name: "homebrew upgrade"

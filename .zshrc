@@ -126,3 +126,4 @@ source /usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme
 
 alias k=kubectl
 alias tg=terragrunt
+alias dc=docker-compose
