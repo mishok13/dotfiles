@@ -62,6 +62,7 @@
       - terragrunt
       - tmux
       - tree
+      - twine-pypi
       - vault
       - watch
       - zsh
