@@ -19,6 +19,7 @@
       - adoptopenjdk
       - google-cloud-sdk
       - google-backup-and-sync
+      - font-cascadia
     brew_packages:
       - ansible
       - autoconf
@@ -69,17 +70,17 @@
       - zsh-completions
       - zsh-kubectl-prompt
   tasks:
+    - name: Prepare additional Homebrew taps
+      homebrew_tap:
+        name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt,homebrew/cask-fonts
+      tags:
+        - packages
+        - bootstrap
     - name: Install Cask packages
       homebrew_cask:
         name: '{{ item }}'
         state: present
       with_items: '{{ brew_cask_packages }}'
-      tags:
-        - packages
-        - bootstrap
-    - name: Prepare additional Homebrew taps
-      homebrew_tap:
-        name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt
       tags:
         - packages
         - bootstrap
@@ -169,5 +170,13 @@
         minute: "25"
         hour: "12"
         job: "/usr/local/bin/brew cask upgrade >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic Rust toolchain upgrades
+      cron:
+        name: "Update Rust toolchain"
+        minute: "12"
+        hour: "06"
+        job: "/Users/amishkovskyi/.cargo/bin/rustup update >/dev/null 2>&1"
       tags:
         - cron
