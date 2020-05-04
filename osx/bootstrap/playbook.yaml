@@ -1,0 +1,182 @@
+---
+- name: Provision OSX utilities and applications
+  hosts: localhost
+  become: false
+  vars:
+    brew_cask_packages:
+      - "1password"
+      - android-file-transfer
+      - iterm2
+      - firefox
+      - google-chrome
+      - emacs
+      - docker
+      - lastpass
+      - mactex
+      - slack
+      - spotify
+      - telegram
+      - adoptopenjdk
+      - google-cloud-sdk
+      - google-backup-and-sync
+      - font-cascadia
+    brew_packages:
+      - ansible
+      - autoconf
+      - aws-iam-authenticator
+      - awscli
+      - bash
+      - bash-completion
+      - cabextract
+      - coreutils
+      - eksctl
+      - eksctl-aws-iam-authenticator
+      - gnupg
+      - go
+      - graphviz
+      - htop
+      - httpie
+      - imagemagick
+      - ipython
+      - ispell
+      - jq
+      - kubectx
+      - kubernetes-cli
+      - kubernetes-helm
+      - md5sha1sum
+      - mycli
+      - nmap
+      - nvm
+      - pgcli
+      # - pinentry
+      # - pinentry-mac
+      - pipenv
+      - postgresql
+      - powerlevel9k
+      - pyenv
+      - python3
+      - ripgrep
+      - rustup-init
+      - stern
+      - telnet
+      - terraform
+      - terragrunt
+      - tmux
+      - tree
+      - twine-pypi
+      - vault
+      - watch
+      - zsh
+      - zsh-completions
+      - zsh-kubectl-prompt
+  tasks:
+    - name: Prepare additional Homebrew taps
+      homebrew_tap:
+        name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt,homebrew/cask-fonts
+      tags:
+        - packages
+        - bootstrap
+    - name: Install Cask packages
+      homebrew_cask:
+        name: '{{ item }}'
+        state: present
+      with_items: '{{ brew_cask_packages }}'
+      tags:
+        - packages
+        - bootstrap
+    - name: Install Homebrew packages
+      homebrew:
+        name: '{{ brew_packages }}'
+        state: present
+      tags:
+        - bootstrap
+    - name: Setup directory structure
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ lookup('env','HOME') }}/nonwork"
+        - "{{ lookup('env','HOME') }}/work"
+        - "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
+    - name: Check if .emacs.d exists
+      stat: path="{{ lookup('env','HOME') }}/.emacs.d"
+      register: links
+    - name: Check out Emacs config
+      git:
+        repo: 'git@github.com:mishok13/emacsen.git'
+        dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
+      tags:
+        - git
+    - name: Link .emacs.d to Emacs config
+      file: path="{{ lookup('env','HOME') }}/.emacs.d"
+            src="{{ lookup('env','HOME') }}/emacsen"
+            state=link
+      when: links.stat.islnk is undefined or not links.stat.islnk
+    - name: Download Oh My Zsh installer
+      get_url:
+        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+        dest: /tmp/zsh.install.sh
+        force: no
+      register: zsh_installer
+      tags:
+        - download
+    - debug:
+        msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
+      when: zsh_installer.dest is defined
+    - name: Check out dotfiles
+      git:
+        repo: 'git@github.com:mishok13/dotfiles.git'
+        dest: "{{ lookup('env','HOME') }}/nonwork/dotfiles"
+      tags:
+        - git
+    - name: Link .zshrc to dotfiles
+      file: path="{{ lookup('env','HOME') }}/.zshrc"
+            src="{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
+            state=link
+    - name: Install ZSH nvm plugin
+      git:
+        repo: "https://github.com/lukechilds/zsh-nvm"
+        dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
+      tags:
+        - git
+    - name: Download Powerlevel fonts
+      git:
+        repo: "https://github.com/powerline/fonts.git"
+        dest: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
+      tags:
+        - git
+    - name: List all Powerline fonts
+      find:
+        paths: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
+        recurse: yes
+        patterns: "*.?tf"
+      register: powerline_fonts
+    - name: Copy Powerline fonts
+      copy:
+        src: "{{ item['path'] }}"
+        dest: "{{ lookup('env','HOME') }}/Library/Fonts/"
+      loop: "{{ powerline_fonts.files | flatten(levels=1) }}"
+    - name: Setup automatic daily Homebrew package updates
+      cron:
+        name: "homebrew upgrade"
+        minute: "5"
+        hour: "12"
+        job: "/usr/local/bin/brew upgrade >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic daily Homebrew Cask package updates
+      cron:
+        name: "homebrew cask upgrade"
+        minute: "25"
+        hour: "12"
+        job: "/usr/local/bin/brew cask upgrade >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic Rust toolchain upgrades
+      cron:
+        name: "Update Rust toolchain"
+        minute: "12"
+        hour: "06"
+        job: "/Users/amishkovskyi/.cargo/bin/rustup update >/dev/null 2>&1"
+      tags:
+        - cron
