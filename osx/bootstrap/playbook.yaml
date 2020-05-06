@@ -43,7 +43,7 @@
       - kubectx
       - kubernetes-cli
       - kubernetes-helm
-      - md5sha1sum
+      # - md5sha1sum
       - mycli
       - nmap
       - nvm
@@ -109,7 +109,7 @@
         - git
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
-            src="{{ lookup('env','HOME') }}/emacsen"
+            src="{{ lookup('env','HOME') }}/nonwork/emacsen"
             state=link
       when: links.stat.islnk is undefined or not links.stat.islnk
     - name: Download Oh My Zsh installer
