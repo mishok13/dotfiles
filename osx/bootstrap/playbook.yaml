@@ -16,6 +16,7 @@
       - slack
       - spotify
       - telegram
+      - signal
       - adoptopenjdk
       - google-cloud-sdk
       - google-backup-and-sync
@@ -44,6 +45,7 @@
       - kubernetes-cli
       - kubernetes-helm
       # - md5sha1sum
+      - markdown
       - mycli
       - nmap
       - nvm
@@ -68,7 +70,8 @@
       - watch
       - zsh
       - zsh-completions
-      - zsh-kubectl-prompt
+      - yarn
+      # - zsh-kubectl-prompt
   tasks:
     - name: Prepare additional Homebrew taps
       homebrew_tap:
