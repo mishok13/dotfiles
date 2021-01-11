@@ -180,6 +180,6 @@
         name: "Update Rust toolchain"
         minute: "12"
         hour: "06"
-        job: "/Users/amishkovskyi/.cargo/bin/rustup update >/dev/null 2>&1"
+        job: "{{ lookup('env','HOME') }}/.cargo/bin/rustup update >/dev/null 2>&1"
       tags:
         - cron
