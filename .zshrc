@@ -75,8 +75,9 @@ plugins=(
     git
     helm
     ssh-agent
-    zsh-nvm
+    # zsh-nvm
     osx
+    gcloud
     # kube-ps1
 )
 
@@ -130,17 +131,13 @@ eval "$(pyenv init -)"
 export TERM="xterm-256color"
 
 alias k=kubectl
+alias kx=kubectx
+alias tf=terraform
+alias tg=terragrunt
 
 # alias tg=terragrunt
 alias dc=docker-compose
+alias d=docker
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.profile ]] || source ~/.profile
-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-GCLOUD_ZSH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-GCLOUD_ZSH_COMPLETION="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-
-[[ ! -f $GCLOUD_ZSH ]] || source $GCLOUD_ZSH
-[[ ! -f $GCLOUD_ZSH_COMPLETION ]] || source $GCLOUD_ZSH_COMPLETION
