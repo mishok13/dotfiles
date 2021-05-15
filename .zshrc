@@ -128,6 +128,9 @@ fi
 eval "$(pyenv init -)"
 
 export TERM="xterm-256color"
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kubecontext status time)
+source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
 
 alias k=kubectl
 alias kx=kubectx
