@@ -5,22 +5,22 @@
   vars:
     brew_cask_packages:
       - "1password"
+      - adoptopenjdk
       - android-file-transfer
-      - iterm2
-      - firefox
-      - google-chrome
-      - emacs
       - docker
+      - emacs
+      - firefox
+      - font-cascadia
+      - google-backup-and-sync
+      - google-chrome
+      - google-cloud-sdk
+      - iterm2
       - lastpass
       - mactex
+      - signal
       - slack
       - spotify
       - telegram
-      - signal
-      - adoptopenjdk
-      - google-cloud-sdk
-      - google-backup-and-sync
-      - font-cascadia
       - zoom
     brew_packages:
       - ansible
