@@ -58,6 +58,7 @@
       - python3
       - ripgrep
       - rustup-init
+      - skaffold
       - stern
       - telnet
       - terraform
