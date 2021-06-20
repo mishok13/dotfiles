@@ -125,7 +125,9 @@ if [ -f $HOME/.profile ]; then
     . $HOME/.profile
 fi
 
-eval "$(pyenv init -)"
+if [ -f $HOME/.zprofile ]; then
+    . $HOME/.zprofile
+fi
 
 export TERM="xterm-256color"
 export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
