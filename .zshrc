@@ -127,3 +127,7 @@ source /usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme
 alias k=kubectl
 alias tg=terragrunt
 alias dc=docker-compose
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
