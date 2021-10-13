@@ -81,6 +81,7 @@ plugins=(
     # kube-ps1
 )
 
+zstyle :omz:plugins:ssh-agent lazy yes
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa
 
