@@ -76,7 +76,7 @@ plugins=(
     helm
     ssh-agent
     zsh-nvm
-    osx
+    macos
     gcloud
     # kube-ps1
 )
