@@ -63,8 +63,7 @@
       - skaffold
       - stern
       - telnet
-      - terraform
-      - terragrunt
+      - tfenv
       - tmux
       - tree
       - twine-pypi
