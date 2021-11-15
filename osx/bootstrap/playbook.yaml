@@ -7,20 +7,22 @@
       - "1password"
       - adoptopenjdk
       - android-file-transfer
+      - discord
       - docker
       - emacs
       - firefox
       - font-cascadia
-      - google-backup-and-sync
       - google-chrome
       - google-cloud-sdk
+      - google-drive
       - iterm2
-      - lastpass
       - mactex
       - signal
       - slack
       - spotify
       - telegram
+      - virtualbox
+      - vlc
       - zoom
     brew_packages:
       - ansible
