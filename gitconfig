@@ -1,0 +1,7 @@
+[includeIf "gitdir:~/work/"]
+    path = ~/work/.gitconfig
+
+[includeIf "gitdir:~/nonwork/"]
+    path = ~/nonwork/.gitconfig
+[github]
+	user = mishok13
