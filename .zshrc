@@ -75,9 +75,7 @@ plugins=(
     git
     helm
     ssh-agent
-    zsh-nvm
     macos
-    gcloud
     # kube-ps1
 )
 
@@ -144,4 +142,3 @@ alias d=docker
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
