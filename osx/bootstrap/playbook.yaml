@@ -4,20 +4,19 @@
   become: false
   vars:
     brew_cask_packages:
-      - 1password
       - adoptopenjdk
-      - android-file-transfer
-      - discord
-      - displaycal
       - docker
-      - emacs-app
-      - firefox
-      - font-cascadia
-      - google-backup-and-sync
+      - font-cascadia-code
+      - font-cascadia-code-pl
+      - font-cascadia-mono
+      - font-cascadia-mono-pl
+      - font-fira-code
+      - font-hack-nerd-font
+      - font-inconsolata-lgc-nerd-font
+      - font-meslo-lg-nerd-font
       - google-chrome
-      - google-cloud-sdk
+      - google-drive
       - iterm2
-      - lastpass
       - mactex
       - signal
       - slack
@@ -25,27 +24,8 @@
       - telegram
       - virtualbox
       - vlc
-      - zoom
     brew_packages:
-      - act
-      - adns
-      - ansible
-      - aom
-      - argyll-cms
-      - assimp
-      - autoconf
-      - aws-iam-authenticator
       - awscli
-      - bash
-      - bash-completion
-      - bdw-gc
-      - berglas
-      - berkeley-db
-      - boost
-      - bottom
-      - brotli
-      - c-ares
-      - ca-certificates
       - cabextract
       - cairo
       - coreutils
@@ -57,6 +37,7 @@
       - double-conversion
       - eksctl
       - exa
+      - emacs-mac
       - fb303
       - fbthrift
       - fd
@@ -68,152 +49,34 @@
       - fontconfig
       - freetype
       - fribidi
-      - gd
-      - gdbm
-      - gdk-pixbuf
-      - gettext
-      - gflags
-      - ghostscript
-      - giflib
       - git
-      - glib
-      - glog
-      - gmp
-      - gnu-getopt
-      - gnupg
-      - gnutls
       - go
-      - gobject-introspection
-      - graphite2
-      - graphviz
-      - grep
-      - groonga
-      - gts
-      - guile
-      - harfbuzz
       - helm
       - htop
       - httpie
       - hunspell
-      - icu4c
-      - ilmbase
-      - imagemagick
-      - imath
-      - ipython
-      - isort
       - ispell
-      - jansson
-      - jasper
-      - jbig2dec
-      - jemalloc
-      - jfrog-cli
-      - jpeg
-      - jpeg-xl
       - jq
-      - jwkgen
       - k3d
       - k9s
-      - kail
-      - kind
-      - krb5
       - kubectx
       - kubernetes-cli
       - kubescape
       - kubeseal
-      - libarchive
-      - libassuan
-      - libavif
-      - libb2
-      - libcbor
-      - libde265
-      - libev
-      - libevent
-      - libffi
-      - libfido2
-      - libgcrypt
-      - libgpg-error
-      - libheif
-      - libidn
-      - libidn2
-      - libksba
-      - liblqr
-      - libmagic
-      - libmng
-      - libnghttp2
-      - libomp
-      - libpng
-      - libpq
-      - libproxy
-      - libpthread-stubs
-      - librsvg
-      - libslirp
-      - libsodium
-      - libssh
-      - libtasn1
-      - libtiff
-      - libtool
-      - libunistring
-      - libusb
-      - libuv
-      - libvmaf
-      - libx11
-      - libxau
-      - libxcb
-      - libxdmcp
-      - libxext
-      - libxrender
-      - libyaml
-      - little-cms2
-      - lua
-      - luarocks
-      - lz4
-      - lzo
-      - m4
-      - mariadb
+      - logitech-g-hub
       - markdown
-      - md4c
-      - mecab
-      - mecab-ipadic
-      - mpdecimal
-      - msgpack
-      - mtr
       - mycli
       - mysql-client
-      - ncurses
-      - netpbm
-      - nettle
-      - nghttp2
       - nmap
-      - node
-      - npth
-      - nspr
-      - nss
       - nvm
-      - oniguruma
-      - openexr
-      - openjpeg
-      - openssl@1.1
-      - p11-kit
-      - pango
-      - pcre
-      - pcre2
       - pgcli
-      - pinentry
       - pipenv
-      - pixman
-      - pkg-config
       - podman
       - poetry
-      - poppler
-      - popt
       - postgresql
-      - powerlevel9k
       - pre-commit
       - pyenv
-      - python-tabulate
-      - python@3.10
-      - python@3.8
-      - python@3.9
+      - pyright
       - qemu
       - qt
       - qt@5
@@ -222,48 +85,31 @@
       - rpm
       - rustup-init
       - shared-mime-info
-      - six
       - skaffold
-      - snappy
       - sqlite
       - stern
-      - tcl-tk
-      - telnet
-      - terraform@0.12
       - tfenv
-      - the_silver_searcher
       - tmux
-      - tree
       - trivy
-      - twine-pypi
-      - unbound
-      - utf8proc
-      - vault
-      - vde
-      - wangle
-      - watch
-      - watchman
-      - webp
-      - x265
-      - xmlto
-      - xorgproto
-      - xsv
-      - xz
-      - yarn
       - yq
-      - zeromq
-      - zlib
       - zola
       - zsh
       - zsh-completions
-      - zstd
   tasks:
-    - name: Prepare additional Homebrew taps
-      homebrew_tap:
-        name: weaveworks/tap,aws/tap,sambadevi/powerlevel9k,superbrothers/zsh-kubectl-prompt,homebrew/cask-fonts,armosec/kubescape
+    - name: Add homebrew taps
+      community.general.homebrew_tap:
+        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
+        state: present
       tags:
-        - packages
         - bootstrap
+        - packages
+    - name: Install Homebrew packages
+      homebrew:
+        name: '{{ brew_packages }}'
+        state: present
+      tags:
+        - bootstrap
+        - packages
     - name: Install Cask packages
       homebrew_cask:
         name: '{{ item }}'
@@ -272,12 +118,13 @@
       tags:
         - packages
         - bootstrap
-    - name: Install Homebrew packages
+    - name: Update all packages
       homebrew:
-        name: '{{ brew_packages }}'
-        state: present
+        update_homebrew: yes
+        upgrade_all: yes
       tags:
-        - bootstrap
+        - packages
+
     - name: Setup directory structure
       file:
         path: "{{ item }}"
@@ -285,21 +132,27 @@
       with_items:
         - "{{ lookup('env','HOME') }}/nonwork"
         - "{{ lookup('env','HOME') }}/work"
-        - "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
+        - "{{ lookup('env','HOME') }}/.nvm"
+
     - name: Check if .emacs.d exists
       stat: path="{{ lookup('env','HOME') }}/.emacs.d"
-      register: links
+      register: emacsdir
+      tags:
+        - emacs
     - name: Check out Emacs config
       git:
         repo: 'git@github.com:mishok13/emacsen.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
       tags:
-        - git
+        - emacs
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
             src="{{ lookup('env','HOME') }}/nonwork/emacsen"
             state=link
-      when: links.stat.islnk is undefined or not links.stat.islnk
+      when: emacsdir.stat.islnk is undefined or not emacsdir.stat.islnk
+      tags:
+        - emacs
+
     - name: Download Oh My Zsh installer
       get_url:
         url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
@@ -308,42 +161,55 @@
       register: zsh_installer
       tags:
         - download
+        - zsh
     - debug:
         msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
       when: zsh_installer.dest is defined
+      tags:
+        - zsh
+    - name: Remove existing omz installation
+      file:
+        path: "{{ lookup('env','HOME') }}/.oh-my-zsh"
+        state: absent
+      tags:
+        - zsh
+    - name: Install omz
+      command: "sh {{ zsh_installer.dest }}"
+      tags:
+        - zsh
     - name: Check out dotfiles
       git:
         repo: 'git@github.com:mishok13/dotfiles.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/dotfiles"
       tags:
-        - git
+        - zsh
+      ignore_errors: yes
     - name: Link .zshrc to dotfiles
-      file: path="{{ lookup('env','HOME') }}/.zshrc"
-            src="{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
-            state=link
-    - name: Install ZSH nvm plugin
+      file:
+        path: "{{ lookup('env','HOME') }}/.zshrc"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/.zshrc"
+        state: link
+        force: yes
+      tags:
+        - zsh
+    - name: Install powerlevel10k
       git:
-        repo: "https://github.com/lukechilds/zsh-nvm"
-        dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/plugins/zsh-nvm"
+        repo: https://github.com/romkatv/powerlevel10k.git
+        dest: "{{ lookup('env','HOME') }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        depth: 1
+      tags:
+        - zsh
+
+    - name: Configure git
+      file:
+        path: "{{ lookup('env','HOME') }}/.gitconfig"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/gitconfig"
+        state: link
+        force: yes
       tags:
         - git
-    - name: Download Powerlevel fonts
-      git:
-        repo: "https://github.com/powerline/fonts.git"
-        dest: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
-      tags:
-        - git
-    - name: List all Powerline fonts
-      find:
-        paths: "{{ lookup('env','HOME') }}/nonwork/powerline-fonts"
-        recurse: yes
-        patterns: "*.?tf"
-      register: powerline_fonts
-    - name: Copy Powerline fonts
-      copy:
-        src: "{{ item['path'] }}"
-        dest: "{{ lookup('env','HOME') }}/Library/Fonts/"
-      loop: "{{ powerline_fonts.files | flatten(levels=1) }}"
+
+
     - name: Setup automatic daily Homebrew package updates
       cron:
         name: "homebrew upgrade"
