@@ -4,7 +4,6 @@
   become: false
   vars:
     brew_cask_packages:
-      - adoptopenjdk
       - docker
       - font-cascadia-code
       - font-cascadia-code-pl
@@ -13,6 +12,8 @@
       - font-fira-code
       - font-hack-nerd-font
       - font-inconsolata-lgc-nerd-font
+      - emacs-mac
+      - firefox
       - font-meslo-lg-nerd-font
       - google-chrome
       - google-drive
@@ -22,9 +23,11 @@
       - slack
       - spotify
       - telegram
-      - virtualbox
+      - todoist
+      # - virtualbox
       - vlc
     brew_packages:
+      - openjdk
       - awscli
       - cabextract
       - cairo
@@ -37,7 +40,6 @@
       - double-conversion
       - eksctl
       - exa
-      - emacs-mac
       - fb303
       - fbthrift
       - fd
@@ -63,7 +65,7 @@
       - kubernetes-cli
       - kubescape
       - kubeseal
-      - logitech-g-hub
+#      - logitech-g-hub
       - markdown
       - mycli
       - mysql-client
