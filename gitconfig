@@ -1,7 +1,8 @@
-[includeIf "gitdir:~/work/"]
+[includeIf "gitdir:~/work/**"]
     path = ~/work/.gitconfig
 
-[includeIf "gitdir:~/nonwork/"]
+[includeIf "gitdir:~/nonwork/**"]
     path = ~/nonwork/.gitconfig
+
 [github]
-	user = mishok13
+    user = mishok13
