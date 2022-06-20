@@ -135,6 +135,7 @@
         - "{{ lookup('env','HOME') }}/nonwork"
         - "{{ lookup('env','HOME') }}/work"
         - "{{ lookup('env','HOME') }}/.nvm"
+        - "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles"
 
     - name: Check if .emacs.d exists
       stat: path="{{ lookup('env','HOME') }}/.emacs.d"
@@ -211,6 +212,10 @@
       tags:
         - git
 
+    - name: Configure iterm2 profiles
+      copy:
+        src: ../iterm.profile.json
+        dest: "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles/"
 
     - name: Setup automatic daily Homebrew package updates
       cron:
