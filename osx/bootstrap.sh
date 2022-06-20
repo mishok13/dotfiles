@@ -25,13 +25,13 @@ while ! xcode-select -p >/dev/null 2>&1; do
     sleep 15;
 done
 
-if ! which brew; then
+if ! command -v brew; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 export HOMEBREW_VERBOSE=1
 
-if ! which op; then
+if ! command -v op; then
     brew install --cask 1password/tap/1password-cli 1password
 fi
 
@@ -49,7 +49,7 @@ if [ ! -d ~/nonwork/dotfiles/.git ]; then
   git clone git@github.com:mishok13/dotfiles.git ~/nonwork/dotfiles
 fi
 
-if ! which ansible; then
+if ! command -v ansible; then
   brew install ansible
 fi
 
