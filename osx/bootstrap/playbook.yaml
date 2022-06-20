@@ -222,7 +222,7 @@
         name: "homebrew upgrade"
         minute: "5"
         hour: "12"
-        job: "/usr/local/bin/brew upgrade >/dev/null 2>&1"
+        job: "/opt/homebrew/bin/brew update >/dev/null 2>&1"
       tags:
         - cron
     - name: Setup automatic daily Homebrew Cask package updates
@@ -230,7 +230,7 @@
         name: "homebrew cask upgrade"
         minute: "25"
         hour: "12"
-        job: "/usr/local/bin/brew cask upgrade >/dev/null 2>&1"
+        job: "/opt/homebrew/bin/brew upgrade >/dev/null 2>&1"
       tags:
         - cron
     - name: Setup automatic Rust toolchain upgrades
