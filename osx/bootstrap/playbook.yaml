@@ -27,6 +27,7 @@
       # - virtualbox
       - vlc
     brew_packages:
+      - rancher-cli
       - openjdk
       - awscli
       - cabextract
@@ -165,11 +166,6 @@
       tags:
         - download
         - zsh
-    - debug:
-        msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
-      when: zsh_installer.dest is defined
-      tags:
-        - zsh
     - name: Remove existing omz installation
       file:
         path: "{{ lookup('env','HOME') }}/.oh-my-zsh"
@@ -177,7 +173,7 @@
       tags:
         - zsh
     - name: Install omz
-      command: "sh {{ zsh_installer.dest }}"
+      command: "/bin/sh {{ zsh_installer.dest }}"
       tags:
         - zsh
     - name: Check out dotfiles
@@ -216,6 +212,18 @@
       copy:
         src: ../iterm.profile.json
         dest: "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles/"
+      tags:
+        - iterm
+    - name: Download iterm2 shell integration
+      get_url:
+        url: https://iterm2.com/shell_integration/zsh
+        dest: "{{ lookup('env','HOME') }}/.iterm2_shell_integration.zsh"
+      tags:
+        - iterm
+
+
+    - name: Install rustup components
+      command: rustup component add rls
 
     - name: Setup automatic daily Homebrew package updates
       cron:
