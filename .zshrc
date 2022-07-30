@@ -76,7 +76,7 @@ plugins=(
     helm
     ssh-agent
     macos
-    # kube-ps1
+    zsh-nvm
 )
 
 zstyle :omz:plugins:ssh-agent lazy yes
