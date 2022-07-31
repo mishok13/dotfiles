@@ -76,7 +76,7 @@ plugins=(
     helm
     ssh-agent
     macos
-    # kube-ps1
+    zsh-nvm
 )
 
 zstyle :omz:plugins:ssh-agent lazy yes
@@ -125,9 +125,14 @@ if [ -f $HOME/.profile ]; then
     . $HOME/.profile
 fi
 
-eval "$(pyenv init -)"
+if [ -f $HOME/.zprofile ]; then
+    . $HOME/.zprofile
+fi
 
 export TERM="xterm-256color"
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kubecontext status time)
+source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
 
 alias k=kubectl
 alias kx=kubectx
