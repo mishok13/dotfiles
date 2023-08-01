@@ -5,4 +5,8 @@
     path = ~/nonwork/.gitconfig
 
 [github]
-    user = mishok13
+        user = mishok13
+[init]
+	defaultBranch = main
+[user]
+	useConfigOnly = true

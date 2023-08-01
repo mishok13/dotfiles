@@ -2,7 +2,7 @@
 "Profiles": [
 {
   "Custom Directory" : "Advanced",
-  "Working Directory" : "\/Users\/mishok13",
+  "Working Directory" : "\/Users\/andriimishkovskyi",
   "Prompt Before Closing 2" : false,
   "Selected Text Color" : {
     "Green Component" : 0.56244754791259766,
@@ -21,7 +21,7 @@
     "Blue Component" : 0.7630731463432312,
     "Red Component" : 0.61000990867614746
   },
-  "Right Option Key Sends" : 0,
+  "Right Option Key Sends" : 2,
   "Character Encoding" : 4,
   "Selection Color" : {
     "Green Component" : 0.21576285362243652,
@@ -45,7 +45,7 @@
     "slogin",
     "telnet"
   ],
-  "Scrollback Lines" : 1000,
+  "Scrollback Lines" : 99999,
   "Draw Powerline Glyphs" : false,
   "Flashing Bell" : false,
   "Cursor Guide Color" : {
@@ -317,7 +317,7 @@
   },
   "AWDS Pane Directory" : "",
   "Blur" : false,
-  "Normal Font" : "HackNerdFontCompleteM-Regular 16",
+  "Normal Font" : "HackNFM-Regular 14",
   "Vertical Spacing" : 1,
   "Ansi 7 Color" : {
     "Green Component" : 0.89001238346099854,
@@ -330,7 +330,7 @@
   "Command" : "",
   "Terminal Type" : "xterm-256color",
   "Horizontal Spacing" : 1,
-  "Option Key Sends" : 0,
+  "Option Key Sends" : 2,
   "Ansi 15 Color" : {
     "Green Component" : 0.95794391632080078,
     "Blue Component" : 0.86405980587005615,
