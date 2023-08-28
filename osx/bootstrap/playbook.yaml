@@ -90,6 +90,7 @@
       - sops
       - spotifyd
       - stern
+      - syncthing
       - terragrunt
       - terrascan
       - tfenv
