@@ -1,0 +1,36 @@
+services:
+
+  postgres_budgeteer:
+    restart: always
+    image: bitnami/postgresql:16
+    volumes:
+      - "{{ postgres_budgeteer_path.path }}:/bitnami/postgresql"
+    environment:
+      POSTGRESQL_USERNAME: "budgeteer"
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/budgeteer_password
+      POSTGRESQL_DATABASE: "budgeteer"
+    secrets:
+      - budgeteer_password
+    ports:
+      - "54320:5432"
+
+  pihole:
+    restart: always
+    image: pihole/pihole:2024.02.0
+    container_name: pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "31480:80/tcp"
+    environment:
+      TZ: 'Europe/Amsterdam'
+      WEBPASSWORD_FILE: /run/secrets/pihole_password
+    volumes:
+      - "{{ pihole_path.path }}:/etc/pihole"
+      - "{{ dnsmasq_path.path }}:/etc/dnsmasq.d"
+
+secrets:
+  budgeteer_password:
+    file: /etc/secrets/budgeteer-password
+  pihole_password:
+    file: /etc/secrets/pihole-password

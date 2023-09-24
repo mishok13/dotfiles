@@ -1,0 +1,295 @@
+---
+- name: Provision packagaes
+  hosts: all
+  tasks:
+    - name: Turn off LED lights
+      become: true
+      ansible.builtin.shell: "echo none > {{ item }}"
+      loop:
+        - "/sys/class/leds/blue_led/trigger"
+        - "/sys/class/leds/green_led/trigger"
+
+    - name: Set a nicer hostname
+      become: true
+      ansible.builtin.hostname:
+        name: orangepi
+
+    - name: Provision podman repository
+      become: true
+      block:
+        - name: kubic repo key
+          ansible.builtin.get_url:
+            url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+            dest: /etc/apt/keyrings/devel_kubic_libcontainers_unstable.asc
+        - name: kubic repo
+          ansible.builtin.apt_repository:
+            repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.asc] https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_{{ ansible_distribution_version }}/ /"
+            state: present
+
+    - name: Provision gitlab runner repository
+      become: true
+      block:
+        - name: gitlab repo key
+          ansible.builtin.get_url:
+            url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
+            dest: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
+        - name: gitlab repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+            state: present
+        - name: gitlab repo (src)
+          ansible.builtin.apt_repository:
+            repo: "deb-src [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+            state: present
+
+    - name: Provision Docker repository
+      become: true
+      block:
+        - name: docker repo key
+          ansible.builtin.get_url:
+            url: "https://download.docker.com/linux/ubuntu/gpg"
+            dest: /usr/share/keyrings/docker-keyring.asc
+          register: dockerrepokey
+        - name: docker repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ dockerrepokey.dest }}] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            state: present
+
+    - name: Provision Jellyfin repository
+      become: true
+      block:
+        - name: Jellyfin repo key
+          ansible.builtin.get_url:
+            url: "https://repo.jellyfin.org/jellyfin_team.gpg.key"
+            dest: /usr/share/keyrings/jellyfin-keyring.asc
+          register: jellyfinrepokey
+        - name: Jellyfin repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ jellyfinrepokey.dest }}]  https://repo.jellyfin.org/ubuntu {{ ansible_distribution_release }} main main"
+            state: present
+
+    - name: Provision Tailscale repository
+      become: true
+      block:
+        - name: Tailscale repo key
+          ansible.builtin.get_url:
+            url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+            dest: /usr/share/keyrings/tailscale-keyring.gpg
+          register: tailscalerepokey
+        - name: Tailscale repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ tailscalerepokey.dest }}] https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main main"
+            state: present
+
+    - name: Provision Syncthing repository
+      become: true
+      block:
+        - name: Syncthing repo key
+          ansible.builtin.get_url:
+            url: https://syncthing.net/release-key.gpg
+            dest: /usr/share/keyrings/syncthing-keyring.gpg
+          register: syncthingrepokey
+        - name: Syncthing repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ syncthingrepokey.dest }}]  https://apt.syncthing.net/ syncthing stable"
+            state: present
+
+    - name: Provision Caddy repository
+      become: true
+      block:
+        - name: Caddy repo key
+          ansible.builtin.get_url:
+            url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+            dest: /usr/share/keyrings/caddy-keyring.asc
+          register: caddyrepokey
+        - name: Caddy repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ caddyrepokey.dest }}] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+            state: present
+        - name: Caddy repo (src)
+          ansible.builtin.apt_repository:
+            repo: "deb-src [signed-by={{ caddyrepokey.dest }}] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+            state: present
+
+    - name: Install packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - podman
+          - gitlab-runner
+          - docker-ce
+          - ufw
+          - transmission-cli
+          - transmission-common
+          - transmission-daemon
+          - jellyfin-server
+          - jellyfin-web
+          - tailscale
+          - syncthing
+          - caddy
+
+    - name: Configure Omada controller
+      containers.podman.podman_container:
+        image: docker.io/mbentley/omada-controller:latest
+        name: omada-controller
+        state: present
+        recreate: false
+        network: host
+        volumes:
+          - omada-data:/opt/tplink/EAPController/data
+          - omada-logs:/opt/tplink/EAPController/logs
+        generate_systemd:
+          path: "~/.config/systemd/user"
+          restart_policy: always
+          time: 120
+          names: true
+          new: true
+
+    - name: Launch Omada controller
+      ansible.builtin.systemd_service:
+        state: started
+        enabled: true
+        scope: user
+        name: container-omada-controller.service
+
+    - name: Install RustUp
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl https://sh.rustup.rs -sSf | sh -s -- -y
+      args:
+        creates: "~/.cargo/bin/rustup"
+        executable: /bin/bash
+
+    - name: Install build targets
+      ansible.builtin.shell: |
+        ~/.cargo/bin/rustup toolchain install {{ item }}
+      args:
+        executable: /bin/bash
+      loop:
+        - beta
+        - nightly
+
+    - name: Install build targets
+      ansible.builtin.shell: |
+        ~/.cargo/bin/rustup target add {{ item }}
+      args:
+        executable: /bin/bash
+      loop:
+        - x86_64-unknown-linux-gnu
+        - aarch64-unknown-linux-gnu
+        - x86_64-apple-darwin
+        - aarch64-apple-darwin
+        - x86_64-pc-windows-gnu
+
+    - name: Configure ufw defaults
+      become: true
+      ufw:
+        direction: "{{ item.direction }}"
+        policy: "{{ item.policy }}"
+      with_items:
+        - { direction: 'incoming', policy: 'deny' }
+        - { direction: 'outgoing', policy: 'allow' }
+
+    - name: Configure ufw rules
+      become: true
+      ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      with_items:
+        - { rule: 'limit', port: '{{ ssh_port | default("22") }}', proto: 'tcp' }
+        - { rule: 'allow', port: '80', proto: 'tcp' }
+        - { rule: 'allow', port: '443', proto: 'tcp' }
+        - { rule: 'allow', port: '8088', proto: 'tcp' }
+        - { rule: 'allow', port: '8043', proto: 'tcp' }
+        - { rule: 'allow', port: '8843', proto: 'tcp' }
+        - { rule: 'allow', port: '27001', proto: 'udp' }
+        - { rule: 'allow', port: '29810', proto: 'udp' }
+        - { rule: 'allow', port: '29811:29816', proto: 'tcp' }
+
+    - name: Allow everything and enable UFW
+      become: true
+      community.general.ufw:
+        logging: "on"
+        state: enabled
+
+    - name: Prepare directory for budgeteer postgres
+      ansible.builtin.file:
+        path: "~/.local/share/postgres/budgeteer"
+        state: directory
+        mode: '0777'
+      register: postgres_budgeteer_path
+      tags:
+        - docker
+
+    - name: Prepare directory for pihole
+      ansible.builtin.file:
+        path: "~/.local/share/pihole/"
+        state: directory
+        mode: '0777'
+      register: pihole_path
+      tags:
+        - docker
+
+    - name: Prepare directory for dnsmasq
+      ansible.builtin.file:
+        path: "~/.local/share/dnsmasq"
+        state: directory
+        mode: '0777'
+      register: dnsmasq_path
+      tags:
+        - docker
+
+    - name: Install compose.yaml for Docker Compose
+      ansible.builtin.template:
+        src: templates/compose.yaml
+        dest: "~/.config/compose.yaml"
+        mode: '0600'
+      tags:
+        - docker
+    # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
+    - name: Disable systemd-resolved
+      ansible.builtin.shell: |
+        sed -r -i.orig 's/#?DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
+        rm /etc/resolv.conf
+        ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+        systemctl restart systemd-resolved
+      become: true
+      args:
+        executable: /bin/bash
+      tags:
+        - docker
+
+
+    - name: Configure Caddy
+      become: true
+      ansible.builtin.template:
+        src: templates/Caddyfile.j2
+        dest: "/etc/caddy/Caddyfile"
+        mode: "0644"
+      tags:
+        - caddy
+      notify:
+        - restart caddy
+
+    - name: Install systemd config for Syncthing
+      ansible.builtin.template:
+        src: templates/syncthing.service
+        dest: "~/.config/systemd/user/syncthing.service"
+        mode: '0600'
+
+    - name: Kick off syncthing service
+      # https://github.com/syncthing/syncthing/blob/main/etc/linux-systemd/system/syncthing%40.service
+      ansible.builtin.systemd_service:
+        state: started
+        enabled: true
+        scope: user
+        name: syncthing.service
+
+  handlers:
+    - name: restart caddy
+      become: true
+      ansible.builtin.service:
+        name: caddy
+        state: restarted

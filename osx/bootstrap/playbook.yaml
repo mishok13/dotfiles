@@ -111,16 +111,14 @@
       - yq
       - zk
       - zola
-      - zsh
-      - zsh-completions
+      - eza
+      - fd
+      - jq
+      - fzf
+      - rg
+      - zoxide
+      - d12frosted/emacs-plus/emacs-plus@29
   tasks:
-    - name: Add homebrew taps
-      community.general.homebrew_tap:
-        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
-        state: present
-      tags:
-        - bootstrap
-        - packages
     - name: Install Homebrew packages
       homebrew:
         name: '{{ brew_packages }}'
@@ -130,13 +128,30 @@
       tags:
         - bootstrap
         - packages
+
+    - name: Add homebrew taps
+      community.general.homebrew_tap:
+        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
+        state: present
+      when: ansible_facts['system'] == "MacOS"
+      tags:
+        - bootstrap
+        - packages
+
     - name: Install Cask packages
       homebrew_cask:
         name: '{{ item }}'
         state: present
       with_items: '{{ brew_cask_packages }}'
+      when: ansible_facts['system'] == "MacOS"
       tags:
         - bootstrap
+
+    - name: Update all packages
+      homebrew:
+        update_homebrew: yes
+        upgrade_all: yes
+      tags:
         - packages
 
 
@@ -155,12 +170,15 @@
       register: emacsdir
       tags:
         - emacs
+
     - name: Check out Emacs config
       git:
         repo: 'git@github.com:mishok13/emacsen.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
       tags:
         - emacs
+      ignore_errors: true
+
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
             src="{{ lookup('env','HOME') }}/nonwork/emacsen"
@@ -184,10 +202,12 @@
         state: absent
       tags:
         - zsh
+
     - name: Install omz
       command: "/bin/sh {{ zsh_installer.dest }}"
       tags:
         - zsh
+
     - name: Check out dotfiles
       git:
         repo: 'git@github.com:mishok13/dotfiles.git'
@@ -195,6 +215,7 @@
       tags:
         - zsh
       ignore_errors: yes
+
     - name: Link .zshrc to dotfiles
       file:
         path: "{{ lookup('env','HOME') }}/.zshrc"
@@ -203,6 +224,7 @@
         force: yes
       tags:
         - zsh
+
     - name: Install powerlevel10k
       git:
         repo: https://github.com/romkatv/powerlevel10k.git
