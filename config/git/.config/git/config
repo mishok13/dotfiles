@@ -1,8 +1,8 @@
 [includeIf "gitdir:~/work/**"]
-	path = ~/work/.gitconfig
+	path = ~/.config/git/config.work
 
 [includeIf "gitdir:~/nonwork/**"]
-	path = ~/nonwork/.gitconfig
+	path = ~/.config/git/config.nonwork
 
 [github]
 	user = mishok13
@@ -22,3 +22,12 @@
 
 [rebase]
 	autostash = true
+
+[commit]
+	gpgsign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+        program = "/opt/1Password/op-ssh-sign"

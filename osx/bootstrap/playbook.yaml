@@ -1,9 +1,18 @@
 ---
-- name: Provision OSX utilities and applications
-  hosts: localhost
+- name: Provision utilities and apps
+  hosts: devenv
   become: false
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:{{ ansible_env.PATH }}"
   vars:
-    brew_cask_packages:
+    apt_repos:
+      - url: "https://packages.mozilla.org/apt/repo-signing-key.gpg"
+        path: "/etc/apt/keyrings/packages.mozilla.org.asc"
+        repo: "https://packages.mozilla.org/apt mozilla main"
+      - url: "https://download.docker.com/linux/ubuntu/gpg"
+        path: "/etc/apt/keyrings/docker.asc"
+        repo: "https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable"
+    cask_packages:
       - font-cascadia-code
       - font-cascadia-code-pl
       - font-cascadia-mono
@@ -22,123 +31,226 @@
       - spotify
       - telegram
       - vlc
-    brew_packages:
-      - age # User-friendly GPG tool
-      - ansible # Ansible itself
-      - awscli # AWS things
-      - act # Run GH actions locally
-      - bat # Better cat
-      - cabextract # Useful for older fonts ?
-      - checkov # Check your Terraform code
-      - colima # Docker in Mac. Check out orb stack maybe?
-      - coreutils # GNU tools
-      - cowsay # MOOOOOO
-      - csvkit # CSV tools
-      - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
-      - direnv # asdf alternatively
-      - dive # dive into docker images, analyze layers
+    linux_packages:
+      - gcc
+    macos_packages:
+      - colima
+      - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs
       - docker
       - docker-buildx
       - docker-compose
-      - driftctl # No longer needed?
+      - git
+      - coreutils # GNU tools
+    brew_packages:
+      - age # User-friendly GPG tool
+      - awscli # AWS things
+      - act # Run GH actions locally
+      # - bat # Better cat
+      # - cabextract # Useful for older fonts ?
+      # - checkov # Check your Terraform code
+      # - colima # Docker in Mac. Check out orb stack maybe?
+      # - cowsay # MOOOOOO
+      - csvkit # CSV tools
+      - dive # dive into docker images, analyze layers
+      - tailscale
       - dust # A better du
-      - envconsul # Access secrets from vault & consul
+      # - envconsul # Access secrets from vault & consul
+
+      - glab
+      # - glow
+      # - gnupg
+      # - go
+      # - grep
+      # - hadolint
+      # - hatch
+      # - hcloud
+      # - helm
+      - htop # Nicer resource overview
+      # - httpie
+      # - hunspell
+      # - infracost
+      # - ispell
+      # - jq
+      # - just
+      # - oven-sh/bun/bun
+      # - k3d
+      # - k9s
+      # - kubectx
+      # - kubescape
+      # - kubeseal
+      # - kyverno
+      # - lazydocker
+      # - mycli
+      # - nmap
+      # - nvm
+      # - openjdk
+      # - parallel
+      # - pdm
+      # - pgcli
+      # - podman
+      # - poetry
+      # - pre-commit
+      # - pyenv
+      # - pyright
+      # - qrencode
+      # - rancher-cli
+      # - ripgrep
+      # - ruff
+      - rustup-init
+      # - sevenzip
+      # - skaffold
+      - sops
+      # - spotifyd
+      # - stern
+      - syncthing
+      # - tgenv
+      # - terrascan
+      # - tfenv
+      # - tflint
+      # - tfsec
+      # - tfupdate
+      - tealdeer
+      - tmux
+      # - tox
+      # - trivy
+      # - trufflehog
+      # - vault
+      - watchexec
+      # - yh
+      # - yq
+      # - zk
+      - zola # Static site builder
       - eza # Better ls
       - fd # Better find
-      - fzf # Makes shell more fun
-      - git
-      - glab
-      - glow
-      - gnupg
-      - go
-      - grep
-      - hadolint
-      - hatch
-      - hcloud
-      - helm
-      - htop
-      - httpie
-      - hunspell
-      - infracost
-      - ispell
-      - jq
-      - just
-      - oven-sh/bun/bun
-      - k3d
-      - k9s
-      - kubectx
-      - kubescape
-      - kubeseal
-      - kyverno
-      - lazydocker
-      - mycli
-      - nmap
-      - nvm
-      - openjdk
-      - parallel
-      - pdm
-      - pgcli
-      - podman
-      - poetry
-      - pre-commit
-      - pyenv
-      - pyright
-      - qrencode
-      - rancher-cli
-      - ripgrep
-      - ruff
-      - rustup-init
-      - sevenzip
-      - skaffold
-      - sops
-      - spotifyd
-      - stern
-      - syncthing
-      - tgenv
-      - terrascan
-      - tfenv
-      - tflint
-      - tfsec
-      - tfupdate
-      - tldr
-      - tmux
-      - tox
-      - trivy
-      - trufflehog
-      - vault
-      - watch
-      - yh
-      - yq
-      - zk
-      - zola
+      - jq # JSON parser
+      - fzf # fuzzy search in CLI
+      - rg # ripgrep, better grep
+      - zoxide # better cd?
+      - pyenv # Handle Python versions
+      - tfenv # Handle Terraform versions
+      - direnv # Load environment per directory
       - zsh
-      - zsh-completions
   tasks:
-    - name: Add homebrew taps
-      community.general.homebrew_tap:
-        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
-        state: present
+    - name: Install Homebrew
       tags:
         - bootstrap
         - packages
-    - name: Install Homebrew packages
-      homebrew:
-        name: '{{ brew_packages }}'
-        state: present
-        update_homebrew: yes
-        upgrade: yes
-      tags:
-        - bootstrap
-        - packages
-    - name: Install Cask packages
-      homebrew_cask:
-        name: '{{ item }}'
-        state: present
-      with_items: '{{ brew_cask_packages }}'
-      tags:
-        - bootstrap
-        - packages
+      block:
+        - get_url:
+            url: https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+            dest: /tmp/homebrew.install.sh
+            force: no
+          register: homebrew_installer
+        - command: "/bin/bash {{ homebrew_installer.dest }}"
+          environment:
+            NONINTERACTIVE: "1"
+          # become: true
+        - file:
+            path: "{{ homebrew_installer.dest }}"
+            state: absent
 
+    - name: Install Homebrew packages
+      tags:
+        - packages
+      block:
+        - homebrew:
+            name: "d12frosted/emacs-plus/emacs-plus@29"
+            state: present
+            install_options: "without-cocoa,with-x11,with-native-comp"
+          when: ansible_facts['system'] == "Linux"
+
+        - homebrew:
+            name: '{{ brew_packages }}'
+            state: present
+          debugger: on_failed
+
+        - homebrew:
+            name: '{{ linux_packages }}'
+            state: present
+          when: ansible_facts['system'] == "Linux"
+
+        - homebrew:
+            name: '{{ macos_packages }}'
+            state: present
+          when: ansible_facts['system'] == "MacOS"
+
+        - community.general.homebrew_tap:
+            name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
+            state: present
+          when: ansible_facts['system'] == "MacOS"
+
+        - homebrew_cask:
+            name: '{{ item }}'
+            state: present
+          with_items: '{{ brew_cask_packages }}'
+          when: ansible_facts['system'] == "MacOS"
+
+        - name: Update all packages
+          homebrew:
+            update_homebrew: yes
+            upgrade_all: yes
+
+    - name: Install system packages
+      tags:
+        - packages
+        - apt
+      become: true
+      when: ansible_facts['os_family'] == "Debian"
+      block:
+        # - name: Install 1Password
+        #   ansible.builtin.apt:
+        #     deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
+
+        - name: Download signing key
+          ansible.builtin.get_url:
+            url: "{{ item.url }}"
+            dest: "{{ item.path }}"
+          loop: "{{ apt_repos }}"
+        - name: Setup repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ item.path }}] {{ item.repo }}"
+            state: present
+          loop: "{{ apt_repos }}"
+        - name: Install package
+          ansible.builtin.apt:
+            update_cache: true
+            name:
+              - 1password-cli
+              - 1password
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+
+    - name: Configure Docker
+      when: ansible_facts['system'] == "Linux"
+      become: true
+      tags:
+        - docker
+      block:
+        - name: Setup docker group
+          ansible.builtin.group:
+            name: docker
+            state: present
+        - name: Add user to docker group
+          ansible.builtin.user:
+            name: "{{ username }}"
+            groups: docker
+            append: yes
+    # - name: Setup SSH config
+    #   tags:
+    #     - config
+    #   block:
+    #     - community.general.ssh_config:
+    #         ssh_config_file: "{{ lookup('env','HOME') }}/.ssh/config"
+    #         remote_user: "{{ item.user }}"
+    #         identity_file: "{{ lookup('env','HOME') }}/.ssh/{{ item.identity}}"
+    #         host: "{{ item.host }}"
+    #         hostname: "{{ item.host }}"
+    #         state: present
+    #       loop:
+    #         - {user: "git", host: "github.com", identity: "github.com"}
 
     - name: Setup directory structure
       file:
@@ -155,12 +267,15 @@
       register: emacsdir
       tags:
         - emacs
+
     - name: Check out Emacs config
       git:
         repo: 'git@github.com:mishok13/emacsen.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
       tags:
         - emacs
+      ignore_errors: true
+
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
             src="{{ lookup('env','HOME') }}/nonwork/emacsen"
@@ -184,10 +299,12 @@
         state: absent
       tags:
         - zsh
+
     - name: Install omz
-      command: "/bin/sh {{ zsh_installer.dest }}"
+      command: '/bin/sh {{ zsh_installer.dest }} "" --unattended'
       tags:
         - zsh
+
     - name: Check out dotfiles
       git:
         repo: 'git@github.com:mishok13/dotfiles.git'
@@ -195,6 +312,7 @@
       tags:
         - zsh
       ignore_errors: yes
+
     - name: Link .zshrc to dotfiles
       file:
         path: "{{ lookup('env','HOME') }}/.zshrc"
@@ -203,6 +321,7 @@
         force: yes
       tags:
         - zsh
+
     - name: Install powerlevel10k
       git:
         repo: https://github.com/romkatv/powerlevel10k.git
@@ -229,20 +348,32 @@
       tags:
         - ripgrep
 
+    - name: Configure ripgrep
+      file:
+        path: "{{ lookup('env','HOME') }}/.ripgreprc"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/.ripgreprc"
+        state: link
+        force: yes
+      tags:
+        - ripgrep
+
     - name: Configure iterm2 profiles
       copy:
         src: ../iterm.profile.json
         dest: "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles/"
       tags:
         - iterm
+      when: ansible_facts['system'] == "MacOS"
     - name: Download iterm2 shell integration
       get_url:
         url: https://iterm2.com/shell_integration/zsh
         dest: "{{ lookup('env','HOME') }}/.iterm2_shell_integration.zsh"
       tags:
         - iterm
+      when: ansible_facts['system'] == "MacOS"
 
-
+    - name: Install rustup
+      command: rustup-init -y
     - name: Install rustup components
       command: rustup component add rls
 
