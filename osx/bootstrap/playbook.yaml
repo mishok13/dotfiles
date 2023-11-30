@@ -42,7 +42,7 @@
       - driftctl
       - dust
       - envconsul
-      - exa
+      - eza
       - fd
       - fzf
       - git
@@ -61,6 +61,8 @@
       - infracost
       - ispell
       - jq
+      - just
+      - oven-sh/bun/bun
       - k3d
       - k9s
       - kubectx

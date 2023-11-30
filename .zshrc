@@ -144,6 +144,9 @@ alias tg=terragrunt
 alias dc=docker-compose
 alias d=docker
 
+alias l=eza
+alias lt="eza --tree"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -211,7 +214,6 @@ eval "$(direnv hook zsh)"
 export AWS_PAGER=""
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 source /Users/andriimishkovskyi/.config/op/plugins.sh
 
 export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
