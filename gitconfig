@@ -6,7 +6,9 @@
 
 [github]
         user = mishok13
+
 [init]
 	defaultBranch = main
+
 [user]
 	useConfigOnly = true

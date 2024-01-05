@@ -23,28 +23,29 @@
       - telegram
       - vlc
     brew_packages:
-      - age
-      - ansible
-      - awscli
-      - bat
-      - cabextract
-      - checkov
-      - colima
-      - coreutils
-      - cowsay
-      - csvkit
-      - d12frosted/emacs-plus/emacs-plus@29
-      - direnv
-      - dive
+      - age # User-friendly GPG tool
+      - ansible # Ansible itself
+      - awscli # AWS things
+      - act # Run GH actions locally
+      - bat # Better cat
+      - cabextract # Useful for older fonts ?
+      - checkov # Check your Terraform code
+      - colima # Docker in Mac. Check out orb stack maybe?
+      - coreutils # GNU tools
+      - cowsay # MOOOOOO
+      - csvkit # CSV tools
+      - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
+      - direnv # asdf alternatively
+      - dive # dive into docker images, analyze layers
       - docker
       - docker-buildx
       - docker-compose
-      - driftctl
-      - dust
-      - envconsul
-      - eza
-      - fd
-      - fzf
+      - driftctl # No longer needed?
+      - dust # A better du
+      - envconsul # Access secrets from vault & consul
+      - eza # Better ls
+      - fd # Better find
+      - fzf # Makes shell more fun
       - git
       - glab
       - glow
@@ -93,7 +94,7 @@
       - spotifyd
       - stern
       - syncthing
-      - terragrunt
+      - tgenv
       - terrascan
       - tfenv
       - tflint
@@ -103,6 +104,7 @@
       - tmux
       - tox
       - trivy
+      - trufflehog
       - vault
       - watch
       - yh

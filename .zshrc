@@ -97,7 +97,7 @@ source $ZSH/oh-my-zsh.sh
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
-# else
+ # else
 #   export EDITOR='mvim'
 # fi
 
@@ -139,6 +139,7 @@ alias kns=kubens
 
 alias tf=terraform
 alias tg=terragrunt
+alias tgr="terragrunt run-all"
 
 # alias tg=terragrunt
 alias dc=docker-compose
@@ -146,6 +147,8 @@ alias d=docker
 
 alias l=eza
 alias lt="eza --tree"
+
+alias c=bat
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -240,3 +243,6 @@ export FZF_DEFAULT_COMMAND='fd -t f .'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd -t d . $HOME"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+# Force pip to always use virtualenv
+export PIP_REQUIRE_VIRTUALENV=true
