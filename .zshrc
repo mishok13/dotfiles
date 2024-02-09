@@ -140,9 +140,10 @@ alias kns=kubens
 alias tf=terraform
 alias tg=terragrunt
 alias tgr="terragrunt run-all"
+alias tgrp="terragrunt run-all plan"
+alias tgrs="terragrunt run-all show"
 
-# alias tg=terragrunt
-alias dc=docker-compose
+alias dc="docker compose"
 alias d=docker
 
 alias l=eza
@@ -153,11 +154,7 @@ alias c=bat
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "/usr/local/opt/nvm/nvm.sh" ] && source "/usr/local/opt/nvm/nvm.sh"
-
 eval "$(op completion zsh)"; compdef _op op
-
 
 function dauth_acc {
     curl -s -X POST -d "grant_type=password&username=mishk500&password=$(op item get ixp54ndrrk5afvw2jlpairykcy --fields password)&scope=openid profile email groups" -u "277447:" https://d-auth-acceptance.tcloud-acc1.np.aws.kpn.org/openid/token/ | jq '("Bearer " + .access_token)' -r
