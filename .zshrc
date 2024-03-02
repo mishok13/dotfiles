@@ -236,10 +236,12 @@ function zipped_creds {
 }
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-export FZF_DEFAULT_COMMAND='fd -t f .'
+export FZF_DEFAULT_COMMAND='fd -t f --strip-cwd-prefix --ignore-file=~/.fdignore'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd -t d . $HOME"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+eval "$(zoxide init zsh)"
 
 # Force pip to always use virtualenv
 export PIP_REQUIRE_VIRTUALENV=true
