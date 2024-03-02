@@ -1,0 +1,7 @@
+--type-add
+pydeps:requirements*.{in,txt}
+
+--type-add
+pydeps:pyproject.toml
+
+--smart-case

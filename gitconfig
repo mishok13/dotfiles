@@ -1,8 +1,24 @@
 [includeIf "gitdir:~/work/**"]
-    path = ~/work/.gitconfig
+	path = ~/work/.gitconfig
 
 [includeIf "gitdir:~/nonwork/**"]
-    path = ~/nonwork/.gitconfig
+	path = ~/nonwork/.gitconfig
 
 [github]
-    user = mishok13
+	user = mishok13
+
+[init]
+	defaultBranch = main
+
+[user]
+	useConfigOnly = true
+
+[merge]
+	conflictStyle = zdiff3
+	autostash = true
+
+[pull]
+	autostash = true
+
+[rebase]
+	autostash = true

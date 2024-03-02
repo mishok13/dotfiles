@@ -4,8 +4,6 @@
   become: false
   vars:
     brew_cask_packages:
-      - adoptopenjdk
-      - docker
       - font-cascadia-code
       - font-cascadia-code-pl
       - font-cascadia-mono
@@ -14,6 +12,7 @@
       - font-hack-nerd-font
       - font-inconsolata-lgc-nerd-font
       - font-meslo-lg-nerd-font
+      - firefox
       - google-chrome
       - google-drive
       - iterm2
@@ -22,76 +21,95 @@
       - slack
       - spotify
       - telegram
-      - virtualbox
       - vlc
     brew_packages:
-      - awscli
-      - cabextract
-      - cairo
-      - coreutils
-      - cowsay
-      - dbus
-      - dive
-      - docbook
-      - docbook-xsl
-      - double-conversion
-      - eksctl
-      - exa
-      - emacs-mac
-      - fb303
-      - fbthrift
-      - fd
-      - fizz
-      - flux
-      - fluxctl
-      - fmt
-      - folly
-      - fontconfig
-      - freetype
-      - fribidi
+      - age # User-friendly GPG tool
+      - ansible # Ansible itself
+      - awscli # AWS things
+      - act # Run GH actions locally
+      - bat # Better cat
+      - cabextract # Useful for older fonts ?
+      - checkov # Check your Terraform code
+      - colima # Docker in Mac. Check out orb stack maybe?
+      - coreutils # GNU tools
+      - cowsay # MOOOOOO
+      - csvkit # CSV tools
+      - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
+      - direnv # asdf alternatively
+      - dive # dive into docker images, analyze layers
+      - docker
+      - docker-buildx
+      - docker-compose
+      - driftctl # No longer needed?
+      - dust # A better du
+      - envconsul # Access secrets from vault & consul
+      - eza # Better ls
+      - fd # Better find
+      - fzf # Makes shell more fun
       - git
+      - glab
+      - glow
+      - gnupg
       - go
+      - grep
+      - hadolint
+      - hatch
+      - hcloud
       - helm
       - htop
       - httpie
       - hunspell
+      - infracost
       - ispell
       - jq
+      - just
+      - oven-sh/bun/bun
       - k3d
       - k9s
       - kubectx
-      - kubernetes-cli
       - kubescape
       - kubeseal
-      - logitech-g-hub
-      - markdown
+      - kyverno
+      - lazydocker
       - mycli
-      - mysql-client
       - nmap
       - nvm
+      - openjdk
+      - parallel
+      - pdm
       - pgcli
-      - pipenv
       - podman
       - poetry
-      - postgresql
       - pre-commit
       - pyenv
       - pyright
-      - qemu
-      - qt
-      - qt@5
-      - readline
+      - qrencode
+      - rancher-cli
       - ripgrep
-      - rpm
+      - ruff
       - rustup-init
-      - shared-mime-info
+      - sevenzip
       - skaffold
-      - sqlite
+      - sops
+      - spotifyd
       - stern
+      - syncthing
+      - tgenv
+      - terrascan
       - tfenv
+      - tflint
+      - tfsec
+      - tfupdate
+      - tldr
       - tmux
+      - tox
       - trivy
+      - trufflehog
+      - vault
+      - watch
+      - yh
       - yq
+      - zk
       - zola
       - zsh
       - zsh-completions
@@ -107,6 +125,8 @@
       homebrew:
         name: '{{ brew_packages }}'
         state: present
+        update_homebrew: yes
+        upgrade: yes
       tags:
         - bootstrap
         - packages
@@ -116,14 +136,9 @@
         state: present
       with_items: '{{ brew_cask_packages }}'
       tags:
-        - packages
         - bootstrap
-    - name: Update all packages
-      homebrew:
-        update_homebrew: yes
-        upgrade_all: yes
-      tags:
         - packages
+
 
     - name: Setup directory structure
       file:
@@ -133,6 +148,7 @@
         - "{{ lookup('env','HOME') }}/nonwork"
         - "{{ lookup('env','HOME') }}/work"
         - "{{ lookup('env','HOME') }}/.nvm"
+        - "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles"
 
     - name: Check if .emacs.d exists
       stat: path="{{ lookup('env','HOME') }}/.emacs.d"
@@ -162,11 +178,6 @@
       tags:
         - download
         - zsh
-    - debug:
-        msg: "You can run setup from by exusting the following command: 'sh -c {{ zsh_installer.dest }}'"
-      when: zsh_installer.dest is defined
-      tags:
-        - zsh
     - name: Remove existing omz installation
       file:
         path: "{{ lookup('env','HOME') }}/.oh-my-zsh"
@@ -174,7 +185,7 @@
       tags:
         - zsh
     - name: Install omz
-      command: "sh {{ zsh_installer.dest }}"
+      command: "/bin/sh {{ zsh_installer.dest }}"
       tags:
         - zsh
     - name: Check out dotfiles
@@ -209,13 +220,38 @@
       tags:
         - git
 
+    - name: Configure ripgrep
+      file:
+        path: "{{ lookup('env','HOME') }}/.rgignore"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/rgignore"
+        state: link
+        force: yes
+      tags:
+        - ripgrep
+
+    - name: Configure iterm2 profiles
+      copy:
+        src: ../iterm.profile.json
+        dest: "{{ lookup('env','HOME') }}/Library/Application Support/iTerm2/DynamicProfiles/"
+      tags:
+        - iterm
+    - name: Download iterm2 shell integration
+      get_url:
+        url: https://iterm2.com/shell_integration/zsh
+        dest: "{{ lookup('env','HOME') }}/.iterm2_shell_integration.zsh"
+      tags:
+        - iterm
+
+
+    - name: Install rustup components
+      command: rustup component add rls
 
     - name: Setup automatic daily Homebrew package updates
       cron:
         name: "homebrew upgrade"
         minute: "5"
         hour: "12"
-        job: "/usr/local/bin/brew upgrade >/dev/null 2>&1"
+        job: "/opt/homebrew/bin/brew update >/dev/null 2>&1"
       tags:
         - cron
     - name: Setup automatic daily Homebrew Cask package updates
@@ -223,7 +259,7 @@
         name: "homebrew cask upgrade"
         minute: "25"
         hour: "12"
-        job: "/usr/local/bin/brew cask upgrade >/dev/null 2>&1"
+        job: "/opt/homebrew/bin/brew upgrade >/dev/null 2>&1"
       tags:
         - cron
     - name: Setup automatic Rust toolchain upgrades
