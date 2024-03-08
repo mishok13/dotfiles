@@ -23,101 +23,104 @@
       - telegram
       - vlc
     brew_packages:
-      - age # User-friendly GPG tool
-      - ansible # Ansible itself
-      - awscli # AWS things
-      - act # Run GH actions locally
-      - bat # Better cat
-      - cabextract # Useful for older fonts ?
-      - checkov # Check your Terraform code
-      - colima # Docker in Mac. Check out orb stack maybe?
-      - coreutils # GNU tools
-      - cowsay # MOOOOOO
-      - csvkit # CSV tools
-      - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
-      - direnv # asdf alternatively
-      - dive # dive into docker images, analyze layers
-      - docker
-      - docker-buildx
-      - docker-compose
-      - driftctl # No longer needed?
-      - dust # A better du
-      - envconsul # Access secrets from vault & consul
+      # - age # User-friendly GPG tool
+      # - ansible # Ansible itself
+      # - awscli # AWS things
+      # - act # Run GH actions locally
+      # - bat # Better cat
+      # - cabextract # Useful for older fonts ?
+      # - checkov # Check your Terraform code
+      # - colima # Docker in Mac. Check out orb stack maybe?
+      # - coreutils # GNU tools
+      # - cowsay # MOOOOOO
+      # - csvkit # CSV tools
+      # - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
+      # - direnv # asdf alternatively
+      # - dive # dive into docker images, analyze layers
+      # - docker
+      # - docker-buildx
+      # - docker-compose
+      # - driftctl # No longer needed?
+      # - dust # A better du
+      # - envconsul # Access secrets from vault & consul
+      # - eza # Better ls
+      # - fd # Better find
+      # - fzf # Makes shell more fun
+      # - git
+      # - glab
+      # - glow
+      # - gnupg
+      # - go
+      # - grep
+      # - hadolint
+      # - hatch
+      # - hcloud
+      # - helm
+      # - htop
+      # - httpie
+      # - hunspell
+      # - infracost
+      # - ispell
+      # - jq
+      # - just
+      # - oven-sh/bun/bun
+      # - k3d
+      # - k9s
+      # - kubectx
+      # - kubescape
+      # - kubeseal
+      # - kyverno
+      # - lazydocker
+      # - mycli
+      # - nmap
+      # - nvm
+      # - openjdk
+      # - parallel
+      # - pdm
+      # - pgcli
+      # - podman
+      # - poetry
+      # - pre-commit
+      # - pyenv
+      # - pyright
+      # - qrencode
+      # - rancher-cli
+      # - ripgrep
+      # - ruff
+      # - rustup-init
+      # - sevenzip
+      # - skaffold
+      # - sops
+      # - spotifyd
+      # - stern
+      # - syncthing
+      # - tgenv
+      # - terrascan
+      # - tfenv
+      # - tflint
+      # - tfsec
+      # - tfupdate
+      # - tldr
+      # - tmux
+      # - tox
+      # - trivy
+      # - trufflehog
+      # - vault
+      # - watch
+      # - yh
+      # - yq
+      # - zk
+      - zola # Static site builder
       - eza # Better ls
       - fd # Better find
-      - fzf # Makes shell more fun
-      - git
-      - glab
-      - glow
-      - gnupg
-      - go
-      - grep
-      - hadolint
-      - hatch
-      - hcloud
-      - helm
-      - htop
-      - httpie
-      - hunspell
-      - infracost
-      - ispell
-      - jq
-      - just
-      - oven-sh/bun/bun
-      - k3d
-      - k9s
-      - kubectx
-      - kubescape
-      - kubeseal
-      - kyverno
-      - lazydocker
-      - mycli
-      - nmap
-      - nvm
-      - openjdk
-      - parallel
-      - pdm
-      - pgcli
-      - podman
-      - poetry
-      - pre-commit
-      - pyenv
-      - pyright
-      - qrencode
-      - rancher-cli
-      - ripgrep
-      - ruff
-      - rustup-init
-      - sevenzip
-      - skaffold
-      - sops
-      - spotifyd
-      - stern
-      - syncthing
-      - tgenv
-      - terrascan
-      - tfenv
-      - tflint
-      - tfsec
-      - tfupdate
-      - tldr
-      - tmux
-      - tox
-      - trivy
-      - trufflehog
-      - vault
-      - watch
-      - yh
-      - yq
-      - zk
-      - zola
-      - eza
-      - fd
-      - jq
-      - fzf
-      - rg
-      - zoxide
-      - d12frosted/emacs-plus/emacs-plus@29
+      - jq # JSON parser
+      - fzf # fuzzy search in CLI
+      - rg # ripgrep, better grep
+      - zoxide # better cd?
+      - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs
+      - pyenv # Handle Python versions
+      - tfenv # Handle Terraform versions
+      - direnv
   tasks:
     - name: Install Homebrew packages
       homebrew:
@@ -246,6 +249,15 @@
       file:
         path: "{{ lookup('env','HOME') }}/.rgignore"
         src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/rgignore"
+        state: link
+        force: yes
+      tags:
+        - ripgrep
+
+    - name: Configure ripgrep
+      file:
+        path: "{{ lookup('env','HOME') }}/.ripgreprc"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/.ripgreprc"
         state: link
         force: yes
       tags:

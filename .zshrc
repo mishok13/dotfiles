@@ -130,7 +130,7 @@ fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+command -v pyenv >/dev/null || eval "$(pyenv init -)"
 
 export TERM="xterm-256color"
 
@@ -215,9 +215,13 @@ eval "$(direnv hook zsh)"
 export AWS_PAGER=""
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source /Users/andriimishkovskyi/.config/op/plugins.sh
+[ -f ~/.config/op/plugins.sh ] && source ~/.config/op/plugins.sh
 
-export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
+if type colima &>/dev/null
+then
+    export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
+fi
+
 
 function zipped_creds {
     env=$1
