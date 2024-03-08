@@ -1,0 +1,22 @@
+pihole.orangepi.home:80 {
+	reverse_proxy http://localhost:31480
+}
+
+syncthing.orangepi.home:80 {
+	reverse_proxy http://localhost:8384
+}
+
+omada.orangepi.home:80 {
+	reverse_proxy http://localhost:8088
+}
+
+orangepi.tailf7350.ts.net {
+        root * /usr/share/caddy
+        file_server
+	log
+}
+
+orangepi.home:80, orangepi:80 {
+        root * /usr/share/caddy
+        file_server
+}

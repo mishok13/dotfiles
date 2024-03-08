@@ -7,6 +7,7 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -129,7 +130,7 @@ fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+command -v pyenv >/dev/null || eval "$(pyenv init -)"
 
 export TERM="xterm-256color"
 
@@ -214,9 +215,13 @@ eval "$(direnv hook zsh)"
 export AWS_PAGER=""
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source /Users/andriimishkovskyi/.config/op/plugins.sh
+[ -f ~/.config/op/plugins.sh ] && source ~/.config/op/plugins.sh
 
-export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
+if type colima &>/dev/null
+then
+    export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
+fi
+
 
 function zipped_creds {
     env=$1
@@ -236,6 +241,7 @@ function zipped_creds {
 }
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
 export FZF_DEFAULT_COMMAND='fd -t f --strip-cwd-prefix --ignore-file=~/.fdignore'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd -t d . $HOME"

@@ -23,104 +23,105 @@
       - telegram
       - vlc
     brew_packages:
-      - age # User-friendly GPG tool
-      - ansible # Ansible itself
-      - awscli # AWS things
-      - act # Run GH actions locally
-      - bat # Better cat
-      - cabextract # Useful for older fonts ?
-      - checkov # Check your Terraform code
-      - colima # Docker in Mac. Check out orb stack maybe?
-      - coreutils # GNU tools
-      - cowsay # MOOOOOO
-      - csvkit # CSV tools
-      - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
-      - direnv # asdf alternatively
-      - dive # dive into docker images, analyze layers
-      - docker
-      - docker-buildx
-      - docker-compose
-      - driftctl # No longer needed?
-      - dust # A better du
-      - envconsul # Access secrets from vault & consul
+      # - age # User-friendly GPG tool
+      # - ansible # Ansible itself
+      # - awscli # AWS things
+      # - act # Run GH actions locally
+      # - bat # Better cat
+      # - cabextract # Useful for older fonts ?
+      # - checkov # Check your Terraform code
+      # - colima # Docker in Mac. Check out orb stack maybe?
+      # - coreutils # GNU tools
+      # - cowsay # MOOOOOO
+      # - csvkit # CSV tools
+      # - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
+      # - direnv # asdf alternatively
+      # - dive # dive into docker images, analyze layers
+      # - docker
+      # - docker-buildx
+      # - docker-compose
+      # - driftctl # No longer needed?
+      # - dust # A better du
+      # - envconsul # Access secrets from vault & consul
+      # - eza # Better ls
+      # - fd # Better find
+      # - fzf # Makes shell more fun
+      # - git
+      # - glab
+      # - glow
+      # - gnupg
+      # - go
+      # - grep
+      # - hadolint
+      # - hatch
+      # - hcloud
+      # - helm
+      # - htop
+      # - httpie
+      # - hunspell
+      # - infracost
+      # - ispell
+      # - jq
+      # - just
+      # - oven-sh/bun/bun
+      # - k3d
+      # - k9s
+      # - kubectx
+      # - kubescape
+      # - kubeseal
+      # - kyverno
+      # - lazydocker
+      # - mycli
+      # - nmap
+      # - nvm
+      # - openjdk
+      # - parallel
+      # - pdm
+      # - pgcli
+      # - podman
+      # - poetry
+      # - pre-commit
+      # - pyenv
+      # - pyright
+      # - qrencode
+      # - rancher-cli
+      # - ripgrep
+      # - ruff
+      # - rustup-init
+      # - sevenzip
+      # - skaffold
+      # - sops
+      # - spotifyd
+      # - stern
+      # - syncthing
+      # - tgenv
+      # - terrascan
+      # - tfenv
+      # - tflint
+      # - tfsec
+      # - tfupdate
+      # - tldr
+      # - tmux
+      # - tox
+      # - trivy
+      # - trufflehog
+      # - vault
+      # - watch
+      # - yh
+      # - yq
+      # - zk
+      - zola # Static site builder
       - eza # Better ls
       - fd # Better find
-      - fzf # Makes shell more fun
-      - git
-      - glab
-      - glow
-      - gnupg
-      - go
-      - grep
-      - hadolint
-      - hatch
-      - hcloud
-      - helm
-      - htop
-      - httpie
-      - hunspell
-      - infracost
-      - ispell
-      - jq
-      - just
-      - oven-sh/bun/bun
-      - k3d
-      - k9s
-      - kubectx
-      - kubescape
-      - kubeseal
-      - kyverno
-      - lazydocker
-      - mycli
-      - nmap
-      - nvm
-      - openjdk
-      - parallel
-      - pdm
-      - pgcli
-      - podman
-      - poetry
-      - pre-commit
-      - pyenv
-      - pyright
-      - qrencode
-      - rancher-cli
-      - ripgrep
-      - ruff
-      - rustup-init
-      - sevenzip
-      - skaffold
-      - sops
-      - spotifyd
-      - stern
-      - syncthing
-      - tgenv
-      - terrascan
-      - tfenv
-      - tflint
-      - tfsec
-      - tfupdate
-      - tldr
-      - tmux
-      - tox
-      - trivy
-      - trufflehog
-      - vault
-      - watch
-      - yh
-      - yq
-      - zk
-      - zola
-      - zsh
-      - zsh-completions
+      - jq # JSON parser
+      - fzf # fuzzy search in CLI
+      - rg # ripgrep, better grep
+      - zoxide # better cd?
+      - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs
+      - pyenv # Handle Python versions
+      - tfenv # Handle Terraform versions
+      - direnv
   tasks:
-    - name: Add homebrew taps
-      community.general.homebrew_tap:
-        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
-        state: present
-      tags:
-        - bootstrap
-        - packages
     - name: Install Homebrew packages
       homebrew:
         name: '{{ brew_packages }}'
@@ -130,13 +131,30 @@
       tags:
         - bootstrap
         - packages
+
+    - name: Add homebrew taps
+      community.general.homebrew_tap:
+        name: railwaycat/emacsmacport,homebrew/cask-fonts,homebrew/cask-drivers
+        state: present
+      when: ansible_facts['system'] == "MacOS"
+      tags:
+        - bootstrap
+        - packages
+
     - name: Install Cask packages
       homebrew_cask:
         name: '{{ item }}'
         state: present
       with_items: '{{ brew_cask_packages }}'
+      when: ansible_facts['system'] == "MacOS"
       tags:
         - bootstrap
+
+    - name: Update all packages
+      homebrew:
+        update_homebrew: yes
+        upgrade_all: yes
+      tags:
         - packages
 
 
@@ -155,12 +173,15 @@
       register: emacsdir
       tags:
         - emacs
+
     - name: Check out Emacs config
       git:
         repo: 'git@github.com:mishok13/emacsen.git'
         dest: "{{ lookup('env','HOME') }}/nonwork/emacsen"
       tags:
         - emacs
+      ignore_errors: true
+
     - name: Link .emacs.d to Emacs config
       file: path="{{ lookup('env','HOME') }}/.emacs.d"
             src="{{ lookup('env','HOME') }}/nonwork/emacsen"
@@ -184,10 +205,12 @@
         state: absent
       tags:
         - zsh
+
     - name: Install omz
       command: "/bin/sh {{ zsh_installer.dest }}"
       tags:
         - zsh
+
     - name: Check out dotfiles
       git:
         repo: 'git@github.com:mishok13/dotfiles.git'
@@ -195,6 +218,7 @@
       tags:
         - zsh
       ignore_errors: yes
+
     - name: Link .zshrc to dotfiles
       file:
         path: "{{ lookup('env','HOME') }}/.zshrc"
@@ -203,6 +227,7 @@
         force: yes
       tags:
         - zsh
+
     - name: Install powerlevel10k
       git:
         repo: https://github.com/romkatv/powerlevel10k.git
@@ -224,6 +249,15 @@
       file:
         path: "{{ lookup('env','HOME') }}/.rgignore"
         src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/rgignore"
+        state: link
+        force: yes
+      tags:
+        - ripgrep
+
+    - name: Configure ripgrep
+      file:
+        path: "{{ lookup('env','HOME') }}/.ripgreprc"
+        src: "{{ lookup('env','HOME') }}/nonwork/dotfiles/.ripgreprc"
         state: link
         force: yes
       tags:
