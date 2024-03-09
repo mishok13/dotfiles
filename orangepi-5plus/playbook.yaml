@@ -248,6 +248,7 @@
         mode: '0600'
       tags:
         - docker
+
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
     - name: Disable systemd-resolved
       ansible.builtin.shell: |
