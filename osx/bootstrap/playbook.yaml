@@ -9,9 +9,6 @@
       - url: "https://packages.mozilla.org/apt/repo-signing-key.gpg"
         path: "/etc/apt/keyrings/packages.mozilla.org.asc"
         repo: "https://packages.mozilla.org/apt mozilla main"
-
-
-
     cask_packages:
       - font-cascadia-code
       - font-cascadia-code-pl
@@ -38,29 +35,25 @@
       - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs
     brew_packages:
       - age # User-friendly GPG tool
-      # - awscli # AWS things
-      # - act # Run GH actions locally
+      - awscli # AWS things
+      - act # Run GH actions locally
       # - bat # Better cat
       # - cabextract # Useful for older fonts ?
       # - checkov # Check your Terraform code
       # - colima # Docker in Mac. Check out orb stack maybe?
       # - coreutils # GNU tools
       # - cowsay # MOOOOOO
-      # - csvkit # CSV tools
-      # - d12frosted/emacs-plus/emacs-plus@29 # Alternatively emacs-mac
-      # - direnv # asdf alternatively
-      # - dive # dive into docker images, analyze layers
-      # - docker
-      # - docker-buildx
-      # - docker-compose
-      # - driftctl # No longer needed?
-      # - dust # A better du
+      - csvkit # CSV tools
+      - dive # dive into docker images, analyze layers
+      - docker
+      - docker-buildx
+      - docker-compose
+      - tailscale
+      - dust # A better du
       # - envconsul # Access secrets from vault & consul
-      # - eza # Better ls
-      # - fd # Better find
-      # - fzf # Makes shell more fun
+
       # - git
-      # - glab
+      - glab
       # - glow
       # - gnupg
       # - go
@@ -100,26 +93,26 @@
       # - rancher-cli
       # - ripgrep
       # - ruff
-      # - rustup-init
+      - rustup-init
       # - sevenzip
       # - skaffold
-      # - sops
+      - sops
       # - spotifyd
       # - stern
-      # - syncthing
+      - syncthing
       # - tgenv
       # - terrascan
       # - tfenv
       # - tflint
       # - tfsec
       # - tfupdate
-      # - tldr
-      # - tmux
+      - tealdeer
+      - tmux
       # - tox
       # - trivy
       # - trufflehog
       # - vault
-      # - watch
+      - watchexec
       # - yh
       # - yq
       # - zk
@@ -355,6 +348,8 @@
         - iterm
       when: ansible_facts['system'] == "MacOS"
 
+    - name: Install rustup
+      command: rustup-init -y
     - name: Install rustup components
       command: rustup component add rls
 
