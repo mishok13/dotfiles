@@ -2,9 +2,15 @@
 - name: Provision utilities and apps
   hosts: devenv
   become: false
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:{{ ansible_env.PATH }}"
   vars:
     apt_repos:
-      - {url: "https://downloads.1password.com/linux/keys/1password.asc", path: "/usr/share/keyrings/1password-archive-keyring.gpg", dearmor: true, repo: "https://downloads.1password.com/linux/debian/{{ deb_architecture.stdout }} stable main"}
+      - url: "https://packages.mozilla.org/apt/repo-signing-key.gpg"
+        path: "/etc/apt/keyrings/packages.mozilla.org.asc"
+        repo: "https://packages.mozilla.org/apt mozilla main"
+
+
 
     cask_packages:
       - font-cascadia-code
@@ -198,27 +204,22 @@
           ansible.builtin.apt:
             deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
 
-        # - name: Get DEB architecture
-        #   shell: dpkg --print-architecture
-        #   register: deb_architecture
-        # - name: Download signing key
-        #   ansible.builtin.get_url:
-        #     url: "{{ item.url }}"
-        #     dest: "{{ item.path }}"
-        #   loop: "{{ apt_repos }}"
-        # - name: Dearmor signing key
-
-        # - name: Setup repo
-        #   ansible.builtin.apt_repository:
-        #     repo: "deb [signed-by={{ item.path }}] {{ item.repo }}"
-        #     state: present
-        #   loop: "{{ apt_repos }}"
-        # - name: Install package
-        #   ansible.builtin.apt:
-        #     update_cache: true
-        #     name:
-        #       - 1password-cli
-        #       - 1password
+        - name: Download signing key
+          ansible.builtin.get_url:
+            url: "{{ item.url }}"
+            dest: "{{ item.path }}"
+          loop: "{{ apt_repos }}"
+        - name: Setup repo
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ item.path }}] {{ item.repo }}"
+            state: present
+          loop: "{{ apt_repos }}"
+        - name: Install package
+          ansible.builtin.apt:
+            update_cache: true
+            name:
+              - 1password-cli
+              - 1password
 
     # - name: Setup SSH config
     #   tags:
@@ -283,7 +284,7 @@
         - zsh
 
     - name: Install omz
-      command: "/bin/sh {{ zsh_installer.dest }}"
+      command: '/bin/sh {{ zsh_installer.dest }} "" --unattended'
       tags:
         - zsh
 
