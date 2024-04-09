@@ -1,4 +1,4 @@
-pihole.orangepi.home:80 {
+pihole.orangepi.home:80, pihole.home.mishok13.me {
 	reverse_proxy http://localhost:31480
 }
 
@@ -6,8 +6,16 @@ syncthing.orangepi.home:80 {
 	reverse_proxy http://localhost:8384
 }
 
+transmission.orangepi.home:80 {
+	reverse_proxy http://localhost:9091
+}
+
 omada.orangepi.home:80 {
 	reverse_proxy http://localhost:8088
+}
+
+miniflux.home.mishok13.me {
+	reverse_proxy http://localhost:9081
 }
 
 orangepi.tailf7350.ts.net {

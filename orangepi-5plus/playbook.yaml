@@ -1,6 +1,11 @@
 ---
 - name: Provision packagaes
   hosts: all
+  vars:
+    apt_repos:
+      - key_url: ""
+        key_path: ""
+        repo: ""
   tasks:
     - name: Turn off LED lights
       become: true
@@ -207,6 +212,7 @@
         - { rule: 'allow', port: '27001', proto: 'udp' }
         - { rule: 'allow', port: '29810', proto: 'udp' }
         - { rule: 'allow', port: '29811:29816', proto: 'tcp' }
+        - { rule: 'allow', port: '54320', proto: 'tcp' }
 
     - name: Allow everything and enable UFW
       become: true
@@ -241,6 +247,33 @@
       tags:
         - docker
 
+    - name: Prepare directory for
+      ansible.builtin.file:
+        path: "~/.config/transmission/"
+        state: directory
+        mode: '0755'
+      register: transmission_config_path
+      tags:
+        - docker
+
+    - name: Prepare directory for transmission downloads
+      ansible.builtin.file:
+        path: "~/.local/share/transmission/downloads/"
+        state: directory
+        mode: '0755'
+      register: transmission_downloads_path
+      tags:
+        - docker
+
+    - name: Prepare directory for transmission watch
+      ansible.builtin.file:
+        path: "~/.local/share/transmission/watch/"
+        state: directory
+        mode: '0755'
+      register: transmission_watch_path
+      tags:
+        - docker
+
     - name: Install compose.yaml for Docker Compose
       ansible.builtin.template:
         src: templates/compose.yaml
@@ -257,6 +290,11 @@
         ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
         systemctl restart systemd-resolved
       become: true
+      args:
+        executable: /bin/bash
+
+    - name: Up the compose
+      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
       args:
         executable: /bin/bash
       tags:

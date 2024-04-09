@@ -13,6 +13,8 @@ services:
       - budgeteer_password
     ports:
       - "54320:5432"
+    networks:
+      - budgeteer
 
   pihole:
     restart: always
@@ -25,12 +27,78 @@ services:
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD_FILE: /run/secrets/pihole_password
+    secrets:
+      - pihole_password
     volumes:
       - "{{ pihole_path.path }}:/etc/pihole"
       - "{{ dnsmasq_path.path }}:/etc/dnsmasq.d"
+
+  linux-isos:
+    restart: always
+    image: lscr.io/linuxserver/transmission:4.0.5
+    container_name: transmission
+    environment:
+      PUID: "1000"
+      PGID: "1001"
+      TZ: "Etc/UTC"
+      WHITELIST: "127.0.0.1,192.168.*.*,"
+      HOST_WHITELIST: "*.orangepi.home"
+    secrets:
+      - transmission_password
+    volumes:
+      - "{{ transmission_config_path.path }}:/config"
+      - "{{ transmission_downloads_path.path }}:/downloads"
+      - "{{ transmission_watch_path.path }}:/watch"
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+
+  miniflux:
+    image: miniflux/miniflux:latest
+    ports:
+      - "9081:8080"
+    depends_on:
+      miniflux-db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://miniflux:secret@db/miniflux?sslmode=disable
+      - RUN_MIGRATIONS=1
+      - CREATE_ADMIN=1
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=test123
+    networks:
+      - miniflux
+
+  miniflux-db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=miniflux
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=miniflux
+    volumes:
+      - miniflux-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "miniflux"]
+      interval: 10s
+      start_period: 30s
+    networks:
+      - miniflux
 
 secrets:
   budgeteer_password:
     file: /etc/secrets/budgeteer-password
   pihole_password:
     file: /etc/secrets/pihole-password
+  transmission_password:
+    file: /etc/secrets/transmission-password
+
+volumes:
+  miniflux-db:
+
+networks:
+  miniflux:
+  transmission:
+  omada:
+  pihole:
+  budgeteer:
