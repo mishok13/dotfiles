@@ -19,104 +19,48 @@
       ansible.builtin.hostname:
         name: orangepi
 
-    - name: Provision podman repository
+    - name: apt | provision keys
       become: true
-      block:
-        - name: kubic repo key
-          ansible.builtin.get_url:
-            url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
-            dest: /etc/apt/keyrings/devel_kubic_libcontainers_unstable.asc
-        - name: kubic repo
-          ansible.builtin.apt_repository:
-            repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.asc] https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_{{ ansible_distribution_version }}/ /"
-            state: present
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.path }}"
+      loop:
+        - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+          path: /usr/share/keyrings/devel_kubic_libcontainers_unstable.asc
+        - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
+          path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
+        - url: "https://download.docker.com/linux/ubuntu/gpg"
+          path: /usr/share/keyrings/docker-keyring.asc
+        - url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+          path: /usr/share/keyrings/tailscale-keyring.gpg
+        - url: https://syncthing.net/release-key.gpg
+          path: /usr/share/keyrings/syncthing-keyring.gpg
+        - url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+          path: /usr/share/keyrings/caddy-keyring.asc
+      tags:
+        - packages
+        - apt
 
-    - name: Provision gitlab runner repository
+    - name: apt | provision repos
       become: true
-      block:
-        - name: gitlab repo key
-          ansible.builtin.get_url:
-            url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
-            dest: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
-        - name: gitlab repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
-            state: present
-        - name: gitlab repo (src)
-          ansible.builtin.apt_repository:
-            repo: "deb-src [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
-            state: present
+      ansible.builtin.apt_repository:
+        repo: "{{ item.repo }}"
+        # repo: "{{ item.type | default('deb') }} [signed-by={{ item.path }}] {{ item.repo }} {{ item.extra }}"
+        state: present
+      loop:
+        - repo: "deb [signed-by=/usr/share/keyrings/devel_kubic_libcontainers_unstable.asc] https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_{{ ansible_distribution_version }}/ /"
+        - repo: "deb [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+        - repo: "deb-src [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc] https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+        - repo: "deb [signed-by=/usr/share/keyrings/docker-keyring.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        - repo: "deb [signed-by=/usr/share/keyrings/tailscale-keyring.gpg] https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main main"
+        - repo: "deb [signed-by=/usr/share/keyrings/syncthing-keyring.gpg] https://apt.syncthing.net/ syncthing stable"
+        - repo: "deb [signed-by=/usr/share/keyrings/caddy-keyring.asc] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+        - repo: "deb-src [signed-by=/usr/share/keyrings/caddy-keyring.asc] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+      tags:
+        - packages
+        - apt
 
-    - name: Provision Docker repository
-      become: true
-      block:
-        - name: docker repo key
-          ansible.builtin.get_url:
-            url: "https://download.docker.com/linux/ubuntu/gpg"
-            dest: /usr/share/keyrings/docker-keyring.asc
-          register: dockerrepokey
-        - name: docker repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by={{ dockerrepokey.dest }}] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-            state: present
-
-    - name: Provision Jellyfin repository
-      become: true
-      block:
-        - name: Jellyfin repo key
-          ansible.builtin.get_url:
-            url: "https://repo.jellyfin.org/jellyfin_team.gpg.key"
-            dest: /usr/share/keyrings/jellyfin-keyring.asc
-          register: jellyfinrepokey
-        - name: Jellyfin repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by={{ jellyfinrepokey.dest }}]  https://repo.jellyfin.org/ubuntu {{ ansible_distribution_release }} main main"
-            state: present
-
-    - name: Provision Tailscale repository
-      become: true
-      block:
-        - name: Tailscale repo key
-          ansible.builtin.get_url:
-            url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
-            dest: /usr/share/keyrings/tailscale-keyring.gpg
-          register: tailscalerepokey
-        - name: Tailscale repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by={{ tailscalerepokey.dest }}] https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main main"
-            state: present
-
-    - name: Provision Syncthing repository
-      become: true
-      block:
-        - name: Syncthing repo key
-          ansible.builtin.get_url:
-            url: https://syncthing.net/release-key.gpg
-            dest: /usr/share/keyrings/syncthing-keyring.gpg
-          register: syncthingrepokey
-        - name: Syncthing repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by={{ syncthingrepokey.dest }}]  https://apt.syncthing.net/ syncthing stable"
-            state: present
-
-    - name: Provision Caddy repository
-      become: true
-      block:
-        - name: Caddy repo key
-          ansible.builtin.get_url:
-            url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
-            dest: /usr/share/keyrings/caddy-keyring.asc
-          register: caddyrepokey
-        - name: Caddy repo
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by={{ caddyrepokey.dest }}] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
-            state: present
-        - name: Caddy repo (src)
-          ansible.builtin.apt_repository:
-            repo: "deb-src [signed-by={{ caddyrepokey.dest }}] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
-            state: present
-
-    - name: Install packages
+    - name: apt | Install packages
       become: true
       ansible.builtin.apt:
         update_cache: true
@@ -125,14 +69,12 @@
           - gitlab-runner
           - docker-ce
           - ufw
-          - transmission-cli
-          - transmission-common
-          - transmission-daemon
-          - jellyfin-server
-          - jellyfin-web
           - tailscale
           - syncthing
           - caddy
+      tags:
+        - packages
+        - apt
 
     - name: Configure Omada controller
       containers.podman.podman_container:
@@ -204,10 +146,12 @@
         proto: "{{ item.proto }}"
       with_items:
         - { rule: 'limit', port: '{{ ssh_port | default("22") }}', proto: 'tcp' }
+        - { rule: 'allow', port: '53', proto: 'tcp' }
+        - { rule: 'allow', port: '53', proto: 'udp' }
         - { rule: 'allow', port: '80', proto: 'tcp' }
         - { rule: 'allow', port: '443', proto: 'tcp' }
-        - { rule: 'allow', port: '8088', proto: 'tcp' }
         - { rule: 'allow', port: '8043', proto: 'tcp' }
+        - { rule: 'allow', port: '8088', proto: 'tcp' }
         - { rule: 'allow', port: '8843', proto: 'tcp' }
         - { rule: 'allow', port: '27001', proto: 'udp' }
         - { rule: 'allow', port: '29810', proto: 'udp' }

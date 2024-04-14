@@ -13,6 +13,6 @@ repos:
     - id: trufflehog
       name: TruffleHog
       description: Detect secrets in your data.
-      entry: trufflehog git file://. --since-commit HEAD --only-verified --fail
+      entry: bash -c "~/.local/bin/trufflehog git file://. --since-commit HEAD --only-verified --fail --no-update"
       language: system
       stages: ["commit", "push"]
