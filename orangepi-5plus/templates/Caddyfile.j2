@@ -1,0 +1,43 @@
+{
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+pihole.home.mishok13.me {
+	reverse_proxy http://localhost:31480
+}
+
+syncthing.home.mishok13.me {
+	reverse_proxy http://localhost:8384 {
+            header_up Host {upstream_hostport}
+	}
+}
+
+transmission.home.mishok13.me {
+	reverse_proxy http://localhost:9091
+}
+
+omada.home.mishok13.me {
+	reverse_proxy https://localhost:8043  {
+                transport http {
+                        tls_insecure_skip_verify
+                }
+		header_up Host {host}:8043
+		header_down Location :8043 :443
+                # header_up Host "omada.home.mishok13.me:8043"
+	}
+}
+
+miniflux.home.mishok13.me {
+	reverse_proxy http://localhost:9081
+}
+
+orangepi.tailf7350.ts.net {
+        root * /usr/share/caddy
+        file_server
+	log
+}
+
+home.mishok13.me {
+        root * /usr/share/caddy
+        file_server
+}

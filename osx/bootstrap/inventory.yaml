@@ -1,0 +1,9 @@
+devenv:
+  hosts:
+    # clydesdale: {}
+    ancient: {}
+    # mbp-kpn: {}
+server:
+  hosts:
+    orangepi: {}
+    fat-bastard: {}

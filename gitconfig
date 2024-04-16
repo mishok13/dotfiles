@@ -12,6 +12,7 @@
 
 [user]
 	useConfigOnly = true
+	signingkey = /home/mishok13/.ssh/github.pub
 
 [merge]
 	conflictStyle = zdiff3
@@ -22,3 +23,5 @@
 
 [rebase]
 	autostash = true
+[gpg]
+	format = ssh
