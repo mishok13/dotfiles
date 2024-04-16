@@ -261,6 +261,10 @@
         src: templates/syncthing.service
         dest: "~/.config/systemd/user/syncthing.service"
         mode: '0600'
+      tags:
+        - syncthing
+      notify:
+        - restart syncthing
 
     - name: Kick off syncthing service
       # https://github.com/syncthing/syncthing/blob/main/etc/linux-systemd/system/syncthing%40.service
@@ -269,6 +273,8 @@
         enabled: true
         scope: user
         name: syncthing.service
+      tags:
+        - syncthing
 
   handlers:
     - name: restart caddy
@@ -276,3 +282,10 @@
       ansible.builtin.service:
         name: caddy
         state: restarted
+    - name: restart syncthing
+      become: true
+      ansible.builtin.service:
+        name: syncthing
+        state: restarted
+      tags:
+        - syncthing
