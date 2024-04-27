@@ -35,7 +35,7 @@ services:
 
   linux-isos:
     restart: always
-    image: lscr.io/linuxserver/transmission:4.0.5
+    image: lscr.io/linuxserver/transmission:4.0.5-r1-ls232
     container_name: transmission
     environment:
       PUID: "1000"
