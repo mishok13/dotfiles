@@ -219,7 +219,7 @@ export AWS_PAGER=""
 
 if type colima &>/dev/null
 then
-    export DOCKER_HOST=unix:///Users/andriimishkovskyi/.colima/default/docker.sock
+    export DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
 fi
 
 
