@@ -1,9 +1,13 @@
 devenv:
   hosts:
     # clydesdale: {}
-    ancient: {}
+    ancient:
+      ansible_host: ancient
+      username: mishok13
     # mbp-kpn: {}
 server:
   hosts:
-    orangepi: {}
-    fat-bastard: {}
+    orangepi:
+      ansible_host: orangepi
+    fat-bastard:
+      ansible_host: fat-bastard
