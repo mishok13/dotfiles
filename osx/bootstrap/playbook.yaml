@@ -9,6 +9,9 @@
       - url: "https://packages.mozilla.org/apt/repo-signing-key.gpg"
         path: "/etc/apt/keyrings/packages.mozilla.org.asc"
         repo: "https://packages.mozilla.org/apt mozilla main"
+      - url: "https://download.docker.com/linux/ubuntu/gpg"
+        path: "/etc/apt/keyrings/docker.asc"
+        repo: "https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable"
     cask_packages:
       - font-cascadia-code
       - font-cascadia-code-pl
@@ -31,28 +34,26 @@
     linux_packages:
       - gcc
     macos_packages:
-      - colima
+      - colima # orb stack is a commerical alternative
       - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs
+      - docker
+      - docker-buildx
+      - docker-compose
+      - git
+      - coreutils # GNU tools
     brew_packages:
       - age # User-friendly GPG tool
       - awscli # AWS things
       - act # Run GH actions locally
-      # - bat # Better cat
-      # - cabextract # Useful for older fonts ?
+      - bat # Better cat
       # - checkov # Check your Terraform code
-      # - colima # Docker in Mac. Check out orb stack maybe?
-      # - coreutils # GNU tools
       # - cowsay # MOOOOOO
       - csvkit # CSV tools
       - dive # dive into docker images, analyze layers
-      - docker
-      - docker-buildx
-      - docker-compose
       - tailscale
       - dust # A better du
       # - envconsul # Access secrets from vault & consul
 
-      # - git
       - glab
       # - glow
       # - gnupg
@@ -127,7 +128,9 @@
       - tfenv # Handle Terraform versions
       - direnv # Load environment per directory
       - zsh
+
   tasks:
+
     - name: Install Homebrew
       tags:
         - bootstrap
@@ -141,7 +144,6 @@
         - command: "/bin/bash {{ homebrew_installer.dest }}"
           environment:
             NONINTERACTIVE: "1"
-          # become: true
         - file:
             path: "{{ homebrew_installer.dest }}"
             state: absent
@@ -190,13 +192,13 @@
     - name: Install system packages
       tags:
         - packages
+        - apt
       become: true
       when: ansible_facts['os_family'] == "Debian"
       block:
         - name: Install 1Password
           ansible.builtin.apt:
             deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
-
         - name: Download signing key
           ansible.builtin.get_url:
             url: "{{ item.url }}"
@@ -213,7 +215,27 @@
             name:
               - 1password-cli
               - 1password
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
 
+    - name: Configure Docker
+      when: ansible_facts['system'] == "Linux"
+      become: true
+      tags:
+        - docker
+      block:
+        - name: Setup docker group
+          ansible.builtin.group:
+            name: docker
+            state: present
+        - name: Add user to docker group
+          ansible.builtin.user:
+            name: "{{ username }}"
+            groups: docker
+            append: yes
     # - name: Setup SSH config
     #   tags:
     #     - config
