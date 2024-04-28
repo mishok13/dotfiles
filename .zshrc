@@ -175,3 +175,5 @@ eval "$(zoxide init zsh)"
 
 # Force pip to always use virtualenv
 export PIP_REQUIRE_VIRTUALENV=true
+
+eval "$(/usr/bin/mise activate zsh)"

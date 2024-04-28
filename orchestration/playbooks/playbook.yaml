@@ -1,0 +1,403 @@
+---
+
+- name: System configuration
+  hosts: all
+  become: false
+
+  tasks:
+    - name: Install system packages
+      when: ansible_facts['os_family'] == "Debian"
+      become: true
+      tags:
+        - packages
+        - apt
+      block:
+        - name: Download signing key
+          ansible.builtin.get_url:
+            url: "{{ item.url }}"
+            dest: "{{ item.path }}"
+            mode: '644'
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('url')
+        - name: Setup apt repository
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ item.path }}] {{ item.repo }}"
+            state: present
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('repo')
+        - name: Setup PPAs
+          ansible.builtin.apt_repository:
+            repo: "{{ item.ppa }}"
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('ppa')
+        - name: Install packages
+          ansible.builtin.apt:
+            update_cache: true
+            name: "{{ packages + (packages_extra | default([])) }}"
+
+    - name: Configure Docker
+      when: ansible_facts['system'] == "Linux"
+      become: true
+      tags:
+        - docker
+      block:
+        - name: Setup docker group
+          ansible.builtin.group:
+            name: docker
+            state: present
+        - name: Add user to docker group
+          ansible.builtin.user:
+            name: "{{ lookup('env', 'USER') }}"
+            groups: docker
+            append: true
+
+
+- name: Dev environment setup
+  hosts: devenv
+  become: false
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:{{ ansible_env.PATH }}"
+  vars:
+    homedir: "{{ lookup('env', 'HOME') }}"
+    cask_packages:
+    linux_packages:
+      - gcc
+
+  tasks:
+
+    - name: Homebrew | Ensure
+      tags:
+        - bootstrap
+        - packages
+      block:
+        - name: Homebrew | Update
+          community.general.homebrew:
+            update_homebrew: true
+            upgrade_all: true
+      rescue:
+        - name: Homebrew | Download installer
+          ansible.builtin.get_url:
+            url: https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+            dest: /tmp/homebrew.install.sh
+            force: false
+            mode: '644'
+          register: homebrew_installer
+        - name: Homebrew | Install
+          ansible.builtin.command: "/bin/bash {{ homebrew_installer.dest }}"
+          changed_when: true
+          environment:
+            NONINTERACTIVE: "1"
+        - name: Homebrew | Cleanup
+          ansible.builtin.file:
+            path: "{{ homebrew_installer.dest }}"
+            state: absent
+
+    - name: Homebrew | Install packages
+      tags:
+        - packages
+      block:
+        - name: Homebrew | Install common packages
+          community.general.homebrew:
+            name: '{{ brew_packages }}'
+            state: present
+          debugger: on_failed
+
+        - name: Homebrew | Install Linux packages
+          community.general.homebrew:
+            name: '{{ brew_packages_linux }}'
+            state: present
+          when: ansible_facts['system'] == "Linux"
+
+        - name: Homebrew | Install MacOS packages
+          community.general.homebrew:
+            name: '{{ brew_packages_macos }}'
+            state: present
+          when: ansible_facts['system'] == "MacOS"
+
+    - name: Setup directory structure
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '755'
+      with_items:
+        - "{{ homedir }}/nonwork"
+        - "{{ homedir }}/work"
+        - "{{ homedir }}/Screenshots"
+
+    - name: Emacs | Configure
+      tags:
+        - emacs
+      block:
+        - name: Emacs | Check existing configuration
+          ansible.builtin.stat:
+            path: "{{ homedir }}/nonwork/emacsen"
+          register: emacsdir
+        - name: Emacs | Clone config repo # noqa: latest
+          ansible.builtin.git:
+            repo: 'git@github.com:mishok13/emacsen.git'
+            dest: "{{ homedir }}/nonwork/emacsen"
+          when: not emacsdir.stat.exists
+        - name: Emacs | Link ~/.emacs.d to repo
+          ansible.builtin.file:
+            path: "{{ homedir }}/.emacs.d"
+            src: "{{ homedir }}/nonwork/emacsen"
+            state: link
+            force: true
+
+    - name: Oh My ZSH | Install
+      tags:
+        - download
+        - zsh
+      block:
+        - name: Oh My ZSH | Check existing install
+          ansible.builtin.stat:
+            path: "{{ homedir }}/.oh-my-zsh"
+          register: omz_dir
+        - name: Oh My ZSH | Download installer
+          ansible.builtin.get_url:
+            url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+            dest: /tmp/zsh.install.sh
+            force: false
+            mode: '644'
+          register: zsh_installer
+          when: not omz_dir.stat.exists
+        - name: Oh My ZSH | Install
+          ansible.builtin.command: '/bin/sh {{ zsh_installer.dest }} "" --unattended'
+          when: not omz_dir.stat.exists
+          changed_when: true
+        - name: Install powerlevel10k
+          ansible.builtin.git:
+            repo: https://github.com/romkatv/powerlevel10k.git
+            dest: "{{ homedir }}/.oh-my-zsh/custom/themes/powerlevel10k"
+            version: "v1.20.0"
+          when: not omz_dir.stat.exists
+
+    - name: Dotfiles
+      block:
+        - name: Dotfiles | Check directory
+          ansible.builtin.stat:
+            path: "{{ homedir }}/nonwork/dotfiles"
+          register: dotfiles_dir
+        - name: Dotfiles | Clone repo  # noqa: latest
+          ansible.builtin.git:
+            repo: 'git@github.com:mishok13/dotfiles.git'
+            dest: "{{ homedir }}/nonwork/dotfiles"
+          tags:
+            - zsh
+          when: not dotfiles_dir.stat.exists
+        - name: Dotfiles | Link .zshrc
+          ansible.builtin.file:
+            path: "{{ homedir }}/.zshrc"
+            src: "{{ homedir }}/nonwork/dotfiles/.zshrc"
+            state: link
+          tags:
+            - zsh
+
+    - name: Configure git
+      ansible.builtin.file:
+        path: "{{ homedir }}/.config/git"
+        src: "{{ homedir }}/nonwork/dotfiles/config/git/.config/git"
+        state: link
+        force: true
+      tags:
+        - git
+
+    - name: Configure ripgrep
+      ansible.builtin.file:
+        path: "{{ homedir }}/.rgignore"
+        src: "{{ homedir }}/nonwork/dotfiles/config/ripgrep/rgignore"
+        state: link
+        force: true
+      tags:
+        - ripgrep
+
+    - name: Configure ripgrep
+      ansible.builtin.file:
+        path: "{{ homedir }}/.ripgreprc"
+        src: "{{ homedir }}/nonwork/dotfiles/.ripgreprc"
+        state: link
+        force: true
+      tags:
+        - ripgrep
+
+    - name: Configure iterm2 profiles
+      ansible.builtin.copy:
+        src: ../iterm.profile.json
+        dest: "{{ homedir }}/Library/Application Support/iTerm2/DynamicProfiles/"
+        mode: '644'
+      tags:
+        - iterm
+      when: ansible_facts['system'] == "MacOS"
+
+    - name: Download iterm2 shell integration
+      ansible.builtin.get_url:
+        url: https://iterm2.com/shell_integration/zsh
+        dest: "{{ homedir }}/.iterm2_shell_integration.zsh"
+        mode: '644'
+      tags:
+        - iterm
+      when: ansible_facts['system'] == "MacOS"
+
+    - name: Rust | Configure
+      block:
+        - name: Install rustup
+          ansible.builtin.command: rustup-init -y
+          changed_when: true
+          when: ansible_facts['system'] == "MacOS"
+        - name: Install rustup components
+          ansible.builtin.command: rustup component add rls rustfmt clippy
+          changed_when: true
+        - name: Rustup | Add build targets
+          ansible.builtin.command: "rustup target add {{ item }}"
+          changed_when: true
+          loop:
+            - x86_64-unknown-linux-gnu
+            - aarch64-unknown-linux-gnu
+            - x86_64-apple-darwin
+            - aarch64-apple-darwin
+            - x86_64-pc-windows-gnu
+
+    - name: Setup automatic daily Homebrew package updates
+      ansible.builtin.cron:
+        name: "homebrew upgrade"
+        minute: "5"
+        hour: "12"
+        job: "/opt/homebrew/bin/brew update >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic daily Homebrew Cask package updates
+      ansible.builtin.cron:
+        name: "homebrew cask upgrade"
+        minute: "25"
+        hour: "12"
+        job: "/opt/homebrew/bin/brew upgrade >/dev/null 2>&1"
+      tags:
+        - cron
+    - name: Setup automatic Rust toolchain upgrades
+      ansible.builtin.cron:
+        name: "Update Rust toolchain"
+        minute: "12"
+        hour: "06"
+        job: "{{ homedir }}/.cargo/bin/rustup update >/dev/null 2>&1"
+      tags:
+        - cron
+
+- name: Provision server
+  hosts: server
+  tasks:
+
+    - name: Set a nicer hostname
+      become: true
+      ansible.builtin.hostname:
+        name: "{{ host }}"
+
+- name: Provision OrangePi
+  hosts: orangepi
+  tasks:
+
+    - name: UFW | Configure defaults
+      become: true
+      community.general.ufw:
+        direction: "{{ item.direction }}"
+        policy: "{{ item.policy }}"
+      with_items:
+        - { direction: 'incoming', policy: 'deny' }
+        - { direction: 'outgoing', policy: 'allow' }
+
+    - name: UFW | Configure rules
+      become: true
+      community.general.ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      loop: "{{ firewall_rules }}"
+
+    - name: UFW | Enable
+      become: true
+      community.general.ufw:
+        logging: "on"
+        state: enabled
+
+    - name: Docker Compose | Directory layout
+      tags:
+        - docker
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "~/.local/share/postgres/budgeteer"
+          mode: '0777'
+        - path: "~/.local/share/pihole/"
+          mode: '0777'
+        - path: "~/.local/share/dnsmasq"
+          mode: '0777'
+        - path: "~/.config/home-assistant/"
+          mode: '0755'
+        - path: "~/.config/transmission/"
+          mode: '0755'
+        - path: "~/.local/share/transmission/downloads/"
+          mode: '0755'
+        - path: "~/.local/share/transmission/watch/"
+          mode: '0755'
+
+    - name: Docker Compose | Install compose.yaml
+      ansible.builtin.template:
+        src: templates/compose.yaml
+        dest: "~/.config/compose.yaml"
+        mode: '0600'
+      tags:
+        - docker
+
+    - name: Docker Compose | Up
+      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
+      args:
+        executable: /bin/bash
+      tags:
+        - docker
+      changed_when: true
+
+    # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
+    - name: Resolved | Disable stub
+      become: true
+      block:
+        - name: Resolved | Update config
+          ansible.builtin.lineinfile:
+            path: /etc/systemd/resolved.conf
+            regexp: '#?DNSStubListener=yes'
+            line: 'DNSStubListener=no'
+          notify:
+            - Resolved | Restart
+        - name: Resolved | Link resolv.conf
+          ansible.builtin.file:
+            path: "/etc/resolv.conf"
+            src: "/run/systemd/resolve/resolv.conf"
+            state: link
+            force: true
+
+    - name: Caddy | Configure
+      become: true
+      ansible.builtin.template:
+        src: templates/Caddyfile.j2
+        dest: "/etc/caddy/Caddyfile"
+        mode: "0644"
+      tags:
+        - caddy
+      notify:
+        - Caddy | Restart
+
+  handlers:
+
+    - name: Caddy | Restart
+      become: true
+      ansible.builtin.service:
+        name: caddy
+        state: restarted
+
+    - name: Resolved | Restart
+      become: true
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
+      tags:
+        - resolved
