@@ -3,7 +3,10 @@
 }
 
 pihole.home.mishok13.me {
-	reverse_proxy http://localhost:31480
+	reverse_proxy http://localhost:31480 {
+            header_up Host {upstream_hostport}
+	}
+	encode zstd gzip
 }
 
 syncthing.home.mishok13.me {
@@ -14,6 +17,10 @@ syncthing.home.mishok13.me {
 
 transmission.home.mishok13.me {
 	reverse_proxy http://localhost:9091
+}
+
+homeassistant.home.mishok13.me {
+	reverse_proxy http://localhost:8123
 }
 
 omada.home.mishok13.me {

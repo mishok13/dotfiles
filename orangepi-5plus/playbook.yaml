@@ -191,12 +191,21 @@
       tags:
         - docker
 
-    - name: Prepare directory for
+    - name: Prepare config directory for transmission
       ansible.builtin.file:
         path: "~/.config/transmission/"
         state: directory
         mode: '0755'
       register: transmission_config_path
+      tags:
+        - docker
+
+    - name: Prepare config directory for Home Assistant
+      ansible.builtin.file:
+        path: "~/.config/home-assistant/"
+        state: directory
+        mode: '0755'
+      register: homeassistant_config_path
       tags:
         - docker
 

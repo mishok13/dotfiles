@@ -55,6 +55,7 @@ services:
       - 51413:51413/udp
 
   miniflux:
+    container_name: miniflux
     image: miniflux/miniflux:latest
     restart: unless-stopped
     ports:
@@ -63,7 +64,7 @@ services:
       miniflux-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://miniflux:secret@db/miniflux?sslmode=disable
+      - DATABASE_URL=postgres://miniflux:secret@miniflux-db/miniflux?sslmode=disable
       - RUN_MIGRATIONS=1
       - CREATE_ADMIN=1
       - ADMIN_USERNAME=admin
@@ -72,6 +73,7 @@ services:
       - miniflux
 
   miniflux-db:
+    container_name: miniflux-db
     image: postgres:16
     restart: unless-stopped
     environment:
@@ -120,6 +122,17 @@ services:
     volumes:
       - omada-data:/opt/tplink/EAPController/data
       - omada-logs:/opt/tplink/EAPController/logs
+
+  home-assistant:
+    container_name: home-assistant
+    image: "ghcr.io/home-assistant/home-assistant:2024.4.3"
+    volumes:
+      - "{{ homeassistant_config_path.path }}:/config"
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
 
 secrets:
   budgeteer_password:
