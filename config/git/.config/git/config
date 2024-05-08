@@ -22,11 +22,20 @@
 
 [rebase]
 	autostash = true
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+
 
 [commit]
 	gpgsign = true
 
 [gpg]
 	format = ssh
+
 [push]
 	autoSetupRemote = true
+
+# [gpg "ssh"]
+#         program = "/opt/1Password/op-ssh-sign"
