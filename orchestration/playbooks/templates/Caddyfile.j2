@@ -2,11 +2,15 @@
 	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 }
 
-pihole.home.mishok13.me {
-	reverse_proxy http://localhost:31480
+pihole.home.mishok13.me, pihole.tail.mishok13.me {
+	redir / /admin{uri}
+	reverse_proxy http://localhost:31480 {
+            header_up Host {upstream_hostport}
+	}
+	encode zstd gzip
 }
 
-syncthing.home.mishok13.me {
+syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
 	reverse_proxy http://localhost:8384 {
             header_up Host {upstream_hostport}
 	}
@@ -14,6 +18,10 @@ syncthing.home.mishok13.me {
 
 transmission.home.mishok13.me {
 	reverse_proxy http://localhost:9091
+}
+
+homeassistant.home.mishok13.me {
+	reverse_proxy http://localhost:8123
 }
 
 omada.home.mishok13.me {

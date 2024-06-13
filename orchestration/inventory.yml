@@ -1,0 +1,239 @@
+devenv:
+  vars:
+    packages:
+      - 1password-cli
+      - 1password
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      - tailscale
+      - syncthing
+      - mise
+    brew_packages_linux:
+      - gcc
+    brew_packages_macos:
+      - colima # orb stack is a commerical alternative
+      - d12frosted/emacs-plus/emacs-plus@29 # The only proper working homebrew version of emacs on MacOS
+      - docker
+      - docker-buildx
+      - docker-compose
+      - git
+      - coreutils # GNU tools
+      - font-cascadia-code
+      - font-cascadia-code-pl
+      - font-cascadia-mono
+      - font-cascadia-mono-pl
+      - font-fira-code
+      - font-hack-nerd-font
+      - font-inconsolata-lgc-nerd-font
+      - font-meslo-lg-nerd-font
+      - firefox
+      - google-chrome
+      - google-drive
+      - iterm2
+      - mactex
+      - signal
+      - slack
+      - spotify
+      - telegram
+      - vlc
+
+    brew_packages:
+      - age # User-friendly GPG tool
+      - awscli # AWS things
+      - act # Run GH actions locally
+      - bat # Better cat
+      # - checkov # Check your Terraform code
+      - csvkit # CSV tools
+      - dive # dive into docker images, analyze layers
+      - dust # A better du
+      # - envconsul # Access secrets from vault & consul
+      - glab
+      # - glow # Markdown on CLI
+      # - go
+      # - grep
+      # - hadolint
+      # - hatch
+      # - hcloud
+      # - helm
+      - htop # Nicer resource overview
+      # - httpie
+      # - hunspell
+      # - infracost
+      # - ispell
+      # - jq
+      - just
+      # - oven-sh/bun/bun
+      # - k3d
+      # - k9s
+      # - kubectx
+      # - kubescape
+      # - kubeseal
+      # - kyverno
+      # - lazydocker
+      # - mycli
+      # - nmap
+      # - nvm
+      # - openjdk
+      # - parallel
+      # - pdm
+      # - pgcli
+      # - podman
+      # - poetry
+      # - pre-commit
+      # - pyenv
+      # - pyright
+      # - qrencode
+      # - rancher-cli
+      # - ripgrep
+      # - ruff
+      - rustup-init
+      # - sevenzip
+      # - skaffold
+      - sops
+      # - spotifyd
+      # - stern
+      # - syncthing
+      # - tgenv
+      # - terrascan
+      # - tfenv
+      # - tflint
+      # - tfsec
+      # - tfupdate
+      - tealdeer
+      - tmux
+      # - tox
+      # - trivy
+      # - trufflehog
+      # - vault
+      - watchexec
+      # - yh
+      # - yq
+      # - zk
+      - zola # Static site builder
+      - eza # Better ls
+      - fd # Better find
+      - jq # JSON parser
+      - fzf # fuzzy search in CLI
+      - rg # ripgrep, better grep
+      - zoxide # better cd?
+      - pyenv # Handle Python versions
+      - tfenv # Handle Terraform versions
+      - direnv # Load environment per directory
+      - zsh
+
+    apt_repos:
+      - url: "https://packages.mozilla.org/apt/repo-signing-key.gpg"
+        path: "/etc/apt/keyrings/packages.mozilla.org.asc"
+        repo: "https://packages.mozilla.org/apt mozilla main"
+      - url: "https://download.docker.com/linux/ubuntu/gpg"
+        path: "/etc/apt/keyrings/docker.asc"
+        repo: "https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable"
+      - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
+        path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
+        repo: "https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+      - url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+        path: /usr/share/keyrings/tailscale-keyring.gpg
+        repo: "https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main main"
+      - url: https://syncthing.net/release-key.gpg
+        path: /usr/share/keyrings/syncthing-keyring.gpg
+        repo: "https://apt.syncthing.net/ syncthing stable"
+      - url: https://mise.jdx.dev/gpg-key.pub
+        path: /usr/share/keyrings/mise.asc
+        repo: "https://mise.jdx.dev/deb stable main"
+
+  hosts:
+    clydesdale-wsl:
+      ansible_host: 127.0.0.1
+      ansible_connection: local
+    clydesdale:
+      ansible_host: 192.168.0.103
+      username: mishok13
+    ancient:
+      ansible_host: ancient
+      username: mishok13
+    mbp-kpn:
+      ansible_host: 192.168.0.101
+      username: andriimishkovskyi
+
+server:
+  vars:
+    packages:
+      - podman
+      - gitlab-runner
+      - ufw
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      - tailscale
+      - syncthing
+      - caddy
+      - powertop
+      - htop
+    apt_repos:
+      - url: https://syncthing.net/release-key.gpg
+        path: /usr/share/keyrings/syncthing-keyring.gpg
+        repo: "https://apt.syncthing.net/ syncthing stable"
+      - url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        path: /usr/share/keyrings/caddy-keyring.asc
+        repo: "https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+
+  hosts:
+    orangepi:
+      host: orangepi
+      ansible_host: orangepi
+      firewall_rules:
+        - { rule: 'limit', port: '22', proto: 'tcp' }
+        - { rule: 'allow', port: '53', proto: 'tcp' }
+        - { rule: 'allow', port: '53', proto: 'udp' }
+        - { rule: 'allow', port: '80', proto: 'tcp' }
+        - { rule: 'allow', port: '443', proto: 'tcp' }
+        - { rule: 'allow', port: '8043', proto: 'tcp' }
+        - { rule: 'allow', port: '8088', proto: 'tcp' }
+        - { rule: 'allow', port: '8843', proto: 'tcp' }
+        - { rule: 'allow', port: '27001', proto: 'udp' }
+        - { rule: 'allow', port: '29810', proto: 'udp' }
+        - { rule: 'allow', port: '29811:29816', proto: 'tcp' }
+        - { rule: 'allow', port: '54320', proto: 'tcp' }
+      apt_repos_extra:
+        - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
+          path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
+          repo: "https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main"
+        - url: "https://download.docker.com/linux/ubuntu/gpg"
+          path: "/usr/share/keyrings/docker.asc"
+          repo: "https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable"
+        - url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg"
+          path: /usr/share/keyrings/tailscale-keyring.gpg
+          repo: "https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main main"
+        - url: https://downloads.1password.com/linux/keys/1password.asc
+          path: /usr/share/keyrings/1password-archive-keyring.asc
+          repo: "https://downloads.1password.com/linux/debian/amd64 stable main"
+        - ppa: ppa:longsleep/golang-backports
+        - url: https://dl.cloudsmith.io/public/caddy/xcaddy/gpg.key
+          path: /usr/share/keyrings/xcaddy-keyring.asc
+          repo: "https://dl.cloudsmith.io/public/caddy/xcaddy/deb/debian any-version main"
+        - url: https://downloads.1password.com/linux/keys/1password.asc
+          path: /usr/share/keyrings/1password-archive-keyring.asc
+          repo: "https://downloads.1password.com/linux/debian/amd64 stable main"
+
+    bigboi:
+      ansible_host: bigboi
+      ansible_become_method: doas
+      host: bigboi
+      packages_extra:
+        - jellyfin
+        - btrfs-progs
+      apt_repos_extra:
+        - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
+          path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
+          repo: "https://packages.gitlab.com/runner/gitlab-runner/debian/ {{ ansible_distribution_release }} main"
+        - url: "https://download.docker.com/linux/debian/gpg"
+          path: "/usr/share/keyrings/docker.asc"
+          repo: "https://download.docker.com/linux/debian {{ansible_distribution_release}} stable"
+        - url: "https://repo.jellyfin.org/jellyfin_team.gpg.key"
+          path: /usr/share/keyrings/jellyfin.asc
+          repo: "https://repo.jellyfin.org/debian {{ ansible_distribution_release }} main"

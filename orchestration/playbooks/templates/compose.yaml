@@ -4,7 +4,7 @@ services:
     restart: always
     image: bitnami/postgresql:16
     volumes:
-      - "{{ postgres_budgeteer_path.path }}:/bitnami/postgresql"
+      - "~/.local/share/postgres/budgeteer:/bitnami/postgresql"
     environment:
       POSTGRESQL_USERNAME: "budgeteer"
       POSTGRESQL_PASSWORD_FILE: /run/secrets/budgeteer_password
@@ -23,15 +23,15 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "31480:80/tcp"
+      - "127.0.0.1:31480:80/tcp"
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD_FILE: /run/secrets/pihole_password
     secrets:
       - pihole_password
     volumes:
-      - "{{ pihole_path.path }}:/etc/pihole"
-      - "{{ dnsmasq_path.path }}:/etc/dnsmasq.d"
+      - "~/.local/share/pihole/:/etc/pihole"
+      - "~/.local/share/dnsmasq:/etc/dnsmasq.d"
 
   linux-isos:
     restart: always
@@ -41,29 +41,29 @@ services:
       PUID: "1000"
       PGID: "1001"
       TZ: "Etc/UTC"
-      WHITELIST: "127.0.0.1,192.168.*.*,"
-      HOST_WHITELIST: "*.orangepi.home"
+      HOST_WHITELIST: "transmission.home.mishok13.me"
     secrets:
       - transmission_password
     volumes:
-      - "{{ transmission_config_path.path }}:/config"
-      - "{{ transmission_downloads_path.path }}:/downloads"
-      - "{{ transmission_watch_path.path }}:/watch"
+      - "~/.local/share/transmission/downloads/:/downloads"
+      - "~/.config/transmission/:/config"
+      - "~/.local/share/transmission/watch/:/watch"
     ports:
-      - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
+      - "127.0.0.1:9091:9091"
+      - "127.0.0.1:51413:51413"
+      - "51413:51413/udp"
 
   miniflux:
+    container_name: miniflux
     image: miniflux/miniflux:latest
     restart: unless-stopped
     ports:
-      - "9081:8080"
+      - "127.0.0.1:9081:8080"
     depends_on:
       miniflux-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://miniflux:secret@db/miniflux?sslmode=disable
+      - DATABASE_URL=postgres://miniflux:secret@miniflux-db/miniflux?sslmode=disable
       - RUN_MIGRATIONS=1
       - CREATE_ADMIN=1
       - ADMIN_USERNAME=admin
@@ -72,6 +72,7 @@ services:
       - miniflux
 
   miniflux-db:
+    container_name: miniflux-db
     image: postgres:16
     restart: unless-stopped
     environment:
@@ -120,6 +121,17 @@ services:
     volumes:
       - omada-data:/opt/tplink/EAPController/data
       - omada-logs:/opt/tplink/EAPController/logs
+
+  home-assistant:
+    container_name: home-assistant
+    image: "ghcr.io/home-assistant/home-assistant:2024.4.3"
+    volumes:
+      - "~/.config/home-assistant/:/config"
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
 
 secrets:
   budgeteer_password:
