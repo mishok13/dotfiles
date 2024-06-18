@@ -1,0 +1,63 @@
+services:
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/radarr/data:/config
+      - /path/to/movies:/movies #optional
+      - /path/to/download-client-downloads:/downloads #optional
+    ports:
+      - "127.0.0.1:7878:7878"
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/sonarr/data:/config
+      - /path/to/tvseries:/tv #optional
+      - /path/to/downloadclient-downloads:/downloads #optional
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  linux-isos:
+    restart: always
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      PUID: "1000"
+      PGID: "1001"
+      TZ: "Etc/UTC"
+      HOST_WHITELIST: "transmission.home.mishok13.me"
+    secrets:
+      - transmission_password
+    volumes:
+      - "~/.local/share/transmission/downloads/:/downloads"
+      - "~/.config/transmission/:/config"
+      - "~/.local/share/transmission/watch/:/watch"
+    ports:
+      - "127.0.0.1:9091:9091"
+      - "127.0.0.1:51413:51413"
+      - "51413:51413/udp"
+
+secrets:
+  transmission_password:
+    file: /etc/secrets/transmission-password
+
+volumes:
+  transmission:
+
+networks:
+  radarr:
+  sonarr:
+  transmission:
