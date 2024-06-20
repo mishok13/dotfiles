@@ -163,6 +163,7 @@ eval "$(direnv hook zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f ~/.config/op/plugins.sh ] && source ~/.config/op/plugins.sh
+[ -S ~/.1password/agent.sock ] && export SSH_AUTH_SOCK=~/.1password/agent.sock
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
