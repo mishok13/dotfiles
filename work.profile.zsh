@@ -43,7 +43,7 @@ function vault_dev {
     vault_login dev
 }
 
-export AWS_PAGER="eza -ljson"
+export AWS_PAGER="bat -ljson"
 
 if type colima &>/dev/null
 then

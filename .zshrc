@@ -87,7 +87,18 @@ zstyle :omz:plugins:ssh-agent lazy yes
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa
 
+FPATH="${HOME}/.zsh/completion:${FPATH}"
+if type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 source $ZSH/oh-my-zsh.sh
+
+if type brew &>/dev/null; then
+  autoload -Uz compinit
+  compinit
+fi
 
 # User configuration
 
@@ -118,9 +129,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-fpath=(/usr/local/share/zsh-completions $fpath)
-fpath=($fpath ~/.zsh/completion)
-
 autoload -U colors; colors
 
 [[ ! -f ~/.profile ]] || source ~/.profile
@@ -149,18 +157,10 @@ alias lt="eza --tree"
 
 alias c=bat
 
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-[[ ! -f ~/work/.profile ]] || source ~/work.profile
+[ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
+[ -f ~/work/.profile.zsh ] && source ~/work/.profile.zsh
 
-if type brew &>/dev/null
-then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-  autoload -Uz compinit
-  compinit
-fi
-
-eval "$(direnv hook zsh)"
-
+command -v direnv >/dev/null || eval "$(direnv hook zsh)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f ~/.config/op/plugins.sh ] && source ~/.config/op/plugins.sh
 [ -S ~/.1password/agent.sock ] && export SSH_AUTH_SOCK=~/.1password/agent.sock
@@ -170,11 +170,11 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 export FZF_DEFAULT_COMMAND='fd -t f --strip-cwd-prefix --ignore-file=~/.fdignore'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd -t d . $HOME"
-export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-
-eval "$(zoxide init zsh)"
 
 # Force pip to always use virtualenv
 export PIP_REQUIRE_VIRTUALENV=true
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
+export EDITOR=vim
 
-eval "$(/usr/bin/mise activate zsh)"
+eval "$(zoxide init zsh)"
+eval "$(mise activate zsh)"
