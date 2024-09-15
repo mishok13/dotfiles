@@ -64,8 +64,6 @@ services:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgres://miniflux:secret@miniflux-db/miniflux?sslmode=disable
-      # - RUN_MIGRATIONS=1
-      # - CREATE_ADMIN=1
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=test123
     dns:
