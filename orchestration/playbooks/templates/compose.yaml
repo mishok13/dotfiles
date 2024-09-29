@@ -27,6 +27,7 @@ services:
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD_FILE: /run/secrets/pihole_password
+      VIRTUAL_HOST: "pihole.mishok13.me"
     secrets:
       - pihole_password
     volumes:
