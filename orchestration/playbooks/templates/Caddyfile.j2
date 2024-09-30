@@ -2,7 +2,7 @@
 	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 }
 
-pihole.home.mishok13.me, pihole.tail.mishok13.me {
+pihole.home.mishok13.me, pihole.tail.mishok13.me, pihole.mishok13.me {
 	redir / /admin{uri}
 	reverse_proxy http://localhost:31480 {
             header_up Host {upstream_hostport}
@@ -16,28 +16,44 @@ syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
 	}
 }
 
-transmission.home.mishok13.me {
-	reverse_proxy http://localhost:9091
-}
-
-homeassistant.home.mishok13.me {
+hass.home.mishok13.me, hass.mishok13.me, hass.tail.mishok13.me {
 	reverse_proxy http://localhost:8123
 }
 
-omada.home.mishok13.me {
+omada.home.mishok13.me, omada.tail.mishok13.me, omada.mishok13.me {
 	reverse_proxy https://localhost:8043  {
                 transport http {
                         tls_insecure_skip_verify
                 }
 		header_up Host {host}:8043
 		header_down Location :8043 :443
-                # header_up Host "omada.home.mishok13.me:8043"
 	}
 }
 
-miniflux.home.mishok13.me {
+rss.home.mishok13.me, rss.tail.mishok13.me, rss.mishok13.me {
 	reverse_proxy http://localhost:9081
 }
+
+jellyfin.home.mishok13.me, jellyfin.tail.mishok13.me, jellyfin.mishok13.me {
+	reverse_proxy http://bigboi:8096
+}
+
+radarr.home.mishok13.me, radarr.tail.mishok13.me, radarr.mishok13.me {
+	reverse_proxy http://bigboi:7878
+}
+
+sonarr.home.mishok13.me, sonarr.tail.mishok13.me, sonarr.mishok13.me {
+	reverse_proxy http://bigboi:8989
+}
+
+prowlarr.home.mishok13.me, prowlarr.tail.mishok13.me, prowlarr.mishok13.me {
+	reverse_proxy http://bigboi:9696
+}
+
+transmission.home.mishok13.me, transmission.tail.mishok13.me, transmission.mishok13.me {
+	reverse_proxy http://bigboi:9091
+}
+
 
 orangepi.tailf7350.ts.net {
         root * /usr/share/caddy
