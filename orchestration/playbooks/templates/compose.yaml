@@ -34,26 +34,6 @@ services:
       - "~/.local/share/pihole/:/etc/pihole"
       - "~/.local/share/dnsmasq:/etc/dnsmasq.d"
 
-  linux-isos:
-    restart: always
-    image: lscr.io/linuxserver/transmission:4.0.5-r1-ls232
-    container_name: transmission
-    environment:
-      PUID: "1000"
-      PGID: "1001"
-      TZ: "Etc/UTC"
-      HOST_WHITELIST: "transmission.home.mishok13.me"
-    secrets:
-      - transmission_password
-    volumes:
-      - "~/.local/share/transmission/downloads/:/downloads"
-      - "~/.config/transmission/:/config"
-      - "~/.local/share/transmission/watch/:/watch"
-    ports:
-      - "127.0.0.1:9091:9091"
-      - "127.0.0.1:51413:51413"
-      - "51413:51413/udp"
-
   miniflux:
     container_name: miniflux
     image: miniflux/miniflux:2.1.3
@@ -139,8 +119,6 @@ secrets:
     file: /etc/secrets/budgeteer-password
   pihole_password:
     file: /etc/secrets/pihole-password
-  transmission_password:
-    file: /etc/secrets/transmission-password
 
 volumes:
   miniflux-db:
@@ -149,7 +127,6 @@ volumes:
 
 networks:
   miniflux:
-  transmission:
   omada:
   pihole:
   budgeteer:
