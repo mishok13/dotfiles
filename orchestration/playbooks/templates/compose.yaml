@@ -114,6 +114,14 @@ services:
     privileged: true
     network_mode: host
 
+  matter-server:
+    image: ghcr.io/home-assistant-libs/python-matter-server:6.6.0
+    container_name: matter-server
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - hass-matter-data:/data
+
 secrets:
   budgeteer_password:
     file: /etc/secrets/budgeteer-password
@@ -124,6 +132,7 @@ volumes:
   miniflux-db:
   omada-data:
   omada-logs:
+  hass-matter-data:
 
 networks:
   miniflux:
