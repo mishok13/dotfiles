@@ -2,7 +2,7 @@ services:
 
   postgres_budgeteer:
     restart: always
-    image: bitnami/postgresql:16
+    image: bitnami/postgresql:17
     volumes:
       - "~/.local/share/postgres/budgeteer:/bitnami/postgresql"
     environment:
