@@ -115,7 +115,7 @@ services:
     network_mode: host
 
   matter-server:
-    image: ghcr.io/home-assistant-libs/python-matter-server:6.6.0
+    image: ghcr.io/home-assistant-libs/python-matter-server:6.6.1
     container_name: matter-server
     restart: unless-stopped
     network_mode: host
