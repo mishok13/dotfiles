@@ -1,0 +1,5 @@
+upgrade:
+    ansible-playbook bootstrap/playbook.yaml -t packages
+
+docker-services:
+    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t docker
