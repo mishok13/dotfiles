@@ -291,6 +291,20 @@
       ansible.builtin.hostname:
         name: "{{ host }}"
 
+- name: Copy shared Docker Compose definitions
+  hosts: server
+  tags:
+    - docker
+  tasks:
+
+    - name: Copy Compose definitions
+      ansible.builtin.synchronize:
+        src: templates/compose/
+        dest: ~/.config/compose/
+        rsync_opts:
+          - "--archive"
+          - "--delete"
+
 - name: Provision BigBoi
   hosts: bigboi
   tasks:
