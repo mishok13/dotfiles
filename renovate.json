@@ -8,5 +8,8 @@
       "^orchestration/playbooks/templates/compose/[^/]+.ya?ml$",
       "^orchestration/playbooks/templates/compose[^/]*.ya?ml$"
     ]
+  },
+  "pre-commit": {
+    "enabled": true
   }
 }
