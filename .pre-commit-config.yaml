@@ -32,4 +32,4 @@ repos:
     rev: 39.107.0
     hooks:
       - id: renovate-config-validator
-        args: [--strict
+        args: [--strict]
