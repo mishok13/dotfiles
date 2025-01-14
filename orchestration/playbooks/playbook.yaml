@@ -298,7 +298,7 @@
   tasks:
 
     - name: Copy Compose definitions
-      ansible.builtin.synchronize:
+      ansible.posix.synchronize:
         src: templates/compose/
         dest: ~/.config/compose/
         rsync_opts:
