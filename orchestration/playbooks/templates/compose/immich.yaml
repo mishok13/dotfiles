@@ -2,7 +2,7 @@ services:
 
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.121.0
+    image: ghcr.io/immich-app/immich-server:v1.121.0@sha256:851c02f28891f1854c5b5762ee8d2e254e2de528cfe3627b2fbcb37a7f108ff3
     devices:
       - /dev/dri:/dev/dri
     volumes:
@@ -25,7 +25,7 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.121.0
+    image: ghcr.io/immich-app/immich-machine-learning:v1.121.0@sha256:1b8494bb9fe2194f2dc72c4d6b0104e16718f50e8772d54ade57909770816ad1
     volumes:
       - model-cache:/cache
     restart: always
