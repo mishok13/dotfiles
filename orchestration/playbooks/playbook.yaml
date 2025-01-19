@@ -304,26 +304,17 @@
         rsync_opts:
           - "--archive"
           - "--delete"
-
-- name: Provision BigBoi
-  hosts: bigboi
-  tasks:
+      notify:
+        - Docker Compose | Restart
 
     - name: Docker Compose | Install compose.yaml
-      ansible.builtin.template:
-        src: templates/compose-nas.yaml
+      ansible.posix.synchronize:
+        src: "{{ compose_file }}"
         dest: "~/.config/compose.yaml"
-        mode: '0600'
       tags:
         - docker
-
-    - name: Docker Compose | Up
-      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
-      args:
-        executable: /bin/bash
-      tags:
-        - docker
-      changed_when: true
+      notify:
+        - Docker Compose | Restart
 
 - name: Provision OrangePi
   hosts: orangepi
@@ -375,22 +366,6 @@
         - path: "~/.local/share/transmission/watch/"
           mode: '0755'
 
-    - name: Docker Compose | Install compose.yaml
-      ansible.builtin.template:
-        src: templates/compose.yaml
-        dest: "~/.config/compose.yaml"
-        mode: '0600'
-      tags:
-        - docker
-
-    - name: Docker Compose | Up
-      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
-      args:
-        executable: /bin/bash
-      tags:
-        - docker
-      changed_when: true
-
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
     - name: Resolved | Disable stub
       become: true
@@ -435,3 +410,9 @@
         state: restarted
       tags:
         - resolved
+
+    - name: Docker Compose | Restart
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+      tags:
+        - docker

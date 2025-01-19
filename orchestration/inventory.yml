@@ -247,7 +247,7 @@ server:
       packages_extra:
         - nvidia-driver
         - firmware-misc-nonfree
-        - nvidia-container-toolkit
+        - nvidia-container-toolkit # Needs to run `sudo nvidia-ctk runtime configure --runtime=docker` on first install
       compose_file: templates/compose-beafiboi.yaml
       apt_repos_extra:
         - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"

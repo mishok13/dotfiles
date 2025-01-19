@@ -1,12 +1,11 @@
-version: "3.9"
 services:
   frigate:
     container_name: frigate
     privileged: true # this may not be necessary for all setups
     restart: unless-stopped
-    image: ghcr.io/blakeblackshear/frigate:stable
+    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
     shm_size: "96mb"
-    devices:
+    devices: []
       # - /dev/bus/usb:/dev/bus/usb # Passes the USB Coral, needs to be modified for other versions
       # - /dev/apex_0:/dev/apex_0 # Passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
       # - /dev/video11:/dev/video11 # For Raspberry Pi 4B
@@ -27,3 +26,10 @@ services:
       - "8555:8555/udp" # WebRTC over udp
     environment:
       FRIGATE_RTSP_PASSWORD: "password"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
