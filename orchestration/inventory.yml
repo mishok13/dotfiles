@@ -175,6 +175,7 @@ server:
       - powertop
       - htop
       - rsync
+      - lm-sensors
     apt_repos:
       - url: https://syncthing.net/release-key.gpg
         path: /usr/share/keyrings/syncthing-keyring.gpg
@@ -248,6 +249,8 @@ server:
         - nvidia-driver
         - firmware-misc-nonfree
         - nvidia-container-toolkit # Needs to run `sudo nvidia-ctk runtime configure --runtime=docker` on first install
+        - coolercontrold
+        - coolercontrol-liqctld
       compose_file: templates/compose-beafiboi.yaml
       apt_repos_extra:
         - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
@@ -259,3 +262,6 @@ server:
         - url: "https://nvidia.github.io/libnvidia-container/gpgkey"
           path: "/usr/share/keyrings/nvidia-container-toolkit-keyring.asc"
           repo: "https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /"
+        - url: https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/gpg.668189E5007F5A8D.key
+          path: /usr/share/keyrings/coolercontrol-keyring.asc
+          repo: "https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/deb/debian {{ansible_distribution_release}} main"

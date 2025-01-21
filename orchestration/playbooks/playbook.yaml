@@ -32,8 +32,12 @@
           when: item.get('ppa')
         - name: Install packages
           ansible.builtin.apt:
-            update_cache: true
+            state: present
             name: "{{ packages + (packages_extra | default([])) }}"
+        # - name: Install packages
+        #   ansible.builtin.apt:
+        #     name: "*"
+        #     state: latest
 
     - name: Configure Docker
       when: ansible_facts['system'] == "Linux"
@@ -305,16 +309,26 @@
           - "--archive"
           - "--delete"
       notify:
-        - Docker Compose | Restart
+        - Docker Compose | Up
 
     - name: Docker Compose | Install compose.yaml
       ansible.posix.synchronize:
         src: "{{ compose_file }}"
         dest: "~/.config/compose.yaml"
-      tags:
-        - docker
       notify:
-        - Docker Compose | Restart
+        - "Docker Compose | Restart"
+
+- name: Frigate
+  hosts: beafiboi
+  tags:
+    - docker
+  tasks:
+    - name: Frigate | Config file
+      ansible.posix.synchronize:
+        src: templates/frigate/config.yaml
+        dest: ~/.config/frigate/config.yaml
+      notify:
+        - "Docker Compose | Restart"
 
 - name: Provision OrangePi
   hosts: orangepi
@@ -414,5 +428,13 @@
     - name: Docker Compose | Restart
       community.docker.docker_compose_v2:
         project_src: ~/.config
+        state: restarted
+      tags:
+        - docker
+
+    - name: Docker Compose | Up
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+        state: present
       tags:
         - docker

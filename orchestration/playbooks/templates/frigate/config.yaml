@@ -1,0 +1,31 @@
+version: 0.14
+
+mqtt:
+  enabled: false
+
+tls:
+  enabled: false
+
+cameras:
+  bellcam:
+    enabled: false
+    ffmpeg:
+      inputs:
+        - path: rtsp://192.168.0.250:554/rtsp
+          roles:
+            - detect
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+
+detectors:
+  tensorrt:
+    type: tensorrt
+
+model:
+  path: /config/model_cache/tensorrt/yolov7-320.trt
+  input_tensor: nchw
+  input_pixel_format: rgb
+  width: 320
+  height: 320
