@@ -7,6 +7,11 @@ function _fzf_search_directory --description "Search the current directory. Repl
 
     set -f fzf_arguments --multi --ansi $fzf_directory_opts
     set -f token (commandline --current-token)
+
+    # Default to HOME when searching with an empty command line
+    if string match --quiet -- "" $token
+        set -f token "$HOME/"
+    end
     # expand any variables or leading tilde (~) in the token
     set -f expanded_token (eval echo -- $token)
     # unescape token because it's already quoted so backslashes will mess up the path
