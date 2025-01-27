@@ -318,6 +318,21 @@
       notify:
         - "Docker Compose | Restart"
 
+  handlers:
+    - name: Docker Compose | Restart
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+        state: restarted
+      tags:
+        - docker
+
+    - name: Docker Compose | Up
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+        state: present
+      tags:
+        - docker
+
 - name: Frigate
   hosts: beafiboi
   tags:
@@ -410,7 +425,6 @@
         - Caddy | Restart
 
   handlers:
-
     - name: Caddy | Restart
       become: true
       ansible.builtin.service:
@@ -424,17 +438,3 @@
         state: restarted
       tags:
         - resolved
-
-    - name: Docker Compose | Restart
-      community.docker.docker_compose_v2:
-        project_src: ~/.config
-        state: restarted
-      tags:
-        - docker
-
-    - name: Docker Compose | Up
-      community.docker.docker_compose_v2:
-        project_src: ~/.config
-        state: present
-      tags:
-        - docker
