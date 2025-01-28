@@ -71,7 +71,7 @@ services:
 
   omada-controller:
     container_name: omada-controller
-    image: mbentley/omada-controller:5.14@sha256:c0fed2173d6c0f4b7f05b430b78593bbe6e5345c738a647d7edd458def51e5f5
+    image: mbentley/omada-controller:5.14@sha256:3cb6aa96d5249ead9f9f7201ce6d2e17106b5c14726e4f900cab551e33f8adf4
     restart: unless-stopped
     ulimits:
       nofile:
