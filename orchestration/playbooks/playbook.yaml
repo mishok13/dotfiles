@@ -295,6 +295,18 @@
       ansible.builtin.hostname:
         name: "{{ host }}"
 
+- name: Frigate
+  hosts: beafiboi
+  tags:
+    - docker
+  tasks:
+    - name: Frigate | Config file
+      ansible.posix.synchronize:
+        src: templates/frigate/config.yaml
+        dest: ~/.config/frigate/config.yaml
+      notify:
+        - "Docker Compose | Restart"
+
 - name: Copy shared Docker Compose definitions
   hosts: server
   tags:
@@ -332,18 +344,6 @@
         state: present
       tags:
         - docker
-
-- name: Frigate
-  hosts: beafiboi
-  tags:
-    - docker
-  tasks:
-    - name: Frigate | Config file
-      ansible.posix.synchronize:
-        src: templates/frigate/config.yaml
-        dest: ~/.config/frigate/config.yaml
-      notify:
-        - "Docker Compose | Restart"
 
 - name: Provision OrangePi
   hosts: orangepi
@@ -387,12 +387,6 @@
         - path: "~/.local/share/dnsmasq"
           mode: '0777'
         - path: "~/.config/home-assistant/"
-          mode: '0755'
-        - path: "~/.config/transmission/"
-          mode: '0755'
-        - path: "~/.local/share/transmission/downloads/"
-          mode: '0755'
-        - path: "~/.local/share/transmission/watch/"
           mode: '0755'
 
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
