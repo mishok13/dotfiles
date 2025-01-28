@@ -175,6 +175,7 @@ server:
       - powertop
       - htop
       - rsync
+      - lm-sensors
     apt_repos:
       - url: https://syncthing.net/release-key.gpg
         path: /usr/share/keyrings/syncthing-keyring.gpg
@@ -187,6 +188,7 @@ server:
     orangepi:
       host: orangepi
       ansible_host: orangepi
+      compose_file: templates/compose.yaml
       firewall_rules:
         - { rule: 'limit', port: '22', proto: 'tcp' }
         - { rule: 'allow', port: '53', proto: 'tcp' }
@@ -231,6 +233,7 @@ server:
         - samba
         - samba-client
         - rpcbind
+      compose_file: templates/compose-nas.yaml
       apt_repos_extra:
         - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
           path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
@@ -245,6 +248,10 @@ server:
       packages_extra:
         - nvidia-driver
         - firmware-misc-nonfree
+        - nvidia-container-toolkit # Needs to run `sudo nvidia-ctk runtime configure --runtime=docker` on first install
+        - coolercontrold
+        - coolercontrol-liqctld
+      compose_file: templates/compose-beafiboi.yaml
       apt_repos_extra:
         - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
           path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
@@ -252,3 +259,9 @@ server:
         - url: "https://download.docker.com/linux/debian/gpg"
           path: "/usr/share/keyrings/docker.asc"
           repo: "https://download.docker.com/linux/debian {{ansible_distribution_release}} stable"
+        - url: "https://nvidia.github.io/libnvidia-container/gpgkey"
+          path: "/usr/share/keyrings/nvidia-container-toolkit-keyring.asc"
+          repo: "https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /"
+        - url: https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/gpg.668189E5007F5A8D.key
+          path: /usr/share/keyrings/coolercontrol-keyring.asc
+          repo: "https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/deb/debian {{ansible_distribution_release}} main"

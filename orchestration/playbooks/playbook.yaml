@@ -32,8 +32,12 @@
           when: item.get('ppa')
         - name: Install packages
           ansible.builtin.apt:
-            update_cache: true
+            state: present
             name: "{{ packages + (packages_extra | default([])) }}"
+        # - name: Install packages
+        #   ansible.builtin.apt:
+        #     name: "*"
+        #     state: latest
 
     - name: Configure Docker
       when: ansible_facts['system'] == "Linux"
@@ -304,26 +308,42 @@
         rsync_opts:
           - "--archive"
           - "--delete"
-
-- name: Provision BigBoi
-  hosts: bigboi
-  tasks:
+      notify:
+        - Docker Compose | Up
 
     - name: Docker Compose | Install compose.yaml
-      ansible.builtin.template:
-        src: templates/compose-nas.yaml
+      ansible.posix.synchronize:
+        src: "{{ compose_file }}"
         dest: "~/.config/compose.yaml"
-        mode: '0600'
+      notify:
+        - "Docker Compose | Restart"
+
+  handlers:
+    - name: Docker Compose | Restart
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+        state: restarted
       tags:
         - docker
 
     - name: Docker Compose | Up
-      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
-      args:
-        executable: /bin/bash
+      community.docker.docker_compose_v2:
+        project_src: ~/.config
+        state: present
       tags:
         - docker
-      changed_when: true
+
+- name: Frigate
+  hosts: beafiboi
+  tags:
+    - docker
+  tasks:
+    - name: Frigate | Config file
+      ansible.posix.synchronize:
+        src: templates/frigate/config.yaml
+        dest: ~/.config/frigate/config.yaml
+      notify:
+        - "Docker Compose | Restart"
 
 - name: Provision OrangePi
   hosts: orangepi
@@ -375,22 +395,6 @@
         - path: "~/.local/share/transmission/watch/"
           mode: '0755'
 
-    - name: Docker Compose | Install compose.yaml
-      ansible.builtin.template:
-        src: templates/compose.yaml
-        dest: "~/.config/compose.yaml"
-        mode: '0600'
-      tags:
-        - docker
-
-    - name: Docker Compose | Up
-      ansible.builtin.shell: docker compose -f ~/.config/compose.yaml up -d
-      args:
-        executable: /bin/bash
-      tags:
-        - docker
-      changed_when: true
-
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
     - name: Resolved | Disable stub
       become: true
@@ -421,7 +425,6 @@
         - Caddy | Restart
 
   handlers:
-
     - name: Caddy | Restart
       become: true
       ansible.builtin.service:
