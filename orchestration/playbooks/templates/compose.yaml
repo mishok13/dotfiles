@@ -1,3 +1,6 @@
+include:
+  - compose/atuin.yaml
+
 services:
 
   postgres_budgeteer:

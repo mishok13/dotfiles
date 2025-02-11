@@ -178,3 +178,4 @@ export EDITOR=vim
 
 eval "$(zoxide init zsh)"
 eval "$(mise activate zsh)"
+eval "$(atuin init zsh)"
