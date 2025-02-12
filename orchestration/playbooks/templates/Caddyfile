@@ -62,6 +62,10 @@ frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
 	reverse_proxy http://beafiboi:8971
 }
 
+atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {
+	reverse_proxy http://localhost:8888
+}
+
 orangepi.tailf7350.ts.net {
         root * /usr/share/caddy
         file_server

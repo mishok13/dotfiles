@@ -382,17 +382,15 @@
       loop:
         - path: "~/.local/share/postgres/budgeteer"
           mode: '0777'
-        - path: "~/.local/share/pihole/"
+        - path: "~/.local/share/postgres/atuin"
+          mode: '0777'
+        - path: "~/.local/share/pihole"
           mode: '0777'
         - path: "~/.local/share/dnsmasq"
           mode: '0777'
-        - path: "~/.config/home-assistant/"
+        - path: "~/.config/home-assistant"
           mode: '0755'
-        - path: "~/.config/transmission/"
-          mode: '0755'
-        - path: "~/.local/share/transmission/downloads/"
-          mode: '0755'
-        - path: "~/.local/share/transmission/watch/"
+        - path: "~/.config/atuin"
           mode: '0755'
 
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
@@ -415,8 +413,8 @@
 
     - name: Caddy | Configure
       become: true
-      ansible.builtin.template:
-        src: templates/Caddyfile.j2
+      ansible.builtin.copy:
+        src: templates/Caddyfile
         dest: "/etc/caddy/Caddyfile"
         mode: "0644"
       tags:
