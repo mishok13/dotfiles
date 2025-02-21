@@ -5,7 +5,7 @@ services:
 
   postgres_budgeteer:
     restart: always
-    image: bitnami/postgresql:16@sha256:233f361c5819c180b600d110d7da953bea6f1a00764752643ffb7b78ba85c628
+    image: bitnami/postgresql:17@sha256:be6c1ca552492e8418cdd57b0e7799ba63205b604ac8534ea81724ce4be839dd
     volumes:
       - "~/.local/share/postgres/budgeteer:/bitnami/postgresql"
     environment:
