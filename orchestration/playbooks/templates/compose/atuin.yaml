@@ -20,7 +20,7 @@ services:
       - atuin
 
   atuin-db:
-    image: postgres:16@sha256:c965017e1d29eb03e18a11abc25f5e3cd78cb5ac799d495922264b8489d5a3a1
+    image: postgres:17@sha256:1c47b7139517eeb5e9747882983297a745517c3d70d2451e376f9fd5cc7cf1ef
     restart: always
     volumes:
       - "~/.local/share/postgres/atuin:/var/lib/postgresql/data"
