@@ -380,14 +380,6 @@
         state: directory
         mode: "{{ item.mode }}"
       loop:
-        - path: "~/.local/share/postgres/budgeteer"
-          mode: '0777'
-        - path: "~/.local/share/postgres/atuin"
-          mode: '0777'
-        - path: "~/.local/share/pihole"
-          mode: '0777'
-        - path: "~/.local/share/dnsmasq"
-          mode: '0777'
         - path: "~/.config/home-assistant"
           mode: '0755'
         - path: "~/.config/atuin"
