@@ -316,34 +316,15 @@
         src: "{{ compose_file }}"
         dest: "~/.config/compose.yaml"
       notify:
-        - "Docker Compose | Restart"
+        - "Docker Compose | Up"
 
   handlers:
-    - name: Docker Compose | Restart
-      community.docker.docker_compose_v2:
-        project_src: ~/.config
-        state: restarted
-      tags:
-        - docker
-
     - name: Docker Compose | Up
       community.docker.docker_compose_v2:
         project_src: ~/.config
         state: present
       tags:
         - docker
-
-- name: Frigate
-  hosts: beafiboi
-  tags:
-    - docker
-  tasks:
-    - name: Frigate | Config file
-      ansible.posix.synchronize:
-        src: templates/frigate/config.yaml
-        dest: ~/.config/frigate/config.yaml
-      notify:
-        - "Docker Compose | Restart"
 
 - name: Provision OrangePi
   hosts: orangepi
