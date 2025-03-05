@@ -1,5 +1,6 @@
 include:
   - compose/atuin.yaml
+  - compose/monitoring.yaml
 
 services:
 
