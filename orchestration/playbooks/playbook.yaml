@@ -319,12 +319,8 @@
         - "Docker Compose | Up"
 
   handlers:
-    - name: Docker Compose | Up
-      community.docker.docker_compose_v2:
-        project_src: ~/.config
-        state: present
-      tags:
-        - docker
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
 
 - name: Provision OrangePi
   hosts: orangepi
@@ -396,20 +392,8 @@
         - Caddy | Restart
 
   handlers:
-    - name: Caddy | Restart
-      become: true
-      ansible.builtin.service:
-        name: caddy
-        state: restarted
-
-    - name: Resolved | Restart
-      become: true
-      ansible.builtin.service:
-        name: systemd-resolved
-        state: restarted
-      tags:
-        - resolved
-
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
 
 - name: Install and configure Prometheus Node Exporter
   hosts: server
@@ -423,3 +407,21 @@
       tags:
         - monitoring
         - system
+
+- name: Monitoring | Configuration
+  hosts: server
+  become: false
+  tasks:
+    - name: Prometheus | Configuration
+      ansible.builtin.copy:
+        src: templates/prometheus.yml
+        dest: "~/.config/prometheus/prometheus.yml"
+        mode: "0644"
+      tags:
+        - docker
+        - monitoring
+      notify:
+        - Docker Compose | Restart
+  handlers:
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
