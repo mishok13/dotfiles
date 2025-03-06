@@ -1,5 +1,6 @@
 {
 	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+	metrics
 }
 
 pihole.home.mishok13.me, pihole.tail.mishok13.me, pihole.mishok13.me {
@@ -64,6 +65,14 @@ frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
 
 atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {
 	reverse_proxy http://localhost:8888
+}
+
+prometheus.home.mishok13.me, prometheus.tail.mishok13.me, prometheus.mishok13.me {
+	reverse_proxy http://localhost:9090
+}
+
+grafana.home.mishok13.me, grafana.tail.mishok13.me, grafana.mishok13.me {
+	reverse_proxy http://localhost:3000
 }
 
 orangepi.tailf7350.ts.net {

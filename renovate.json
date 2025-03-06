@@ -15,5 +15,17 @@
   },
   "pre-commit": {
     "enabled": true
-  }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^*\\.yml$"
+      ],
+      "matchStrings": [
+        "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*_version: '(?<currentValue>.*)'\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ]
 }
