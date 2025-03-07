@@ -139,8 +139,8 @@ command -v pyenv >/dev/null || eval "$(pyenv init -)"
 
 export TERM="xterm-256color"
 
-alias kx=kubectx
 alias kg="kubectl get"
+alias kx=kubectx
 alias kns=kubens
 
 alias tf=terraform

@@ -26,7 +26,7 @@ function vault_login {
             echo "Unknown environment"
             ;;
     esac
-    password=`op item get ixp54ndrrk5afvw2jlpairykcy --fields password`
+    password=`op item get ixp54ndrrk5afvw2jlpairykcy --fields password --reveal`
     export VAULT_TOKEN=`vault login -token-only -address $VAULT_ADDR -method ldap username=mishk500 password=$password`
     unset password
 }
@@ -66,3 +66,5 @@ function zipped_creds {
     rm -rf client_secret.txt
     printf "File has been written to $zip_path\n"
 }
+
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
