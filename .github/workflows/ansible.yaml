@@ -32,7 +32,7 @@ jobs:
         uvx ansible-lint --version
 
     - name: Validate syntax
-      run: ansible-playbook --syntax-check orchestration/playbooks/playbook.yaml
+      run: uvx ansible-playbook --syntax-check orchestration/playbooks/playbook.yaml
 
     - name: Lint playbook
-      run: ansible-lint orchestration/playbooks/playbook.yml
+      run: uvx ansible-lint orchestration/playbooks/playbook.yml
