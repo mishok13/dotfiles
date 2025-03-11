@@ -1,0 +1,41 @@
+name: Validate Ansible playbook
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'orchestration/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'orchestration/**'
+
+permissions: {}
+
+jobs:
+  verify-ansible-playbook:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./orchestration
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Display Ansible and ansible-lint versions
+      run: |
+        uvx ansible --version
+        uvx ansible-lint --version
+
+    - name: Lint it
+      run: |
+        uvx --from ansible-core ansible-galaxy install -r requirements.yml
+        uvx --from ansible-core ansible-playbook --syntax-check playbooks/playbook.yaml
+        uvx ansible-lint playbooks/playbook.yaml
