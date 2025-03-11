@@ -24,4 +24,5 @@ if status is-interactive
     abbr -a -g la eza -la
     abbr -a -g lt eza -T
 
+    fish_add_path ~/.local/bin
 end
