@@ -38,4 +38,4 @@ jobs:
       run: |
         uvx --from ansible-core ansible-galaxy install -r requirements.yml
         uvx --from ansible-core ansible-playbook --syntax-check playbooks/playbook.yaml
-        uvx ansible-lint playbooks/playbook.yml
+        uvx ansible-lint playbooks/playbook.yaml
