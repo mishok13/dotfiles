@@ -34,8 +34,8 @@ jobs:
         uvx ansible --version
         uvx ansible-lint --version
 
-    - name: Validate syntax
-      run: uvx --from ansible-core ansible-playbook --syntax-check playbooks/playbook.yaml
-
-    - name: Lint playbook
-      run: uvx ansible-lint playbooks/playbook.yml
+    - name: Lint it
+      run: |
+        uvx --from ansible-core ansible-galaxy install -r requirements.yml
+        uvx --from ansible-core ansible-playbook --syntax-check playbooks/playbook.yaml
+        uvx ansible-lint playbooks/playbook.yml
