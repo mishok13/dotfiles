@@ -1,0 +1,24 @@
+services:
+
+  prometheus:
+    image: quay.io/prometheus/prometheus:v3.2.1
+    restart: always
+    container_name: prometheus
+    volumes:
+      - "~/.local/share/prometheus:/prometheus"
+      - "~/.config/prometheus:/etc/prometheus:ro"
+    ports:
+      - "9090:9090"
+    network_mode: "host"
+
+  alertmanager:
+    image: quay.io/prometheus/alertmanager:v0.28.0
+    restart: unless-stopped
+    container_name: alertmanager
+
+  grafana:
+    image: docker.io/grafana/grafana:11.5.2
+    restart: unless-stopped
+    container_name: grafana
+    ports:
+      - "127.0.0.1:3000:3000"

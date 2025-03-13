@@ -9,3 +9,6 @@ collections:
   - name: ansible.posix
     version: ">=1.6.2"
     source: https://galaxy.ansible.com
+  - name: prometheus.prometheus
+    version: ">=0.25.0"
+    source: https://galaxy.ansible.com
