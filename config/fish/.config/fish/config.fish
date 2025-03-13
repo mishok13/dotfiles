@@ -25,4 +25,6 @@ if status is-interactive
     abbr -a -g lt eza -T
 
     fish_add_path ~/.local/bin
+
+    eval $(op signin)
 end
