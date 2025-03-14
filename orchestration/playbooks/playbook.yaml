@@ -409,7 +409,7 @@
         - system
 
 - name: Monitoring | Configuration
-  hosts: server
+  hosts: orangepi
   become: false
   tasks:
     - name: Prometheus | Configuration

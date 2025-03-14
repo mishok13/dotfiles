@@ -26,5 +26,8 @@ if status is-interactive
 
     fish_add_path ~/.local/bin
 
-    eval $(op signin)
+    if string match -q -- "*WSL2*" (uname -r)
+        set windows_username (whoami.exe | cut -d '\\' -f 2 | string replace -ra '[^\w]+' '')
+        abbr -a -g op /mnt/c/Users/$windows_username/AppData/local/Microsoft/WinGet/Links/op.exe
+    end
 end
