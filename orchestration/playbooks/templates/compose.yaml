@@ -1,4 +1,5 @@
 include:
+  - compose/pihole.yaml
   - compose/atuin.yaml
   - compose/monitoring.yaml
 
@@ -19,24 +20,6 @@ services:
       - "54320:5432"
     networks:
       - budgeteer
-
-  pihole:
-    restart: always
-    image: pihole/pihole:2024.05.0@sha256:8b1f31f46d94c3c1b8f509b302f28b4028483009bd27a9cbfd9b80185dd0687d
-    container_name: pihole
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "127.0.0.1:31480:80/tcp"
-    environment:
-      TZ: 'Europe/Amsterdam'
-      WEBPASSWORD_FILE: /run/secrets/pihole_password
-      VIRTUAL_HOST: "pihole.mishok13.me"
-    secrets:
-      - pihole_password
-    volumes:
-      - "~/.local/share/pihole/:/etc/pihole"
-      - "~/.local/share/dnsmasq:/etc/dnsmasq.d"
 
   miniflux:
     container_name: miniflux
@@ -130,8 +113,6 @@ services:
 secrets:
   budgeteer_password:
     file: /etc/secrets/budgeteer-password
-  pihole_password:
-    file: /etc/secrets/pihole-password
 
 volumes:
   miniflux-db:
@@ -142,5 +123,4 @@ volumes:
 networks:
   miniflux:
   omada:
-  pihole:
   budgeteer:
