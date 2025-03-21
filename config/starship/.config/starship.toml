@@ -25,5 +25,5 @@ disabled = true
 [directory]
 truncate_to_repo = false
 
-[node]
+[nodejs]
 disabled = true
