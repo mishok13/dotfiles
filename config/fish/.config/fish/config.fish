@@ -1,7 +1,10 @@
-if status is-interactive
-    set brewcmd (path filter /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew)[1]
-    and $brewcmd shellenv | source
+set brewcmd (path filter /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew)[1]
+and $brewcmd shellenv | source
 
+fish_add_path ~/.local/bin
+fish_add_path ~/.cargo/bin
+
+if status is-interactive
     if test -d (brew --prefix)"/share/fish/completions"
         set -p fish_complete_path (brew --prefix)/share/fish/completions
     end
@@ -24,10 +27,12 @@ if status is-interactive
     abbr -a -g la eza -la
     abbr -a -g lt eza -T
 
-    fish_add_path ~/.local/bin
-
     if string match -q -- "*WSL2*" (uname -r)
         set windows_username (whoami.exe | cut -d '\\' -f 2 | string replace -ra '[^\w]+' '')
         abbr -a -g op /mnt/c/Users/$windows_username/AppData/local/Microsoft/WinGet/Links/op.exe
+        if ! path is /run/user/1000
+            sudo mkdir -p /run/user/1000
+            sudo chown -R mishok13:mishok13 /run/user/1000
+        end
     end
 end
