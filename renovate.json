@@ -5,7 +5,8 @@
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     ":configMigration",
-    ":pinDevDependencies"
+    ":pinDevDependencies",
+    "schedule:weekends"
   ],
   "docker-compose": {
     "fileMatch": [
@@ -26,6 +27,12 @@
         "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*_version: '(?<currentValue>.*)'\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["/immich/"],
+      "groupName": "immich"
     }
   ]
 }
