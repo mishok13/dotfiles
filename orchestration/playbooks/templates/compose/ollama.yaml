@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: docker.io/ollama/ollama:0.6.0@sha256:5ff3909f83e01e5a13a0caa8269b484059e841abd9cfe9a86b079b5eae315866
+    image: docker.io/ollama/ollama:0.6.4@sha256:476b956cbe76f22494f08400757ba302fd8ab6573965c09f1e1a66b2a7b0eb77
     ports:
       - 11434:11434
     container_name: ollama
