@@ -12,7 +12,7 @@ services:
     network_mode: "host"
 
   alertmanager:
-    image: quay.io/prometheus/alertmanager:v0.28.0@sha256:d5155cfac40a6d9250ffc97c19db2c5e190c7bc57c6b67125c94903358f8c7d8
+    image: quay.io/prometheus/alertmanager:v0.28.1@sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba
     restart: unless-stopped
     container_name: alertmanager
 
