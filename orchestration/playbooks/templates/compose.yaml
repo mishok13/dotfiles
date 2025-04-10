@@ -93,7 +93,7 @@ services:
 
   home-assistant:
     container_name: home-assistant
-    image: "ghcr.io/home-assistant/home-assistant:2025.2.5@sha256:a81e875974c909957da5407a85d42409581a1f3c1ae202642519430389baf1ad"
+    image: "ghcr.io/home-assistant/home-assistant:2025.4.1@sha256:eecdfc57236ac9cfd9f296b61ae0c8ff65b8e483346e0f15ee14a75a3aa81efa"
     volumes:
       - "~/.config/home-assistant/:/config"
       - /etc/localtime:/etc/localtime:ro
