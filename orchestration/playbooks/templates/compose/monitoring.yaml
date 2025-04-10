@@ -22,3 +22,7 @@ services:
     container_name: grafana
     ports:
       - "127.0.0.1:3000:3000"
+    volumes:
+      - "~/.local/share/grafana:/var/lib/grafana"
+    networks:
+      - normal

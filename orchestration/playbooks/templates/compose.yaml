@@ -124,3 +124,5 @@ networks:
   miniflux:
   omada:
   budgeteer:
+  normal:
+    driver: bridge
