@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'config/fish/.config/**'  # Trigger only if changes are made in the config/fish directory
+      - 'config/fish/.config/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'config/fish/.config/**'  # Trigger only if changes are made in the config/fish directory
+      - 'config/fish/.config/**'
 
 permissions: {}
 
