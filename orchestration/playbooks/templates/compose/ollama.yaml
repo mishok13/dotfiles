@@ -17,7 +17,7 @@ services:
               capabilities: [gpu]
 
   ollama-webui:
-    image: ghcr.io/open-webui/open-webui:main@sha256:fff3d8017355097556d7600aa84b46e28b221201ecda9f9191d2249a05b88fc3
+    image: ghcr.io/open-webui/open-webui:main@sha256:36355448501a41b589cfd0a83c3763fcbabc655bc5d2d0c750c67bc8610e7562
     container_name: ollama-webui
     depends_on:
       - ollama
