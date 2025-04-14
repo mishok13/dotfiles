@@ -79,8 +79,6 @@ llm.home.mishok13.me, llm.tail.mishok13.me, llm.mishok13.me {
 	reverse_proxy http://beafiboi:8080
 }
 
-
-
 orangepi.tailf7350.ts.net {
         root * /usr/share/caddy
         file_server
