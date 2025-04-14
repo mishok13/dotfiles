@@ -16,6 +16,7 @@ if status is-interactive
     fzf_configure_bindings --directory=\ec --history=\e\cr
     atuin init fish | source
     starship init fish | source
+    mise activate fish | source
 
     abbr -a -g k kubectl
     abbr -a -g kex kubectl exec -i -t
@@ -31,7 +32,7 @@ if status is-interactive
     # Adds 1Password CLI on WSL, as local linux `op` requires a lot of fiddling to set up correctly.
     if string match -q -- "*WSL2*" (uname -r)
         set windows_username (whoami.exe | cut -d '\\' -f 2 | string replace -ra '[^\w]+' '')
-        abbr -a -g op /mnt/c/Users/$windows_username/AppData/local/Microsoft/WinGet/Links/op.exe
+        abbr -a -g winop /mnt/c/Users/$windows_username/AppData/local/Microsoft/WinGet/Links/op.exe
         if ! path is /run/user/1000
             sudo mkdir -p /run/user/1000
             sudo chown -R mishok13:mishok13 /run/user/1000
