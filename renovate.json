@@ -25,6 +25,12 @@
       "groupName": "immich"
     },
     {
+      "matchPackageNames": [
+        "/ollama/"
+      ],
+      "groupName": "ollama"
+    },
+    {
       "description": "Detect *arr image updates",
       "matchDatasources": [
         "docker"
@@ -34,7 +40,8 @@
         "lscr.io/linuxserver/sonarr",
         "lscr.io/linuxserver/prowlarr"
       ],
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-ls(?<revision>.+)$"
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-ls(?<revision>.+)$",
+      "groupName": "arr"
     }
   ]
 }
