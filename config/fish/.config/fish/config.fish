@@ -4,6 +4,8 @@ and $brewcmd shellenv | source
 fish_add_path ~/.local/bin
 fish_add_path ~/.cargo/bin
 
+set -Ux RIPGREP_CONFIG_PATH ~/.config/ripgrep/config
+
 if status is-interactive
     if test -d (brew --prefix)"/share/fish/completions"
         set -p fish_complete_path (brew --prefix)/share/fish/completions
