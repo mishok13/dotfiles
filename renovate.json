@@ -25,10 +25,16 @@
       "groupName": "immich"
     },
     {
+      "matchManagers": ["pre-commit"],
+      "groupName": "pre-commit hooks",
+      "schedule": ["monthly"]
+    },
+    {
       "matchPackageNames": [
-        "/ollama/"
+        "/ollama/",
+        "/webui/"
       ],
-      "groupName": "ollama"
+      "groupName": "llms"
     },
     {
       "description": "Detect *arr image updates",
