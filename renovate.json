@@ -9,9 +9,9 @@
     "schedule:weekends"
   ],
   "docker-compose": {
-    "fileMatch": [
-      "^orchestration/playbooks/templates/compose/[^/]+.ya?ml$",
-      "^orchestration/playbooks/templates/compose[^/]*.ya?ml$"
+    "managerFilePatterns": [
+      "/^orchestration/playbooks/templates/compose/[^/]+.ya?ml$/",
+      "/^orchestration/playbooks/templates/compose[^/]*.ya?ml$/"
     ]
   },
   "pre-commit": {
@@ -25,9 +25,13 @@
       "groupName": "immich"
     },
     {
-      "matchManagers": ["pre-commit"],
+      "matchManagers": [
+        "pre-commit"
+      ],
       "groupName": "pre-commit hooks",
-      "schedule": ["monthly"]
+      "schedule": [
+        "monthly"
+      ]
     },
     {
       "matchPackageNames": [
