@@ -12,3 +12,7 @@ packages:
 
 caddy:
     ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t caddy
+
+play *args:
+    @mkdir -p .playlogs
+    ansible-playbook playbooks/playbook.yaml -i inventory.yml -D {{args}} | tee .playlogs/$(date '+%Y%m%dT%H%M%S').log

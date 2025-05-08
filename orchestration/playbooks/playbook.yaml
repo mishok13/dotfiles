@@ -425,3 +425,44 @@
   handlers:
     - name: Handlers
       ansible.builtin.import_tasks: tasks/handlers.yaml
+
+
+- name: Setup NFS
+  hosts: fileshare
+  become: true
+  tags:
+    - nfs
+  tasks:
+    - name: NFS Server | Packages
+      ansible.builtin.apt:
+        state: present
+        name:
+          - nfs-kernel-server
+    - name: NFS Server | Directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: '0777'
+      loop: "{{ nfs_exports }}"
+    - name: NFS Server | Exports
+      ansible.builtin.template:
+        src: templates/exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: '0644'
+      notify: NFS Server | Restart
+    - name: NFS Server | Verify
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      with_items:
+        - nfs-kernel-server
+        - rpcbind
+
+  handlers:
+    - name: NFS Server | Restart
+      ansible.builtin.service:
+        name: nfs-kernel-server
+        state: restarted

@@ -1,4 +1,18 @@
 devenv:
+  hosts:
+    clydesdale-wsl:
+      ansible_host: 127.0.0.1
+      ansible_connection: local
+    clydesdale:
+      ansible_host: 192.168.0.103
+      username: mishok13
+    ancient:
+      ansible_host: ancient
+      username: mishok13
+    mbp-kpn:
+      ansible_host: 192.168.0.101
+      username: andriimishkovskyi
+
   vars:
     packages:
       - 1password-cli
@@ -144,20 +158,6 @@ devenv:
         path: /usr/share/keyrings/mise.asc
         repo: "https://mise.jdx.dev/deb stable main"
 
-  hosts:
-    clydesdale-wsl:
-      ansible_host: 127.0.0.1
-      ansible_connection: local
-    clydesdale:
-      ansible_host: 192.168.0.103
-      username: mishok13
-    ancient:
-      ansible_host: ancient
-      username: mishok13
-    mbp-kpn:
-      ansible_host: 192.168.0.101
-      username: andriimishkovskyi
-
 server:
   vars:
     packages:
@@ -225,8 +225,8 @@ server:
 
     bigboi:
       ansible_host: bigboi
-      ansible_become_method: doas
       host: bigboi
+      ansible_become_method: doas
       packages_extra:
         - btrfs-progs
         - nfs-kernel-server
@@ -265,3 +265,15 @@ server:
         - url: https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/gpg.668189E5007F5A8D.key
           path: /usr/share/keyrings/coolercontrol-keyring.asc
           repo: "https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/deb/debian {{ansible_distribution_release}} main"
+
+
+fileshare:
+  hosts:
+    bigboi:
+      host: bigboi
+      ansible_host: bigboi
+      nfs_exports:
+        - path: /mnt/media/share
+          clients: "100.64.0.0/10(rw,subtree_check,fsid=0) 192.168.0.0/24(rw,subtree_check,fsid=0) 192.168.0.20(rw,subtree_check,insecure,fsid=0)"
+        - path: /mnt/media
+          clients: "100.64.0.0/10(ro,no_subtree_check,fsid=1) 192.168.0.0/24(ro,no_subtree_check,fsid=1) 192.168.0.20(ro,no_subtree_check,insecure,fsid=1)"
