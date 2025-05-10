@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: docker.io/ollama/ollama:0.6.5
+    image: docker.io/ollama/ollama:0.6.8@sha256:50ab2378567a62b811a2967759dd91f254864c3495cbe50576bd8a85bc6edd56
     ports:
       - 11434:11434
     container_name: ollama
@@ -17,7 +17,7 @@ services:
               capabilities: [gpu]
 
   ollama-webui:
-    image: ghcr.io/open-webui/open-webui:0.6.5
+    image: ghcr.io/open-webui/open-webui:v0.6.8@sha256:89b3eed928517acb2d7cd40dc574f1e73108d4b0222a8ee99a9fdc4044c7a2c2
     container_name: ollama-webui
     depends_on:
       - ollama
