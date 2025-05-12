@@ -282,6 +282,17 @@ nfsclient:
   hosts:
     beafiboi:
       nfs_mounts:
-        - path: /mnt/media/share
+        - path: /mnt/share
           source: bigboi:/mnt/media/share
           opts: rw,sync
+        - path: /mnt/media
+          source: bigboi:/mnt/media
+          opts: ro,sync
+    orangepi:
+      nfs_mounts:
+        - path: /mnt/share
+          source: bigboi:/mnt/media/share
+          opts: rw,sync
+        - path: /mnt/media
+          source: bigboi:/mnt/media
+          opts: ro,sync
