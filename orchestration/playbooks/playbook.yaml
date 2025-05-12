@@ -427,7 +427,7 @@
       ansible.builtin.import_tasks: tasks/handlers.yaml
 
 
-- name: Setup NFS
+- name: NFS Server
   hosts: fileshare
   become: true
   tags:
@@ -466,3 +466,30 @@
       ansible.builtin.service:
         name: nfs-kernel-server
         state: restarted
+
+
+- name: NFS Client
+  hosts: nfsclient
+  become: true
+  tags:
+    - nfs
+  tasks:
+    - name: NFS Client | Packages
+      ansible.builtin.apt:
+        state: present
+        name:
+          - nfs-common
+    - name: NFS Client | Directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: '0777'
+      loop: "{{ nfs_mounts }}"
+    - name: NFS Client | Mount
+      ansible.posix.mount:
+        path: "{{ item.path }}"
+        src: "{{ item.source }}"
+        fstype: nfs
+        opts: "{{ item.opts }}"
+        state: mounted
+      loop: "{{ nfs_mounts }}"

@@ -277,3 +277,11 @@ fileshare:
           clients: "100.64.0.0/10(rw,subtree_check,fsid=0) 192.168.0.0/24(rw,subtree_check,fsid=0) 192.168.0.20(rw,subtree_check,insecure,fsid=0)"
         - path: /mnt/media
           clients: "100.64.0.0/10(ro,no_subtree_check,fsid=1) 192.168.0.0/24(ro,no_subtree_check,fsid=1) 192.168.0.20(ro,no_subtree_check,insecure,fsid=1)"
+
+nfsclient:
+  hosts:
+    beafiboi:
+      nfs_mounts:
+        - path: /mnt/media/share
+          source: bigboi:/mnt/media/share
+          opts: rw,sync
