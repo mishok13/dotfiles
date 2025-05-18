@@ -5,7 +5,7 @@ upgrade:
     ansible-playbook bootstrap/playbook.yaml -t packages
 
 docker-services:
-    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t docker
+    just play -l server -t docker
 
 packages:
     ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t apt
