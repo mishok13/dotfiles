@@ -4,7 +4,7 @@ services:
     privileged: true # this may not be necessary for all setups
     restart: unless-stopped
     image: ghcr.io/blakeblackshear/frigate:stable-tensorrt@sha256:e50d58f53a3e78d7551a73ca9ee5858ece714fe568bbf5fd06a8560494da9048
-    shm_size: "96mb"
+    shm_size: "256mb"
     devices: []
       # - /dev/bus/usb:/dev/bus/usb # Passes the USB Coral, needs to be modified for other versions
       # - /dev/apex_0:/dev/apex_0 # Passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ~/.config/frigate:/config
-      - /mnt/media/frigate:/media/frigate
+      - frigatefs:/media/
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
@@ -34,3 +34,11 @@ services:
               count: 1
 
               capabilities: [gpu]
+
+volumes:
+  frigatefs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.0.51,rw,sync
+      device: :/mnt/media/share/
