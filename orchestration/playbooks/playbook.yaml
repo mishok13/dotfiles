@@ -493,3 +493,23 @@
         opts: "{{ item.opts }}"
         state: mounted
       loop: "{{ nfs_mounts }}"
+
+
+- name: Grafana Config
+  hosts: grafana-host
+  tags:
+    - monitoring
+  tasks:
+    - name: Grafana Config | Directory
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "~/.config/grafana/"
+          mode: '0755'
+    - name: Grafana Config | Config
+      ansible.builtin.copy:
+        src: templates/grafana.ini
+        dest: "~/.config/grafana/grafana.ini"
+        mode: "0644"
