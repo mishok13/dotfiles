@@ -206,7 +206,7 @@
       tags:
         - git
 
-    - name: Configure ripgrep
+    - name: Ripgrep | Ignore file
       ansible.builtin.file:
         path: "{{ homedir }}/.rgignore"
         src: "{{ homedir }}/nonwork/dotfiles/config/ripgrep/rgignore"
@@ -215,7 +215,7 @@
       tags:
         - ripgrep
 
-    - name: Configure ripgrep
+    - name: Ripgrep | Config file
       ansible.builtin.file:
         path: "{{ homedir }}/.ripgreprc"
         src: "{{ homedir }}/nonwork/dotfiles/.ripgreprc"
