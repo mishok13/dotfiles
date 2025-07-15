@@ -35,3 +35,5 @@ services:
     image: quay.io/prometheus/blackbox-exporter:v0.26.0
     restart: always
     container_name: blackbox_exporter
+    ports:
+      - "127.0.0.1:9115:9115"
