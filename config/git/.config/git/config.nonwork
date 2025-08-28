@@ -1,6 +1,0 @@
-[user]
-	name = Andrii Mishkovskyi
-	email = 548482+mishok13@users.noreply.github.com
-
-[include]
-	path = ~/.config/git/sensitive.nonwork
