@@ -1,18 +1,39 @@
+inventory := "inventory.yml"
+log_dir := ".playlogs"
+
+_ansible playbook *args:
+    @mkdir -p {{log_dir}}
+    ANSIBLE_LOG_PATH={{log_dir}}/$(date '+%Y%m%dT%H%M%S').log ansible-playbook {{playbook}} -i {{inventory}} {{args}}
+
+_legacy-play *args:
+    just _ansible playbooks/main.yaml -D {{args}}
+
 setup:
     ansible-galaxy install -r requirements.yml
 
 upgrade:
-    ansible-playbook bootstrap/playbook.yaml -t packages
+    ansible-playbook playbooks/main.yaml -t packages
 
 docker-services:
-    just play -l server -t docker
+    just provision-servers -t docker
 
 packages:
-    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t apt
+    just _legacy-play -l server -t apt
 
 caddy:
-    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t caddy
+    just _legacy-play -l server -t caddy
+
+postgres-backup *args:
+    just _ansible playbooks/postgres-backup.yaml {{args}}
+
+provision-workstations *args:
+    just _ansible playbooks/workstation.yaml -D {{args}}
+
+provision-servers *args:
+    just _ansible playbooks/server.yaml -D {{args}}
+
+provision-all *args:
+    just _ansible playbooks/main.yaml -D {{args}}
 
 play *args:
-    @mkdir -p .playlogs
-    ANSIBLE_LOG_PATH=.playlogs/$(date '+%Y%m%dT%H%M%S').log ansible-playbook playbooks/playbook.yaml -i inventory.yml -D {{args}}
+    just _legacy-play {{args}}

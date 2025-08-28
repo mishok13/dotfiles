@@ -1,0 +1,189 @@
+---
+- name: PostgreSQL Container Backup
+  hosts: server
+  become: false
+  vars:
+    backup_base_dir: "{{ ansible_user_dir }}/.local/backups/postgres"
+    backup_retention_days: 30
+    min_backup_count: 5
+    postgres_image_patterns:
+      - "postgres:"
+      - "bitnami/postgresql:"
+      - "ghcr.io/immich-app/postgres:"
+
+  tasks:
+    - name: Create backup directories
+      ansible.builtin.file:
+        path: "{{ backup_base_dir }}"
+        state: directory
+        mode: '755'
+
+    - name: Discover PostgreSQL containers
+      ansible.builtin.command: >
+        docker ps --format 'json' --filter 'status=running'
+      register: running_containers
+      changed_when: false
+
+    - name: Parse container information
+      ansible.builtin.set_fact:
+        postgres_containers: >-
+          {{
+            (running_containers.stdout_lines | map('from_json') | list) |
+            selectattr('Image', 'match', '.*(' + (postgres_image_patterns | join('|')) + ').*') |
+            list
+          }}
+
+    - name: Display discovered PostgreSQL containers
+      ansible.builtin.debug:
+        msg: "Found PostgreSQL containers: {{ postgres_containers | map(attribute='Names') | list }}"
+
+    - name: Backup each PostgreSQL container
+      block:
+        - name: Create container-specific backup directory
+          ansible.builtin.file:
+            path: "{{ backup_base_dir }}/{{ container.Names }}"
+            state: directory
+            mode: '755'
+          loop: "{{ postgres_containers }}"
+          loop_control:
+            loop_var: container
+
+        - name: Get database environment variables for each container
+          ansible.builtin.command: >
+            docker inspect {{ container.Names }} --format {% raw %}'{{range .Config.Env}}{{println .}}{{end}}'{% endraw %}
+          register: container_env_vars
+          loop: "{{ postgres_containers }}"
+          loop_control:
+            loop_var: container
+          changed_when: false
+
+        - name: Create backup for each PostgreSQL container
+          ansible.builtin.shell: |
+            set -e
+            CONTAINER_NAME="{{ container.Names }}"
+            BACKUP_BASE_DIR="{{ backup_base_dir }}"
+            BACKUP_DIR="${BACKUP_BASE_DIR}/${CONTAINER_NAME}"
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            BACKUP_FILE="${BACKUP_DIR}/postgres_backup_${TIMESTAMP}.sql"
+
+            # Ensure backup directory exists
+            mkdir -p "${BACKUP_DIR}"
+
+            # Check if container is running
+            if ! docker ps --format {% raw %}'{{.Names}}'{% endraw %} | grep -q "^${CONTAINER_NAME}$"; then
+              echo "Warning: Container ${CONTAINER_NAME} is not running, skipping backup"
+              exit 0
+            fi
+
+            # Determine backup method based on image
+            IMAGE=$(docker inspect "${CONTAINER_NAME}" --format {% raw %}'{{.Config.Image}}'{% endraw %})
+
+            # Get the username from environment variables
+            ENV_VARS=$(docker inspect "${CONTAINER_NAME}" --format {% raw %}'{{range .Config.Env}}{{println .}}{{end}}'{% endraw %})
+
+            if echo "${IMAGE}" | grep -q "bitnami/postgresql"; then
+              # Bitnami PostgreSQL
+              POSTGRES_USER=$(echo "${ENV_VARS}" | grep "POSTGRESQL_USERNAME=" | cut -d= -f2 || echo "postgres")
+              if [ -z "${POSTGRES_USER}" ]; then
+                POSTGRES_USER="postgres"
+              fi
+              echo "Creating backup for Bitnami PostgreSQL container: ${CONTAINER_NAME} with user: ${POSTGRES_USER}"
+              docker exec "${CONTAINER_NAME}" pg_dumpall -U "${POSTGRES_USER}" -h localhost > "${BACKUP_FILE}"
+            else
+              # Standard PostgreSQL - check for POSTGRES_USER env var
+              POSTGRES_USER=$(echo "${ENV_VARS}" | grep "POSTGRES_USER=" | cut -d= -f2)
+              if [ -z "${POSTGRES_USER}" ]; then
+                # Default to postgres if no user specified
+                POSTGRES_USER="postgres"
+              fi
+              echo "Creating backup for standard PostgreSQL container: ${CONTAINER_NAME} with user: ${POSTGRES_USER}"
+              docker exec "${CONTAINER_NAME}" pg_dumpall -U "${POSTGRES_USER}" -h localhost > "${BACKUP_FILE}"
+            fi
+
+            # Verify backup was created and has content
+            if [ ! -s "${BACKUP_FILE}" ]; then
+              echo "Error: Backup file is empty or was not created"
+              rm -f "${BACKUP_FILE}"
+              exit 1
+            fi
+
+            # Compress the backup
+            gzip "${BACKUP_FILE}"
+            COMPRESSED_SIZE=$(stat -c%s "${BACKUP_FILE}.gz" 2>/dev/null || echo "unknown")
+            echo "Backup created successfully: ${BACKUP_FILE}.gz (${COMPRESSED_SIZE} bytes)"
+          register: backup_results
+          loop: "{{ postgres_containers }}"
+          loop_control:
+            loop_var: container
+          environment:
+            PGPASSWORD: ""  # Will be set by container's environment
+
+        - name: Verify backup files were created
+          ansible.builtin.stat:
+            path: "{{ backup_base_dir }}/{{ container.Names }}"
+          register: backup_dirs
+          loop: "{{ postgres_containers }}"
+          loop_control:
+            loop_var: container
+
+        - name: Clean up old backups (retain minimum 5, delete older than 30 days)
+          ansible.builtin.shell: |
+            set -e
+            CONTAINER_NAME="{{ container.Names }}"
+            BACKUP_BASE_DIR="{{ backup_base_dir }}"
+            BACKUP_DIR="${BACKUP_BASE_DIR}/${CONTAINER_NAME}"
+
+            # Ensure backup directory exists
+            if [ ! -d "${BACKUP_DIR}" ]; then
+              echo "Container ${CONTAINER_NAME}: No backup directory found, skipping cleanup"
+              exit 0
+            fi
+
+            # Count current backups
+            BACKUP_COUNT=$(find "${BACKUP_DIR}" -name "postgres_backup_*.sql.gz" 2>/dev/null | wc -l)
+
+            if [ "${BACKUP_COUNT}" -gt {{ min_backup_count }} ]; then
+              # Remove backups older than retention period, but keep minimum count
+              find "${BACKUP_DIR}" -name "postgres_backup_*.sql.gz" -type f -mtime +{{ backup_retention_days }} -print0 2>/dev/null | \
+              while IFS= read -r -d '' file; do
+                REMAINING_COUNT=$(find "${BACKUP_DIR}" -name "postgres_backup_*.sql.gz" 2>/dev/null | wc -l)
+                if [ "${REMAINING_COUNT}" -gt {{ min_backup_count }} ]; then
+                  echo "Removing old backup: ${file}"
+                  rm -f "${file}"
+                else
+                  echo "Keeping backup to maintain minimum count: ${file}"
+                  break
+                fi
+              done
+            fi
+
+            # Show current backup count
+            FINAL_COUNT=$(find "${BACKUP_DIR}" -name "postgres_backup_*.sql.gz" 2>/dev/null | wc -l)
+            echo "Container ${CONTAINER_NAME}: ${FINAL_COUNT} backups retained"
+          register: cleanup_results
+          loop: "{{ postgres_containers }}"
+          loop_control:
+            loop_var: container
+
+        - name: Display backup summary
+          ansible.builtin.debug:
+            msg: |
+              PostgreSQL Backup Summary:
+              {% for result in backup_results.results %}
+              - {{ result.container.Names }}: {{ "Success" if result.rc == 0 else "Failed" }}
+              {% endfor %}
+
+              Cleanup Summary:
+              {% for result in cleanup_results.results %}
+              {{ result.stdout_lines | join('\n') }}
+              {% endfor %}
+
+      rescue:
+        - name: Handle backup failures
+          ansible.builtin.debug:
+            msg: "Backup failed for some containers. Check logs above for details."
+
+        - name: Fail the playbook if critical error
+          ansible.builtin.fail:
+            msg: "Critical backup failure detected"
+          when: ansible_failed_result.rc is defined and ansible_failed_result.rc != 0

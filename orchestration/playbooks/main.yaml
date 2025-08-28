@@ -1,0 +1,7 @@
+- name: Provision workstations
+  import_playbook: workstation.yaml
+  when: provision_workstations | default(true)
+
+- name: Provision servers
+  import_playbook: server.yaml
+  when: provision_servers | default(true)
