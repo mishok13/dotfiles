@@ -22,9 +22,11 @@ repos:
     rev: v25.4.0
     hooks:
       - id: ansible-lint
+        entry: python3 -m ansiblelint -v --nocolor
         args:
           - "-p"
-          - "orchestration/playbooks/playbook.yaml"
+          - "orchestration/playbooks/main.yaml"
+
 
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 40.3.1

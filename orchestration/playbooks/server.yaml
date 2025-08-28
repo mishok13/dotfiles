@@ -1,0 +1,288 @@
+---
+- name: System configuration for servers
+  hosts: server
+  become: false
+
+  tasks:
+    - name: Install system packages
+      when: ansible_facts['os_family'] == "Debian"
+      become: true
+      tags:
+        - packages
+        - apt
+      block:
+        - name: Download signing key
+          ansible.builtin.get_url:
+            url: "{{ item.url }}"
+            dest: "{{ item.path }}"
+            mode: '644'
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('url')
+        - name: Setup apt repository
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by={{ item.path }}] {{ item.repo }}"
+            state: present
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('repo')
+        - name: Setup PPAs
+          ansible.builtin.apt_repository:
+            repo: "{{ item.ppa }}"
+          loop: "{{ apt_repos + (apt_repos_extra | default([])) }}"
+          when: item.get('ppa')
+        - name: Install packages
+          ansible.builtin.apt:
+            state: present
+            name: "{{ packages + (packages_extra | default([])) }}"
+
+    - name: Configure Docker
+      when: ansible_facts['system'] == "Linux"
+      become: true
+      tags:
+        - docker
+      block:
+        - name: Setup docker group
+          ansible.builtin.group:
+            name: docker
+            state: present
+        - name: Add user to docker group
+          ansible.builtin.user:
+            name: "{{ lookup('env', 'USER') }}"
+            groups: docker
+            append: true
+
+- name: Basic server provisioning
+  hosts: server
+  tasks:
+
+    - name: Set a nicer hostname
+      become: true
+      ansible.builtin.hostname:
+        name: "{{ host }}"
+
+- name: Copy shared Docker Compose definitions
+  hosts: server
+  tags:
+    - docker
+  tasks:
+
+    - name: Copy Compose definitions
+      ansible.posix.synchronize:
+        src: templates/compose/
+        dest: ~/.config/compose/
+        rsync_opts:
+          - "--archive"
+          - "--delete"
+      notify:
+        - Docker Compose | Up
+
+    - name: Docker Compose | Install compose.yaml
+      ansible.posix.synchronize:
+        src: "{{ compose_file }}"
+        dest: "~/.config/compose.yaml"
+      notify:
+        - "Docker Compose | Up"
+
+  handlers:
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
+
+- name: Configure firewall and services
+  hosts: orangepi
+  tasks:
+
+    - name: UFW | Configure defaults
+      become: true
+      community.general.ufw:
+        direction: "{{ item.direction }}"
+        policy: "{{ item.policy }}"
+      with_items:
+        - { direction: 'incoming', policy: 'deny' }
+        - { direction: 'outgoing', policy: 'allow' }
+      tags:
+        - firewall
+
+    - name: UFW | Configure rules
+      become: true
+      community.general.ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      loop: "{{ firewall_rules }}"
+      tags:
+        - firewall
+
+    - name: UFW | Enable
+      become: true
+      community.general.ufw:
+        logging: "on"
+        state: enabled
+      tags:
+        - firewall
+
+    - name: Docker Compose | Directory layout
+      tags:
+        - docker
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "~/.config/home-assistant"
+          mode: '0755'
+        - path: "~/.config/atuin"
+          mode: '0755'
+        - path: "~/.config/prometheus"
+          mode: '0755'
+        - path: "~/.config/grafana"
+          mode: '0755'
+
+    # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
+    - name: Resolved | Disable stub
+      become: true
+      tags:
+        - dns
+      block:
+        - name: Resolved | Update config
+          ansible.builtin.lineinfile:
+            path: /etc/systemd/resolved.conf
+            regexp: '#?DNSStubListener=yes'
+            line: 'DNSStubListener=no'
+          notify:
+            - Resolved | Restart
+        - name: Resolved | Link resolv.conf
+          ansible.builtin.file:
+            path: "/etc/resolv.conf"
+            src: "/run/systemd/resolve/resolv.conf"
+            state: link
+            force: true
+
+    - name: Caddy | Configure
+      become: true
+      ansible.builtin.copy:
+        src: templates/Caddyfile
+        dest: "/etc/caddy/Caddyfile"
+        mode: "0644"
+      tags:
+        - caddy
+      notify:
+        - Caddy | Restart
+
+  handlers:
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
+
+- name: Install and configure Prometheus Node Exporter
+  hosts: server
+  become: true
+  roles:
+    - role: prometheus.prometheus.node_exporter
+      vars:
+        # renovate: datasource=github-tags depName=prometheus/node_exporter
+        node_exporter_version: "1.9.0"
+        node_exporter_state: started
+      tags:
+        - monitoring
+        - system
+
+- name: Monitoring | Configuration
+  hosts: orangepi
+  become: false
+  tasks:
+    - name: Prometheus | Configuration
+      ansible.builtin.copy:
+        src: templates/prometheus.yml
+        dest: "~/.config/prometheus/prometheus.yml"
+        mode: "0644"
+      tags:
+        - docker
+        - monitoring
+      notify:
+        - Docker Compose | Restart
+  handlers:
+    - name: Handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
+
+- name: NFS Server
+  hosts: fileshare
+  become: true
+  tags:
+    - nfs
+  tasks:
+    - name: NFS Server | Packages
+      ansible.builtin.apt:
+        state: present
+        name:
+          - nfs-kernel-server
+    - name: NFS Server | Directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: '0777'
+      loop: "{{ nfs_exports }}"
+    - name: NFS Server | Exports
+      ansible.builtin.template:
+        src: templates/exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: '0644'
+      notify: NFS Server | Restart
+    - name: NFS Server | Verify
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      with_items:
+        - nfs-kernel-server
+        - rpcbind
+
+  handlers:
+    - name: NFS Server | Restart
+      ansible.builtin.service:
+        name: nfs-kernel-server
+        state: restarted
+
+- name: NFS Client
+  hosts: nfsclient
+  become: true
+  tags:
+    - nfs
+  tasks:
+    - name: NFS Client | Packages
+      ansible.builtin.apt:
+        state: present
+        name:
+          - nfs-common
+    - name: NFS Client | Directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: '0777'
+      loop: "{{ nfs_mounts }}"
+    - name: NFS Client | Mount
+      ansible.posix.mount:
+        path: "{{ item.path }}"
+        src: "{{ item.source }}"
+        fstype: nfs
+        opts: "{{ item.opts }}"
+        state: mounted
+      loop: "{{ nfs_mounts }}"
+
+- name: Grafana Config
+  hosts: grafana-host
+  tags:
+    - monitoring
+  tasks:
+    - name: Grafana Config | Directory
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "~/.config/grafana/"
+          mode: '0755'
+    - name: Grafana Config | Config
+      ansible.builtin.copy:
+        src: templates/grafana.ini
+        dest: "~/.config/grafana/grafana.ini"
+        mode: "0644"
