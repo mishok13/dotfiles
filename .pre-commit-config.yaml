@@ -22,6 +22,7 @@ repos:
     rev: v25.4.0
     hooks:
       - id: ansible-lint
+        files: ^orchestration/.*\.(ya?ml|yml|j2)$
         args:
           - "-p"
           - "orchestration/playbooks/playbook.yaml"

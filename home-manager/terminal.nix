@@ -59,7 +59,7 @@
           condition = "gitdir:~/work/**";
           contents = {
             init = {
-              templatedir = "/Users/andriimishkovskyi/work/.gittemplate";
+              templatedir = "~/work/.gittemplate";
             };
             url = {
               "kpn-github:" = {
