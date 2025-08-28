@@ -15,24 +15,38 @@
   };
 
   outputs =
-    { nixpkgs, home-manager, nixgl, ... }:
+    {
+      nixpkgs,
+      home-manager,
+      nixgl,
+      ...
+    }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      mkHomeConfiguration =
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+
+          # Specify your home configuration modules here, for example,
+          # the path to your home.nix.
+          modules = [ ./home.nix ];
+
+          # Optionally use extraSpecialArgs
+          # to pass through arguments to home.nix
+          extraSpecialArgs = {
+            inherit nixgl system;
+          };
+        };
     in
     {
-      homeConfigurations."mishok13" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
-        extraSpecialArgs = {
-          inherit nixgl;
-        };
+      homeConfigurations = {
+        "mishok13" = mkHomeConfiguration "x86_64-linux";
+        "mishok13-aarch64-linux" = mkHomeConfiguration "aarch64-linux";
+        "mishok13-x86_64-darwin" = mkHomeConfiguration "x86_64-darwin";
+        "mishok13-aarch64-darwin" = mkHomeConfiguration "aarch64-darwin";
       };
     };
 }
