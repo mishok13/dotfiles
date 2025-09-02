@@ -1,4 +1,9 @@
-function _fzf_search_directory --description "Search the current directory. Replace the current token with the selected file paths."
+# Original by Patrick Fong under MIT license here:
+# https://github.com/PatrickF1/fzf.fish/blob/46c7bc6354494be5d869d56a24a46823a9fdded0/functions/_fzf_search_directory.fish
+
+# This bit is modified to default to searching from home directory instead of current by default and is otherwise unchanged.
+
+function _fzf_search_directory_or_home --description "Search the current directory. Replace the current token with the selected file paths."
     # Directly use fd binary to avoid output buffering delay caused by a fd alias, if any.
     # Debian-based distros install fd as fdfind and the fd package is something else, so
     # check for fdfind first. Fall back to "fd" for a clear error message.
