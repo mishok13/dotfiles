@@ -7,6 +7,25 @@
   ...
 }:
 
+let
+  ignoredPaths =
+    builtins.map
+      (
+        path:
+        builtins.concatStringsSep "/" [
+          config.home.homeDirectory
+          path
+          "**"
+        ]
+      )
+      [
+        "Library"
+        "Music"
+        "Pictures"
+        "Movies"
+        "Videos"
+      ];
+in
 {
   programs = {
     git = {
@@ -146,6 +165,12 @@
       enableFishIntegration = true;
     };
 
+    fd = {
+      enable = true;
+      hidden = true;
+      ignores = ignoredPaths;
+    };
+
     starship = {
       enable = true;
       enableFishIntegration = true;
@@ -194,7 +219,6 @@
     pkgs.clang
     pkgs.claude-code
     pkgs.eza
-    pkgs.fd
     pkgs.fish
     pkgs.fzf
     pkgs.gemini-cli
@@ -219,6 +243,8 @@
   home.file = {
     # Git config now managed by Home Manager programs.git
     # Remove the external symlink
+
+    ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
   };
 
   nixpkgs.config.allowUnfreePredicate =
