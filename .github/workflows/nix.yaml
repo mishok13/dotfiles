@@ -17,4 +17,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
-      - run: nix build .
+      - run: |
+          cd home-manager
+          nix build .
