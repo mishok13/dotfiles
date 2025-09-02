@@ -7,6 +7,25 @@
   ...
 }:
 
+let
+  ignoredPaths =
+    builtins.map
+      (
+        path:
+        builtins.concatStringsSep "/" [
+          config.home.homeDirectory
+          path
+          "**"
+        ]
+      )
+      [
+        "Library"
+        "Music"
+        "Pictures"
+        "Movies"
+        "Videos"
+      ];
+in
 {
   programs = {
     git = {
@@ -149,24 +168,7 @@
     fd = {
       enable = true;
       hidden = true;
-      ignores =
-        builtins.map
-          (
-            path:
-            builtins.concatStringsSep "/" [
-              config.home.homeDirectory
-              path
-              "**"
-            ]
-          )
-          [
-            "Library"
-            "Music"
-            "Pictures"
-            "Movies"
-            "Music"
-            "Videos"
-          ];
+      ignores = ignoredPaths;
     };
 
     starship = {
@@ -241,6 +243,8 @@
   home.file = {
     # Git config now managed by Home Manager programs.git
     # Remove the external symlink
+
+    ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
   };
 
   nixpkgs.config.allowUnfreePredicate =
