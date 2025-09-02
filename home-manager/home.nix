@@ -19,6 +19,8 @@
   home.stateVersion = "25.05";
 
   home.sessionVariables = {
+    ANSIBLE_NOCOWS = "1"; # Mooooot the cows
+
     # EDITOR = "emacs";
     # SHELL = "${pkgs.fish}/bin/fish";
   };
