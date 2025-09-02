@@ -146,6 +146,29 @@
       enableFishIntegration = true;
     };
 
+    fd = {
+      enable = true;
+      hidden = true;
+      ignores =
+        builtins.map
+          (
+            path:
+            builtins.concatStringsSep "/" [
+              config.home.homeDirectory
+              path
+              "**"
+            ]
+          )
+          [
+            "Library"
+            "Music"
+            "Pictures"
+            "Movies"
+            "Music"
+            "Videos"
+          ];
+    };
+
     starship = {
       enable = true;
       enableFishIntegration = true;
@@ -194,7 +217,6 @@
     pkgs.clang
     pkgs.claude-code
     pkgs.eza
-    pkgs.fd
     pkgs.fish
     pkgs.fzf
     pkgs.gemini-cli
