@@ -19,4 +19,4 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
       - run: |
           cd home-manager
-          nix build .
+          nix run nixpkgs#home-manager -- build --flake .
