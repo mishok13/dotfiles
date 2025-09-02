@@ -91,6 +91,7 @@
         "**/.claude/settings.local.json"
       ];
     };
+
     bash = {
       enable = false;
     };
