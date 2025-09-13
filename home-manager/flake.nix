@@ -26,12 +26,18 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+
+          commitSignProgram =
+            if pkgs.stdenv.isDarwin then
+              "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+            else
+              "/opt/1Password/op-ssh-sign";
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./home.nix ];
           extraSpecialArgs = {
-            inherit nixgl system;
+            inherit nixgl system commitSignProgram;
           };
         };
     in
@@ -41,6 +47,16 @@
         "mishok13-aarch64-linux" = mkHomeConfiguration "aarch64-linux";
         "mishok13-x86_64-darwin" = mkHomeConfiguration "x86_64-darwin";
         "mishok13-aarch64-darwin" = mkHomeConfiguration "aarch64-darwin";
+        "mishok13-wsl" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          modules = [ ./home.nix ];
+          extraSpecialArgs = {
+            nixgl = nixgl;
+            system = "x86_64-linux";
+            commitSignProgram = "/mnt/c/Users/mishok13/AppData/Local/1Password/app/8/op-ssh-sign-wsl";
+            sshCommand = "ssh.exe";
+          };
+        };
       };
     };
 }

@@ -4,6 +4,8 @@
   lib,
   nixgl,
   system,
+  commitSignProgram,
+  sshCommand,
   ...
 }:
 
@@ -12,6 +14,9 @@
     ./gui.nix
     ./terminal.nix
   ];
+
+  terminal.commitSignProgram = commitSignProgram;
+  terminal.sshCommand = sshCommand;
 
   home.username = "mishok13";
   home.homeDirectory = "/home/mishok13";

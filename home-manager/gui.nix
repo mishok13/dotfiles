@@ -47,6 +47,7 @@
     pkgs.kitty-themes
     pkgs.nerd-fonts.hack
     pkgs.spotifyd
+    pkgs.emacs
   ];
 
   home.file = {
