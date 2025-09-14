@@ -27,6 +27,20 @@ let
       ];
 in
 {
+  options = {
+    terminal.commitSignProgram = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Path to the GPG signing program for git commits";
+    };
+    terminal.sshCommand = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "ssh command to use by git";
+    };
+  };
+
+  config = {
   programs = {
     git = {
       enable = true;
@@ -37,6 +51,9 @@ in
         };
         user = {
           useConfigOnly = true;
+        };
+        core = lib.mkIf (config.terminal.sshCommand != null) {
+          sshCommand = config.terminal.sshCommand;
         };
         merge = {
           conflictStyle = "zdiff3";
@@ -63,12 +80,8 @@ in
         github = {
           user = "mishok13";
         };
-        "gpg \"ssh\"" = {
-          program =
-            if pkgs.stdenv.isDarwin then
-              "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-            else
-              "/opt/1Password/op-ssh-sign";
+        "gpg \"ssh\"" = lib.mkIf (config.terminal.commitSignProgram != null) {
+          program = config.terminal.commitSignProgram;
         };
       };
 
@@ -252,4 +265,5 @@ in
     builtins.elem (lib.getName pkg) [
       "claude-code"
     ];
+  };
 }
