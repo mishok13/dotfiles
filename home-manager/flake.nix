@@ -12,6 +12,7 @@
       url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
   };
 
   outputs =
@@ -19,6 +20,7 @@
       nixpkgs,
       home-manager,
       nixgl,
+      nix-ai-tools,
       ...
     }:
     let
@@ -26,12 +28,13 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          pkgsLLM = nix-ai-tools.packages.${system};
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./home.nix ];
           extraSpecialArgs = {
-            inherit nixgl system;
+            inherit nixgl system pkgsLLM;
           };
         };
     in

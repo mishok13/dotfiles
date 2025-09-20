@@ -4,6 +4,7 @@
   lib,
   nixgl,
   system,
+  pkgsLLM,
   ...
 }:
 
