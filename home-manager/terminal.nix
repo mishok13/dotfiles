@@ -4,6 +4,7 @@
   lib,
   nixgl,
   system,
+  pkgsLLM,
   ...
 }:
 
@@ -217,11 +218,13 @@ in
     pkgs.bat
     pkgs.cabal-install
     pkgs.clang
-    pkgs.claude-code
     pkgs.eza
     pkgs.fish
     pkgs.fzf
-    pkgs.gemini-cli
+    pkgsLLM.amp
+    pkgsLLM.claude-code
+    pkgsLLM.codex
+    pkgsLLM.gemini-cli
     pkgs.gh
     pkgs.ghc # Required for nixfmt in pre-commit
     pkgs.glab
