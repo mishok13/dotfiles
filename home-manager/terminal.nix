@@ -247,10 +247,6 @@ in
       pkgs.eza
       pkgs.fish
       pkgs.fzf
-      pkgsLLM.amp
-      pkgsLLM.claude-code
-      pkgsLLM.codex
-      pkgsLLM.gemini-cli
       pkgs.gh
       pkgs.ghc # Required for nixfmt in pre-commit
       pkgs.glab
@@ -267,6 +263,11 @@ in
       pkgs.stow
       pkgs.trufflehog
       pkgs.uv
+      pkgsLLM.amp
+      pkgsLLM.claude-code
+      pkgsLLM.codex
+      pkgsLLM.gemini-cli
+      pkgsLLM.goose-cli
     ];
 
     home.file = {

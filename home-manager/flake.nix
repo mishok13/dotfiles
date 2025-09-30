@@ -35,12 +35,19 @@
               "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
             else
               "/opt/1Password/op-ssh-sign";
+          sshCommand = "ssh";
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./home.nix ];
           extraSpecialArgs = {
-            inherit nixgl system pkgsLLM  commitSignProgram;
+            inherit
+              nixgl
+              system
+              pkgsLLM
+              commitSignProgram
+              sshCommand
+              ;
           };
         };
     in
