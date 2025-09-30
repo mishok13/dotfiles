@@ -240,58 +240,36 @@ in
       };
     };
 
-  services = {
-    spotifyd = {
-      enable = true;
-    };
-  };
-
-  home.packages = [
-    pkgs.bat
-    pkgs.cabal-install
-    pkgs.clang
-    pkgs.eza
-    pkgs.fish
-    pkgs.fzf
-    pkgsLLM.amp
-    pkgsLLM.claude-code
-    pkgsLLM.codex
-    pkgsLLM.gemini-cli
-    pkgs.gh
-    pkgs.ghc # Required for nixfmt in pre-commit
-    pkgs.glab
-    # Disabled due to issues with compiling it (i.e. running out of memory)
-    # pkgs.goose-cli
-    pkgs.just
-    pkgs.mise
-    pkgs.nixfmt-rfc-style
-    pkgs.nurl
-    pkgs.pre-commit
-    pkgs.ripgrep
-    pkgs.rustup
-    pkgs.starship
-    pkgs.stow
-    pkgs.trufflehog
-    pkgs.uv
-  ];
-
-  home.file = {
-    # Git config now managed by Home Manager programs.git
-    # Remove the external symlink
-
-    ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
-  };
-
-  nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    builtins.elem (lib.getName pkg) [
-      "claude-code"
+    home.packages = [
+      pkgs.bat
+      pkgs.cabal-install
+      pkgs.clang
+      pkgs.eza
+      pkgs.fish
+      pkgs.fzf
+      pkgsLLM.amp
+      pkgsLLM.claude-code
+      pkgsLLM.codex
+      pkgsLLM.gemini-cli
+      pkgs.gh
+      pkgs.ghc # Required for nixfmt in pre-commit
+      pkgs.glab
+      # Disabled due to issues with compiling it (i.e. running out of memory)
+      # pkgs.goose-cli
+      pkgs.just
+      pkgs.mise
+      pkgs.nixfmt-rfc-style
+      pkgs.nurl
+      pkgs.pre-commit
+      pkgs.ripgrep
+      pkgs.rustup
+      pkgs.starship
+      pkgs.stow
+      pkgs.trufflehog
+      pkgs.uv
     ];
 
     home.file = {
-      # Git config now managed by Home Manager programs.git
-      # Remove the external symlink
-
       ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
     };
 
