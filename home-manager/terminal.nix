@@ -250,8 +250,6 @@ in
       pkgs.gh
       pkgs.ghc # Required for nixfmt in pre-commit
       pkgs.glab
-      # Disabled due to issues with compiling it (i.e. running out of memory)
-      # pkgs.goose-cli
       pkgs.just
       pkgs.mise
       pkgs.nixfmt-rfc-style
@@ -262,6 +260,7 @@ in
       pkgs.starship
       pkgs.stow
       pkgs.trufflehog
+      pkgs.typst
       pkgs.uv
       pkgsLLM.amp
       pkgsLLM.claude-code
