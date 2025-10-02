@@ -219,6 +219,16 @@ in
           };
         };
       };
+
+      gh = {
+        enable = true;
+        settings = {
+          git_protocol = "ssh";
+          aliases = {
+            prm = "pr merge -d -s";
+          };
+        };
+      };
     };
 
     services = {
@@ -247,7 +257,6 @@ in
       pkgs.eza
       pkgs.fish
       pkgs.fzf
-      pkgs.gh
       pkgs.ghc # Required for nixfmt in pre-commit
       pkgs.glab
       pkgs.just
