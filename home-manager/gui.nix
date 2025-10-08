@@ -44,14 +44,25 @@
   };
 
   home.packages = [
+    pkgs.aileron
+    pkgs.emacs
+    pkgs.helvetica-neue-lt-std
+    pkgs.inter-nerdfont
     pkgs.kitty-themes
     pkgs.nerd-fonts.hack
+    pkgs.open-sans
     pkgs.spotifyd
-    pkgs.emacs
   ];
 
   home.file = {
     ".config/emacs".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
   };
+
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (lib.getName pkg) [
+      "helvetica-neue-lt-std"
+    ];
+
 }
