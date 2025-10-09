@@ -270,7 +270,9 @@ in
       pkgs.stow
       pkgs.trufflehog
       pkgs.typst
+      pkgs.typstyle
       pkgs.uv
+      pkgs.zola
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
