@@ -50,6 +50,7 @@
     pkgs.inter-nerdfont
     pkgs.kitty-themes
     pkgs.nerd-fonts.hack
+    pkgs.uiua386
     pkgs.open-sans
     pkgs.spotifyd
   ];

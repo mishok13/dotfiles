@@ -273,6 +273,7 @@ in
       pkgs.typstyle
       pkgs.uv
       pkgs.zola
+      pkgs.uiua
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
