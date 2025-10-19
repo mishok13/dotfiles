@@ -49,6 +49,7 @@ in
         extraConfig = {
           init = {
             defaultBranch = "main";
+            templateDir = "~/.local/share/git/templates/";
           };
           user = {
             useConfigOnly = true;
