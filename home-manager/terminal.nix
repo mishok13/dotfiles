@@ -280,6 +280,7 @@ in
       pkgs.tofu-ls
       pkgs.uv
       pkgs.zola
+      pkgs.uiua
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
