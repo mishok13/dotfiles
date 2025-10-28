@@ -39,6 +39,10 @@
         "ctrl+shift+1" = "launch";
         f1 = "clear_terminal scrollback active";
         f2 = "combine | new_window_with_cwd | new_window_with_cwd | new_window_with_cwd";
+        left = "neighboring_window left";
+        right = "neighboring_window right";
+        up = "neighboring_window up";
+        down = "neighboring_window down";
       };
     };
   };

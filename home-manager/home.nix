@@ -26,10 +26,12 @@
 
   home.sessionVariables = {
     ANSIBLE_NOCOWS = "1"; # Mooooot the cows
+    EDITOR = "emacs";
 
-    # EDITOR = "emacs";
     # SHELL = "${pkgs.fish}/bin/fish";
   };
 
   programs.home-manager.enable = true;
+
+  news.display = "silent";
 }

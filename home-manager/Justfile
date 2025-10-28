@@ -1,0 +1,5 @@
+build profile="mishok13":
+    home-manager build --flake .#{{profile}}
+
+apply profile="mishok13":
+    home-manager switch --flake .#{{profile}}

@@ -24,20 +24,15 @@
       ...
     }:
     let
-      mkHomeConfiguration =
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          pkgsLLM = nix-ai-tools.packages.${system};
-
-          commitSignProgram =
-            if pkgs.stdenv.isDarwin then
-              "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-            else
-              "/opt/1Password/op-ssh-sign";
-          sshCommand = "ssh";
-        in
-        home-manager.lib.homeManagerConfiguration {
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      pkgsLLM = nix-ai-tools.packages.${system};
+      commitSignProgram = "/opt/1Password/op-ssh-sign";
+      sshCommand = "ssh";
+    in
+    {
+      homeConfigurations = {
+        "mishok13" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./home.nix ];
           extraSpecialArgs = {
@@ -50,20 +45,15 @@
               ;
           };
         };
-    in
-    {
-      homeConfigurations = {
-        "mishok13" = mkHomeConfiguration "x86_64-linux";
-        "mishok13-aarch64-linux" = mkHomeConfiguration "aarch64-linux";
-        "mishok13-x86_64-darwin" = mkHomeConfiguration "x86_64-darwin";
-        "mishok13-aarch64-darwin" = mkHomeConfiguration "aarch64-darwin";
-        "mishok13-wsl" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        "wsl" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
           modules = [ ./home.nix ];
           extraSpecialArgs = {
-            nixgl = nixgl;
-            system = "x86_64-linux";
-            pkgsLLM = nix-ai-tools.packages.x86_64-linux;
+            inherit
+              nixgl
+              system
+              pkgsLLM
+              ;
             commitSignProgram = "/mnt/c/Users/mishok13/AppData/Local/1Password/app/8/op-ssh-sign-wsl";
             sshCommand = "ssh.exe";
           };
