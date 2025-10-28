@@ -49,6 +49,7 @@ in
         extraConfig = {
           init = {
             defaultBranch = "main";
+            templateDir = "~/.local/share/git/templates/";
           };
           user = {
             useConfigOnly = true;
@@ -138,6 +139,10 @@ in
         };
         shellInitLast = ''
           fzf_configure_bindings
+          set -gx ATUIN_NOBIND "true"
+          atuin init fish | source
+          bind alt-r _atuin_bind_up
+          bind ctrl-r _atuin_search
         '';
         binds = {
           "alt-c".command = "commandline ~/ && _fzf_search_directory";
@@ -171,6 +176,7 @@ in
         enableFishIntegration = true;
         settings = {
           sync_address = "https://atuin.mishok13.me";
+          filter_mode_shell_up_key_binding = "directory";
         };
       };
 
@@ -271,6 +277,7 @@ in
       pkgs.trufflehog
       pkgs.typst
       pkgs.typstyle
+      pkgs.tofu-ls
       pkgs.uv
       pkgs.zola
       pkgsLLM.amp

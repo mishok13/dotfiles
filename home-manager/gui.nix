@@ -31,7 +31,7 @@
         copy_on_select = true;
         macos_option_as_alt = true;
         enabled_layouts = "tall:bias=70;full_size=2,fat:bias=60;full_size=2;mirrored=false";
-        hide_window_decorations = true;
+        hide_window_decorations = false;
         shell = "${pkgs.fish}/bin/fish";
       };
       keybindings = {
@@ -39,6 +39,10 @@
         "ctrl+shift+1" = "launch";
         f1 = "clear_terminal scrollback active";
         f2 = "combine | new_window_with_cwd | new_window_with_cwd | new_window_with_cwd";
+        left = "neighboring_window left";
+        right = "neighboring_window right";
+        up = "neighboring_window up";
+        down = "neighboring_window down";
       };
     };
   };
