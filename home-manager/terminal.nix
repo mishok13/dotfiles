@@ -235,6 +235,19 @@ in
           };
         };
       };
+
+      ssh = {
+        enable = true;
+        enableDefaultConfig = false;
+        matchBlocks = {
+          "orangepi" = {
+            user = "ubuntu";
+          };
+          "*" = {
+            identityAgent = "~/.1password/agent.sock";
+          };
+        };
+      };
     };
 
     services = {
