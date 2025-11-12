@@ -8,8 +8,12 @@
 }:
 
 {
-  nixGL.packages = nixgl.packages;
-  nixGL.defaultWrapper = "mesa";
+  targets.genericLinux = {
+    nixGL.packages = nixgl.packages;
+    nixGL.defaultWrapper = "mesa";
+    enable = false;
+    gpu.enable = false;
+  };
 
   fonts.fontconfig.enable = true;
 

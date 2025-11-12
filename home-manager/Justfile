@@ -3,3 +3,6 @@ build profile="mishok13":
 
 apply profile="mishok13":
     home-manager switch --flake .#{{profile}}
+
+update input="":
+    nix flake update {{input}}

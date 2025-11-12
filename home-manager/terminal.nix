@@ -45,14 +45,17 @@ in
     programs = {
       git = {
         enable = true;
-        userName = "Andrii Mishkovskyi";
-        extraConfig = {
+        settings = {
+          user = {
+            name = "Andrii Mishkovskyi";
+            useConfigOnly = true;
+          };
           init = {
             defaultBranch = "main";
             templateDir = "~/.local/share/git/templates/";
           };
           user = {
-            useConfigOnly = true;
+
           };
           core = lib.mkIf (config.terminal.sshCommand != null) {
             sshCommand = config.terminal.sshCommand;
@@ -137,6 +140,9 @@ in
           c = "bat";
           hm = "home-manager";
         };
+        interactiveShellInit = ''
+          set fish_greeting
+        '';
         shellInitLast = ''
           fzf_configure_bindings
           set -gx ATUIN_NOBIND "true"
@@ -173,7 +179,7 @@ in
       atuin = {
         enable = true;
         daemon.enable = true;
-        enableFishIntegration = true;
+        enableFishIntegration = false;
         settings = {
           sync_address = "https://atuin.mishok13.me";
           filter_mode_shell_up_key_binding = "directory";
