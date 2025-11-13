@@ -293,13 +293,14 @@ in
       pkgs.rustup
       pkgs.starship
       pkgs.stow
+      pkgs.tofu-ls
       pkgs.trufflehog
       pkgs.typst
       pkgs.typstyle
-      pkgs.tofu-ls
-      pkgs.uv
-      pkgs.zola
       pkgs.uiua
+      pkgs.uv
+      pkgs.watchexec
+      pkgs.zola
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
