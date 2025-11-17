@@ -2,7 +2,7 @@ services:
 
   pihole:
     restart: always
-    image: pihole/pihole:2025.03.0@sha256:6c872c3f8f1954423dbd1c7db661719b447e7b890e231489ada2a6a2904342ff
+    image: pihole/pihole:2025.11.0@sha256:e28e239f55e648a9d32c8f065650acfe987ddebf1cd5f64f1c071e8716156ceb
     container_name: pihole
     ports:
       - "53:53/tcp"
