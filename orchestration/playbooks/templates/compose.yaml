@@ -5,22 +5,6 @@ include:
 
 services:
 
-  postgres_budgeteer:
-    restart: always
-    image: bitnami/postgresql:16@sha256:233f361c5819c180b600d110d7da953bea6f1a00764752643ffb7b78ba85c628
-    volumes:
-      - "~/.local/share/postgres/budgeteer:/bitnami/postgresql"
-    environment:
-      POSTGRESQL_USERNAME: "budgeteer"
-      POSTGRESQL_PASSWORD_FILE: /run/secrets/budgeteer_password
-      POSTGRESQL_DATABASE: "budgeteer"
-    secrets:
-      - budgeteer_password
-    ports:
-      - "54320:5432"
-    networks:
-      - budgeteer
-
   miniflux:
     container_name: miniflux
     image: miniflux/miniflux:2.2.14@sha256:02e50d5b277857e3600c14ec1a6a064a82320077914d8eb546691a5f4c1d406c
@@ -110,10 +94,6 @@ services:
     volumes:
       - hass-matter-data:/data
 
-secrets:
-  budgeteer_password:
-    file: /etc/secrets/budgeteer-password
-
 volumes:
   miniflux-db:
   omada-data:
@@ -123,6 +103,5 @@ volumes:
 networks:
   miniflux:
   omada:
-  budgeteer:
   normal:
     driver: bridge
