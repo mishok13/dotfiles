@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Miniflux PostgreSQL Database Backup Timer
+Requires=miniflux-backup.service
+
+[Timer]
+OnCalendar=daily
+OnCalendar=*-*-* 02:43:14
+Persistent=true
+
+[Install]
+WantedBy=timers.target

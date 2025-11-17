@@ -1,0 +1,8 @@
+[Unit]
+Description=Immich backup
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -lc '/usr/bin/env uv run %h/.local/bin/backup.py immich_postgres immich_server immich_machine_learning -D immich -U postgres'
+StandardOutput=journal
+StandardError=journal

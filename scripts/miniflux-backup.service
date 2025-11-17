@@ -1,0 +1,8 @@
+[Unit]
+Description=Miniflux PostgreSQL Database Backup
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -lc '/usr/bin/env uv run %h/.local/bin/backup.py miniflux-db miniflux -U miniflux -D miniflux'
+StandardOutput=journal
+StandardError=journal

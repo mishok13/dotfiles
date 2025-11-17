@@ -1,0 +1,8 @@
+[Unit]
+Description=Atuin backup
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -lc '/usr/bin/env uv run --script %h/.local/bin/backup.py atuin-db atuin -U atuin -D atuin'
+StandardOutput=journal
+StandardError=journal
