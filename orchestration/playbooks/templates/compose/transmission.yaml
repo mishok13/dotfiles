@@ -34,7 +34,7 @@ services:
       - 8989:8989
 
   radarr:
-    image: lscr.io/linuxserver/radarr:5.26.2.10099-ls278@sha256:dd31e90d63f2e4a941893aaa7648dfb42fd12ccd242823fc4e22d1904bc0eca9
+    image: lscr.io/linuxserver/radarr:6.0.4.10291-ls287@sha256:e26fbfd3782520c0bb820666f041ca056acfe187a8b95214ee1f47512cc05a29
     container_name: radarr
     restart: unless-stopped
     environment:
@@ -49,7 +49,7 @@ services:
       - 7878:7878
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:1.37.0.5076-ls122@sha256:89eac63d2099477094df8c2329a6a750b8b5e382f8975dd18e7861678b55cca4
+    image: lscr.io/linuxserver/prowlarr:2.3.0.5236-ls132@sha256:3dd3a316f60ea4e6714863286549a6ccaf0b8cf4efe5578ce3fe0e85475cb1cf
     container_name: prowlarr
     environment:
       PUID: "1000"
