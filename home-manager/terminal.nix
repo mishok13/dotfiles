@@ -306,7 +306,7 @@ in
       pkgsLLM.claude-code
       pkgsLLM.codex
       pkgsLLM.gemini-cli
-      pkgsLLM.goose-cli
+      # pkgsLLM.goose-cli
     ];
 
     home.file = {
