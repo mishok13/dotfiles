@@ -284,6 +284,7 @@ in
       pkgs.fzf
       pkgs.ghc # Required for nixfmt in pre-commit
       pkgs.glab
+      pkgs.harper
       pkgs.just
       pkgs.mise
       pkgs.nixfmt-rfc-style
