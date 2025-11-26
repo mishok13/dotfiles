@@ -3,7 +3,7 @@ services:
     container_name: frigate
     privileged: true # this may not be necessary for all setups
     restart: unless-stopped
-    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt@sha256:ddf585cba6986184739840e55cd5637c25b3bd5e9b1dcf306b8a965c420aebd9
+    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt@sha256:7351ca2ddbce6d712c8a13842eeb4248844e5334565e71b4f6ae438ddaf9d04d
     shm_size: "256mb"
     devices: []
       # - /dev/bus/usb:/dev/bus/usb # Passes the USB Coral, needs to be modified for other versions
