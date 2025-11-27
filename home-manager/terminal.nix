@@ -302,6 +302,7 @@ in
       pkgs.uv
       pkgs.watchexec
       pkgs.zola
+      pkgs.nixos-rebuild
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
