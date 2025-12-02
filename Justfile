@@ -3,3 +3,9 @@ test-renovate:
 
 dotfiles-apply:
     home-manager switch --flake ./home-manager#mishok13
+
+nixos-build *target:
+    nix run 'nixpkgs#nixos-rebuild' -- build --flake '.#tiniboi' --target-host {{target}} --sudo --build-host {{target}}
+
+nixos-switch *target:
+    nix run 'nixpkgs#nixos-rebuild' -- switch --flake '.#tiniboi' --target-host {{target}} --sudo --build-host {{target}}
