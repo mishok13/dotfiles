@@ -1,0 +1,11 @@
+# Derived from https://michael.stapelberg.ch/posts/2025-08-24-secret-management-with-sops-nix/
+keys:
+  - &mishok13 age1rmy5ackczx77aq60xgaynz3gj6hx57hf5hdma44s3w72vp496dtq2prywa
+  - &tiniboi age13x06rxv25405a85sqt9cy6vcwuq8nwr9gz7xh4w88vdlc74lkejq8a6u3t
+  - &orangepi age124yz8welpvee2dsk927wzxpd0dlrf7akfama34fd6vrrhtqc3u5sydtne5
+creation_rules:
+  - path_regex: nixos/tiniboi/secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *mishok13
+      - *tiniboi

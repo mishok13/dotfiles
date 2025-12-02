@@ -13,7 +13,6 @@
 {
   imports = [
     ./common.nix
-    ./gui.nix
     ./terminal.nix
   ];
 }

@@ -288,6 +288,7 @@ in
       pkgs.just
       pkgs.mise
       pkgs.nixfmt-rfc-style
+      pkgs.nixos-rebuild
       pkgs.nurl
       pkgs.pre-commit
       pkgs.ripgrep
@@ -300,9 +301,9 @@ in
       pkgs.typstyle
       pkgs.uiua
       pkgs.uv
+      pkgs.vim
       pkgs.watchexec
       pkgs.zola
-      pkgs.nixos-rebuild
       pkgsLLM.amp
       pkgsLLM.claude-code
       pkgsLLM.codex
@@ -315,10 +316,5 @@ in
       ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
     };
 
-    nixpkgs.config.allowUnfreePredicate =
-      pkg:
-      builtins.elem (lib.getName pkg) [
-        "claude-code"
-      ];
   };
 }
