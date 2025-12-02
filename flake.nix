@@ -57,7 +57,7 @@
         };
     in
     {
-      homeConfigurations = {
+      home = {
         "mishok13" = home-manager.lib.homeManagerConfiguration (mkHomeConfig {
           commitSignProgram = "/opt/1Password/op-ssh-sign";
           sshCommand = "ssh";
@@ -68,7 +68,7 @@
         });
       };
 
-      nixosConfigurations = {
+      sys = {
         tiniboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
