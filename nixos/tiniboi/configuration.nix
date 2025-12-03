@@ -21,6 +21,22 @@
   ];
 
   networking.hostName = "tiniboi";
+  networking.firewall = {
+    enable = true;
+    # As per https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111 this is the only way to
+    # get Tailscale to work with exit nodes
+    checkReversePath = "loose";
+    # The ports open here are likely excessive and should be trimmed to the minimum required
+    allowedTCPPorts = [
+      80
+      443
+      3478
+    ];
+    allowedUDPPorts = [
+      41641
+      3478
+    ];
+  };
 
   users.users.mishok13 = {
     isNormalUser = true;
@@ -36,6 +52,8 @@
   environment.systemPackages = with pkgs; [
     vim
     htop
+    unixtools.netstat
+    dig
   ];
 
   services.openssh.enable = true;
@@ -45,6 +63,8 @@
     extraUpFlags = [
       "--accept-routes"
       "--accept-dns"
+      "--exit-node=orangepi"
+      "--exit-node-allow-lan-access"
     ];
   };
 
