@@ -24,6 +24,6 @@ jobs:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
       - if: ${{ matrix.type == 'home-manager' }}
-        run: nix build .#home.${{ matrix.target }}.activationPackage
+        run: nix run nixpkgs#home-manager -- build ---flake .#${{ matrix.target }}
       - if: ${{ matrix.type == 'nixos' }}
-        run: nix build .#sys.${{ matrix.target }}.config.system.build.toplevel
+        run: nix run nixpkgs#nixos-rebuild .#${{ matrix.target }}
