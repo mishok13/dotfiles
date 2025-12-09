@@ -3,7 +3,6 @@ Description=Daily Atuin PostgreSQL Database Backup Timer
 Requires=atuin-backup.service
 
 [Timer]
-OnCalendar=daily
 OnCalendar=*-*-* 02:51:29
 Persistent=true
 

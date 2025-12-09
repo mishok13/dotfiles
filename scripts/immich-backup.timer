@@ -3,7 +3,6 @@ Description=Immich backup
 Requires=immich-backup.service
 
 [Timer]
-OnCalendar=daily
 OnCalendar=*-*-* 02:58:49
 Persistent=true
 
