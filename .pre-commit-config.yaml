@@ -19,7 +19,7 @@ repos:
         stages: ["pre-commit", "pre-push"]
 
   - repo: https://github.com/ansible/ansible-lint
-    rev: v25.11.1
+    rev: v25.12.0
     hooks:
       - id: ansible-lint
         files: ^orchestration/.*\.(ya?ml|yml|j2)$
@@ -28,13 +28,13 @@ repos:
           - "orchestration/playbooks/playbook.yaml"
 
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 42.22.0
+    rev: 42.41.0
     hooks:
       - id: renovate-config-validator
         args: [--strict]
 
   - repo: https://github.com/woodruffw/zizmor-pre-commit
-    rev: v1.17.0
+    rev: v1.18.0
     hooks:
       - id: zizmor
 
@@ -45,7 +45,7 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.14.6
+    rev: v0.14.8
     hooks:
       - id: ruff-check
         types_or: [ python ]
