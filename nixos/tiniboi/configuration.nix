@@ -72,6 +72,29 @@
   sops.defaultSopsFile = ./secrets/example.yaml;
   sops.secrets.tailscaleAuthKey = { };
 
+  # NFS mounts from bigboi
+  fileSystems."/mnt/media" = {
+    device = "bigboi:/mnt/media";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=600"
+      "ro"
+    ];
+  };
+
+  fileSystems."/mnt/media/share" = {
+    device = "bigboi:/mnt/media/share";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=600"
+      "rw"
+    ];
+  };
+
   # Do not edit
   system.stateVersion = "25.05";
 }
