@@ -6,10 +6,6 @@
 }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -20,7 +16,6 @@
     "flakes"
   ];
 
-  networking.hostName = "tiniboi";
   networking.firewall = {
     enable = true;
     # As per https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111 this is the only way to
@@ -57,12 +52,15 @@
   ];
 
   services.openssh.enable = true;
+
   services.tailscale = {
     enable = true;
     authKeyFile = config.sops.secrets.tailscaleAuthKey.path;
     extraUpFlags = [
       "--accept-routes"
       "--accept-dns"
+    ];
+    extraSetFlags = [
       "--exit-node=orangepi"
       "--exit-node-allow-lan-access"
     ];
@@ -72,7 +70,6 @@
   sops.defaultSopsFile = ./secrets/example.yaml;
   sops.secrets.tailscaleAuthKey = { };
 
-  # NFS mounts from bigboi
   fileSystems."/mnt/media" = {
     device = "bigboi:/mnt/media";
     fsType = "nfs";
@@ -94,7 +91,4 @@
       "rw"
     ];
   };
-
-  # Do not edit
-  system.stateVersion = "25.05";
 }
