@@ -1,3 +1,5 @@
+# Config used for servers (homelab and cloud alike)
+
 {
   config,
   pkgs,
