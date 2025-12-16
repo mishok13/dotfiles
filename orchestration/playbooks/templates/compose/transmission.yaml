@@ -19,7 +19,7 @@ services:
       - "51413:51413/udp"
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:4.0.15.2941-ls288@sha256:b0ac15772c04f329964ed79cb446ab23fd1ee28f33b58b10f0264feac17d33cd
+    image: lscr.io/linuxserver/sonarr:4.0.16.2944-ls299@sha256:60e5edcac39172294ad22d55d1b08c2c0a9fe658cad2f2c4d742ae017d7874de
     restart: unless-stopped
     container_name: sonarr
     environment:
@@ -34,7 +34,7 @@ services:
       - 8989:8989
 
   radarr:
-    image: lscr.io/linuxserver/radarr:5.26.2.10099-ls278@sha256:dd31e90d63f2e4a941893aaa7648dfb42fd12ccd242823fc4e22d1904bc0eca9
+    image: lscr.io/linuxserver/radarr:5.28.0.10274-ls286@sha256:c984533510abe0219a70e80d15bd0d212b7df21baa0913759c4ce6cc9092240b
     container_name: radarr
     restart: unless-stopped
     environment:
@@ -49,7 +49,7 @@ services:
       - 7878:7878
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:1.37.0.5076-ls122@sha256:89eac63d2099477094df8c2329a6a750b8b5e382f8975dd18e7861678b55cca4
+    image: lscr.io/linuxserver/prowlarr:1.37.0.5076-ls124@sha256:25d21c04c7cc39a706217abb77bb60b283d9eaaf16acf539c930e3c797e21f25
     container_name: prowlarr
     environment:
       PUID: "1000"
