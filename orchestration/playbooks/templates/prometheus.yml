@@ -11,6 +11,11 @@ scrape_configs:
           - 'orangepi:9100'
           - 'bigboi:9100'
           - 'beafiboi:9100'
+          - 'tiniboi:9100'
+  - job_name: gpus
+    static_configs:
+      - targets:
+          - 'beafiboi:9400' # nvidia stats
   - job_name: 'blackbox'
     metrics_path: /probe
     params:
