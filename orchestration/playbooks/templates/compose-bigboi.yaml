@@ -1,4 +1,3 @@
 include:
-  - compose/jellyfin.yaml
   - compose/transmission.yaml
   - compose/immich.yaml
