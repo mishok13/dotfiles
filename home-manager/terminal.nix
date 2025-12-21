@@ -290,6 +290,7 @@ in
       pkgs.nixfmt-rfc-style
       pkgs.nixos-rebuild
       pkgs.nurl
+      pkgs.nushell
       pkgs.pre-commit
       pkgs.ripgrep
       pkgs.rustup

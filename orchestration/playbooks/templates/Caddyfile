@@ -36,7 +36,7 @@ rss.home.mishok13.me, rss.tail.mishok13.me, rss.mishok13.me {
 }
 
 jellyfin.home.mishok13.me, jellyfin.tail.mishok13.me, jellyfin.mishok13.me {
-	reverse_proxy http://bigboi:8096
+	reverse_proxy http://beafiboi:8096
 }
 
 radarr.home.mishok13.me, radarr.tail.mishok13.me, radarr.mishok13.me {

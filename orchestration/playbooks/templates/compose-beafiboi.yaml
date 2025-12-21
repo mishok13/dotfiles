@@ -1,6 +1,7 @@
 include:
-  # - compose/jellyfin.yaml
+  - compose/jellyfin.yaml
+  - compose/nvidia-gpu-exporter.yaml
   # - compose/transmission.yaml
   # - compose/immich.yaml
-  - compose/frigate.yaml
-  - compose/ollama.yaml
+  # - compose/frigate.yaml
+  # - compose/ollama.yaml

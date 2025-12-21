@@ -1,0 +1,8 @@
+services:
+  dcgm-exporter:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:4.4.2-4.7.1-ubuntu22.04
+    ports:
+      - 9400:9400
+    devices:
+      - nvidia.com/gpu=all
+    restart: unless-stopped
