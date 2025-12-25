@@ -309,8 +309,7 @@ in
       pkgsLLM.claude-code
       pkgsLLM.codex
       pkgsLLM.gemini-cli
-      # Disabled due to https://github.com/numtide/nix-ai-tools/issues/1116 :(
-      # pkgsLLM.goose-cli
+      pkgsLLM.goose-cli
     ];
 
     home.file = {

@@ -34,7 +34,7 @@
         scrollback_pager_history_size = 10;
         copy_on_select = true;
         macos_option_as_alt = true;
-        enabled_layouts = "tall:bias=70;full_size=2,fat:bias=60;full_size=2;mirrored=false";
+        enabled_layouts = "tall:bias=70;full_size=2,fat:bias=60;full_size=2;mirrored=false,stack";
         hide_window_decorations = false;
         shell = "${pkgs.fish}/bin/fish";
       };

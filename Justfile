@@ -1,8 +1,14 @@
 test-renovate:
     LOG_LEVEL=debug npx renovate --platform=local --repository-cache=reset
 
-dotfiles-apply:
-    home-manager switch --flake .#mishok13
+apply profile="mishok13":
+    home-manager switch --flake .#{{profile}}
+
+build profile="mishok13":
+    home-manager build --flake .#{{profile}}
+
+update input="":
+    nix flake update {{input}}
 
 nixos-build *target:
     nix run 'nixpkgs#nixos-rebuild' -- build --flake '.#{{ target }}' --target-host {{ target }} --sudo --build-host {{ target }}
