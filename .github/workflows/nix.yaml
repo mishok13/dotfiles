@@ -2,6 +2,12 @@ name: Verify Nix and Home Manager
 
 on:
   pull_request:
+    paths:
+      - 'nixos/**'
+      - 'home-manager/**'
+      - 'flake.nix'
+      - 'flake.lock'
+      - '.github/workflows/nix.yaml'
   push:
     branches: [main]
 
