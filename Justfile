@@ -1,5 +1,5 @@
 test-renovate:
-    LOG_LEVEL=debug npx renovate --platform=local --repository-cache=reset
+    nix run nixpkgs#renovate -- --platform=local --repository-cache=reset
 
 apply profile="mishok13":
     home-manager switch --flake .#{{profile}}

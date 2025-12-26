@@ -34,6 +34,15 @@
       ]
     },
     {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "schedule": [
+        "monthly"
+      ]
+    },
+    {
       "matchPackageNames": [
         "/ollama/",
         "/webui/"
