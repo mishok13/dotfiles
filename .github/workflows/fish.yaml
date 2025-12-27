@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           persist-credentials: false
-      - uses: homebrew/actions/setup-homebrew@646376e6958cd0bf5f97dbc589637255c018d8f0
+      - uses: homebrew/actions/setup-homebrew@de5be2e08e11cf6633df490a1195080edb8e9f5e
       - run: brew install fish
       - name: Verify Fish scripts
         run: |
