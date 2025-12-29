@@ -18,4 +18,4 @@ jobs:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           persist-credentials: false
-      - uses: zizmorcore/zizmor-action@c0e2b1c877e25a91d1d747c438d49199cad29698
+      - uses: zizmorcore/zizmor-action@706c51b5bce7adb027de71ab36d865f5d3fcc7b7
