@@ -86,6 +86,7 @@
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.defaultSopsFile = ./secrets/example.yaml;
   sops.secrets.tailscaleAuthKey = { };
+  sops.secrets.gitlabRunnerAuthenticationToken = { };
 
   fileSystems."/mnt/media" = {
     device = "bigboi:/mnt/media";
@@ -119,5 +120,15 @@
 
   virtualisation.docker = {
     enable = true;
+  };
+
+  services.gitlab-runner = {
+    enable = true;
+    services = {
+      default = {
+        authenticationTokenConfigFile = "/run/secrets/gitlab-runner-default-token-env";
+        dockerImage = "debian:testing"; # THE CUTTING EDGE YO
+      };
+    };
   };
 }
