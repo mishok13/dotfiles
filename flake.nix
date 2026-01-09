@@ -18,13 +18,14 @@
 
     nix-ai-tools = {
       url = "github:numtide/nix-ai-tools";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
+
   };
 
   outputs =
