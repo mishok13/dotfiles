@@ -261,17 +261,8 @@ in
         enable = true;
       };
       podman = {
-        # sudo apt-get install uidmap is required for this to work in debian
+        # `sudo apt-get install uidmap` is required for this to work in debian
         enable = true;
-        containers = {
-          budgeteer = {
-            image = "docker.io/postgres:17.6@sha256:feff5b24fedd610975a1f5e743c51a4b360437f4dc3a11acf740dcd708f413f6";
-            ports = [ "127.0.0.1:54320:5432" ];
-            environment = {
-              POSTGRES_PASSWORD = "foobarbaz";
-            };
-          };
-        };
       };
     };
 
@@ -310,6 +301,7 @@ in
       pkgsLLM.codex
       pkgsLLM.gemini-cli
       pkgsLLM.goose-cli
+      pkgsLLM.beads
     ];
 
     home.file = {
