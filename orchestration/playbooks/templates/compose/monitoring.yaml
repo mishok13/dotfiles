@@ -1,7 +1,7 @@
 services:
 
   prometheus:
-    image: quay.io/prometheus/prometheus:v3.2.1@sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62
+    image: quay.io/prometheus/prometheus:v3.9.1@sha256:1f0f50f06acaceb0f5670d2c8a658a599affe7b0d8e78b898c1035653849a702
     restart: always
     container_name: prometheus
     volumes:
