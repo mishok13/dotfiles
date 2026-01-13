@@ -86,6 +86,13 @@
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.defaultSopsFile = ./secrets/example.yaml;
   sops.secrets.tailscaleAuthKey = { };
+  sops.secrets.gitlabRunnerAuthenticationToken = { };
+
+  # Create the GitLab runner authentication token file in the correct format
+  sops.templates."gitlab-runner-auth".content = ''
+    CI_SERVER_URL=https://gitlab.com
+    CI_SERVER_TOKEN=${config.sops.placeholder.gitlabRunnerAuthenticationToken}
+  '';
 
   fileSystems."/mnt/media" = {
     device = "bigboi:/mnt/media";
@@ -119,5 +126,21 @@
 
   virtualisation.docker = {
     enable = true;
+  };
+
+  services.gitlab-runner = {
+    enable = true;
+    settings = {
+      concurrent = 4;
+    };
+    services = {
+      default = {
+        authenticationTokenConfigFile = config.sops.templates."gitlab-runner-auth".path;
+        dockerImage = "debian:testing";
+        requestConcurrency = 2;
+        limit = 4;
+        description = "HomeLab runner";
+      };
+    };
   };
 }
