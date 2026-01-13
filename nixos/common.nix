@@ -88,6 +88,12 @@
   sops.secrets.tailscaleAuthKey = { };
   sops.secrets.gitlabRunnerAuthenticationToken = { };
 
+  # Create the GitLab runner authentication token file in the correct format
+  sops.templates."gitlab-runner-auth".content = ''
+    CI_SERVER_URL=https://gitlab.com
+    CI_SERVER_TOKEN=${config.sops.placeholder.gitlabRunnerAuthenticationToken}
+  '';
+
   fileSystems."/mnt/media" = {
     device = "bigboi:/mnt/media";
     fsType = "nfs";
@@ -124,10 +130,16 @@
 
   services.gitlab-runner = {
     enable = true;
+    settings = {
+      concurrent = 4;
+    };
     services = {
       default = {
-        authenticationTokenConfigFile = "/run/secrets/gitlab-runner-default-token-env";
-        dockerImage = "debian:testing"; # THE CUTTING EDGE YO
+        authenticationTokenConfigFile = config.sops.templates."gitlab-runner-auth".path;
+        dockerImage = "debian:testing";
+        requestConcurrency = 2;
+        limit = 4;
+        description = "HomeLab runner";
       };
     };
   };
