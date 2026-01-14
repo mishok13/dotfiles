@@ -43,13 +43,6 @@
       ]
     },
     {
-      "matchPackageNames": [
-        "/ollama/",
-        "/webui/"
-      ],
-      "groupName": "llms"
-    },
-    {
       "description": "Detect *arr image updates",
       "matchDatasources": [
         "docker"

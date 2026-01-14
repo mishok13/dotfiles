@@ -4,4 +4,3 @@ include:
   # - compose/transmission.yaml
   # - compose/immich.yaml
   # - compose/frigate.yaml
-  # - compose/ollama.yaml
