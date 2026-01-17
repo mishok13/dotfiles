@@ -1,18 +1,15 @@
 setup:
-    ansible-galaxy install -r requirements.yml
-
-upgrade:
-    ansible-playbook bootstrap/playbook.yaml -t packages
+    uvx --from ansible-core ansible-galaxy install -r requirements.yml
 
 docker-services:
     just play -l server -t docker
 
 packages:
-    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t apt
+    just play -l server -t apt
 
 caddy:
-    ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t caddy
+    just play -l server -t caddy
 
 play *args:
     @mkdir -p .playlogs
-    ANSIBLE_LOG_PATH=.playlogs/$(date '+%Y%m%dT%H%M%S').log ansible-playbook playbooks/playbook.yaml -i inventory.yml -D {{args}}
+    ANSIBLE_LOG_PATH=.playlogs/$(date '+%Y%m%dT%H%M%S').log uvx --from ansible-core ansible-playbook playbooks/playbook.yaml -i inventory.yml -D {{args}}
