@@ -5,21 +5,31 @@
   ...
 }:
 
+let
+  sourceDashboardDir = ./grafana/dashboards;
+  targetDashboardDir = "grafana-dashboards";
+  dashboards = [
+    "blackbox.json"
+    "caddy.json"
+    "node-exporter.json"
+    "nvidia-gpu.json"
+  ];
+
+  makeDashboardPath = name: {
+    name = "${targetDashboardDir}/${name}";
+    value = {
+      source = "${sourceDashboardDir}/${name}";
+      mode = "0444";
+    };
+  };
+in
 {
   sops.secrets.grafanaTelegramBotToken = {
     owner = "grafana";
     group = "grafana";
   };
 
-  environment.etc."grafana-dashboards/blackbox.json" = {
-    source = ./grafana/dashboards/blackbox.json;
-    mode = "0444";
-  };
-
-  environment.etc."grafana-dashboards/nvidia-gpu.json" = {
-    source = ./grafana/dashboards/nvidia-gpu.json;
-    mode = "0444";
-  };
+  environment.etc = builtins.listToAttrs (map makeDashboardPath dashboards);
 
   services.grafana = {
     enable = true;
@@ -77,7 +87,7 @@
           {
             name = "Default";
             type = "file";
-            options.path = "/etc/grafana-dashboards";
+            options.path = "/etc/${targetDashboardDir}";
           }
         ];
       };
