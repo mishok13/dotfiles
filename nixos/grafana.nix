@@ -11,6 +11,11 @@
     group = "grafana";
   };
 
+  environment.etc."grafana-dashboards/blackbox.json" = {
+    source = ./grafana/dashboards/blackbox.json;
+    mode = "0444";
+  };
+
   services.grafana = {
     enable = true;
     openFirewall = true;
@@ -23,11 +28,18 @@
           {
             name = "Prometheus";
             type = "prometheus";
+            uid = "deheily5a2tj4f";
             access = "proxy";
             url = "https://prometheus.mishok13.me";
             jsonData = {
               httpMethod = "POST";
             };
+          }
+        ];
+        deleteDatasources = [
+          {
+            name = "Prometheus";
+            orgId = 1;
           }
         ];
       };
@@ -50,6 +62,17 @@
                 };
               }
             ];
+          }
+        ];
+      };
+
+      dashboards.settings = {
+        apiVersion = 1;
+        providers = [
+          {
+            name = "Default";
+            type = "file";
+            options.path = "/etc/grafana-dashboards";
           }
         ];
       };
