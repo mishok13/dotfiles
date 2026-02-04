@@ -16,6 +16,11 @@
     mode = "0444";
   };
 
+  environment.etc."grafana-dashboards/nvidia-gpu.json" = {
+    source = ./grafana/dashboards/nvidia-gpu.json;
+    mode = "0444";
+  };
+
   services.grafana = {
     enable = true;
     openFirewall = true;
