@@ -6,7 +6,9 @@
     "helpers:pinGitHubActionDigests",
     ":configMigration",
     ":pinDevDependencies",
-    "schedule:weekends"
+    "schedule:weekends",
+    ":maintainLockFilesWeekly",
+    ":prConcurrentLimitNone"
   ],
   "docker-compose": {
     "managerFilePatterns": [
@@ -15,6 +17,9 @@
     ]
   },
   "pre-commit": {
+    "enabled": true
+  },
+  "nix": {
     "enabled": true
   },
   "packageRules": [
@@ -54,6 +59,13 @@
       ],
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-ls(?<revision>.+)$",
       "groupName": "arr"
+    },
+    {
+      "matchManagers": [
+        "ansible",
+        "ansible-galaxy"
+      ],
+      "enabled": false
     }
   ]
 }
