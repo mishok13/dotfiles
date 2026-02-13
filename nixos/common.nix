@@ -143,4 +143,7 @@
       };
     };
   };
+
+  # Required for uv-managed Python to work
+  programs.nix-ld.enable = true;
 }
