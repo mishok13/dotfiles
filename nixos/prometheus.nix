@@ -6,6 +6,11 @@
 }:
 
 {
+  sops.secrets.hassToken = {
+    owner = "prometheus";
+    group = "prometheus";
+  };
+
   services.prometheus.exporters.blackbox = {
     enable = true;
     configFile = pkgs.writeText "blackbox.yml" ''
@@ -22,6 +27,7 @@
   services.prometheus = {
     enable = true;
     port = 9090;
+    checkConfig = "syntax-only";
 
     globalConfig = {
       scrape_interval = "30s";
@@ -87,6 +93,18 @@
         static_configs = [
           {
             targets = [ "127.0.0.1:9115" ];
+          }
+        ];
+      }
+      {
+        job_name = "hass";
+        scrape_interval = "60s";
+        metrics_path = "/api/prometheus";
+        bearer_token_file = config.sops.secrets.hassToken.path;
+        scheme = "https";
+        static_configs = [
+          {
+            targets = [ "hass.mishok13.me" ];
           }
         ];
       }
