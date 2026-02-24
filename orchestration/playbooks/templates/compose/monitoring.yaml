@@ -17,7 +17,7 @@ services:
     container_name: alertmanager
 
   grafana:
-    image: docker.io/grafana/grafana:11.6.9@sha256:8dbbae5093f40e622c66f7f96862f76bdb3764fcffc727ad9952ad5d1ed79f79
+    image: docker.io/grafana/grafana:12.4.0@sha256:b0ae311af06228bcfd4a620504b653db80f5b91e94dc3dc2a5b7dab202bcde20
     restart: unless-stopped
     container_name: grafana
     ports:
