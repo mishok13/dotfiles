@@ -296,7 +296,3 @@ nfsclient:
         - path: /mnt/media
           source: bigboi:/mnt/media
           opts: ro,sync
-
-grafana-host:
-  hosts:
-    orangepi: {}

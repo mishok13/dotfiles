@@ -67,14 +67,6 @@ atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {
 	reverse_proxy http://localhost:8888
 }
 
-prometheus.home.mishok13.me, prometheus.tail.mishok13.me, prometheus.mishok13.me {
-	reverse_proxy http://localhost:9090
-}
-
-grafana.home.mishok13.me, grafana.tail.mishok13.me, grafana.mishok13.me {
-	reverse_proxy http://localhost:3000
-}
-
 llm.home.mishok13.me, llm.tail.mishok13.me, llm.mishok13.me {
 	reverse_proxy http://beafiboi:8080
 }

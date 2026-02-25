@@ -9,6 +9,7 @@
   imports = [
     ./common.nix
     ./tiniboi/caddy.nix
+    ./alertmanager.nix
     ./grafana.nix
     ./prometheus.nix
     ./tiniboi/hardware-configuration.nix
