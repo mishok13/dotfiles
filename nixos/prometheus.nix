@@ -33,6 +33,64 @@
       scrape_interval = "30s";
     };
 
+    alertmanagers = [
+      {
+        scheme = "http";
+        static_configs = [
+          {
+            targets = [ "localhost:${toString config.services.prometheus.alertmanager.port}" ];
+          }
+        ];
+      }
+    ];
+
+    rules = [
+      ''
+        groups:
+          - name: instance_health
+            rules:
+              - alert: InstanceDown
+                expr: up == 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Instance {{ $labels.instance }} down"
+                  description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+          - name: blackbox
+            rules:
+              - alert: BlackboxProbeFailed
+                expr: probe_success == 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Probe failed for {{ $labels.instance }}"
+                  description: "HTTP probe for {{ $labels.instance }} has been failing for more than 5 minutes."
+
+          - name: node
+            rules:
+              - alert: HighCpuUsage
+                expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+                for: 10m
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "High CPU usage on {{ $labels.instance }}"
+                  description: "CPU usage on {{ $labels.instance }} has been above 90% for more than 10 minutes."
+
+              - alert: FilesystemAlmostFull
+                expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|nfs|ramfs",mountpoint!~"/boot|/boot/.+"} / node_filesystem_size_bytes{fstype!~"tmpfs|nfs|ramfs",mountpoint!~"/boot|/boot/.+"}) * 100 < 15
+                for: 10m
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "Filesystem almost full on {{ $labels.instance }}"
+                  description: "Filesystem {{ $labels.mountpoint }} on {{ $labels.instance }} has less than 15% free space."
+      ''
+    ];
+
     scrapeConfigs = [
       {
         job_name = "caddy";

@@ -1,36 +1,5 @@
 services:
 
-  prometheus:
-    image: quay.io/prometheus/prometheus:v3.9.1@sha256:1f0f50f06acaceb0f5670d2c8a658a599affe7b0d8e78b898c1035653849a702
-    restart: always
-    container_name: prometheus
-    volumes:
-      - "~/.local/share/prometheus:/prometheus"
-      - "~/.config/prometheus:/etc/prometheus:ro"
-    ports:
-      - "9090:9090"
-    network_mode: "host"
-
-  alertmanager:
-    image: quay.io/prometheus/alertmanager:v0.30.1@sha256:286ad8838533a5a01d89bd09643f43d2b68b65203123b5700e54a8f80ff9c1f4
-    restart: unless-stopped
-    container_name: alertmanager
-
-  grafana:
-    image: docker.io/grafana/grafana:11.6.9@sha256:8dbbae5093f40e622c66f7f96862f76bdb3764fcffc727ad9952ad5d1ed79f79
-    restart: unless-stopped
-    container_name: grafana
-    ports:
-      - "127.0.0.1:3000:3000"
-    volumes:
-      - "~/.local/share/grafana:/var/lib/grafana"
-      - type: bind
-        source: ~/.config/grafana/grafana.ini
-        target: /etc/grafana/grafana.ini
-
-    networks:
-      - normal
-
   blackbox_exporter:
     image: quay.io/prometheus/blackbox-exporter:v0.28.0@sha256:e753ff9f3fc458d02cca5eddab5a77e1c175eee484a8925ac7d524f04366c2fc
     restart: always

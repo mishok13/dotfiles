@@ -24,11 +24,6 @@ let
   };
 in
 {
-  sops.secrets.grafanaTelegramBotToken = {
-    owner = "grafana";
-    group = "grafana";
-  };
-
   environment.etc = builtins.listToAttrs (map makeDashboardPath dashboards);
 
   services.grafana = {
@@ -55,28 +50,6 @@ in
           {
             name = "Prometheus";
             orgId = 1;
-          }
-        ];
-      };
-
-      alerting.contactPoints.settings = {
-        contactPoints = [
-          {
-            name = "Telegram";
-            receivers = [
-              {
-                type = "telegram";
-                uid = "dehejhje4uu4ge";
-                disableResolveMessage = false;
-                settings = {
-                  bottoken = "$__file{${config.sops.secrets.grafanaTelegramBotToken.path}}";
-                  chatid = "-4745798193";
-                  disable_notification = false;
-                  disable_web_page_preview = false;
-                  protect_content = false;
-                };
-              }
-            ];
           }
         ];
       };
