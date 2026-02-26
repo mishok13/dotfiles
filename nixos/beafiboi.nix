@@ -11,6 +11,7 @@
     ./beafiboi/hardware-configuration.nix
   ];
   networking.hostName = "beafiboi";
+  networking.firewall.allowedTCPPorts = [ 9400 ];
   system.stateVersion = "25.05";
 
   hardware.graphics.enable = true;

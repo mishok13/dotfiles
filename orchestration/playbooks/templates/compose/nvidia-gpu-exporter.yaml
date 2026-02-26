@@ -1,5 +1,6 @@
 services:
   dcgm-exporter:
+    container_name: dcgm-exporter
     image: nvcr.io/nvidia/k8s/dcgm-exporter:4.4.2-4.7.1-ubuntu22.04@sha256:0b98c0aceb106d3eac170bbaf21e70da7bc3a5136991fced511ea1f3dd0022e0
     ports:
       - 9400:9400
