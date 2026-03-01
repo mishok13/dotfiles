@@ -8,6 +8,7 @@
 {
   imports = [
     ./common.nix
+    ./beafiboi/containers.nix
     ./beafiboi/hardware-configuration.nix
   ];
   networking.hostName = "beafiboi";
@@ -35,9 +36,9 @@
     loadModels = [
       "qwen2.5-coder:7b"
       "codellama:7b"
-      "deepseek-coder-v2:7b"
+      "deepseek-coder-v2:16b"
 
-      "llama3.2:7b"
+      "llama3.2:3b"
       "mistral:7b"
       "qwen2.5:7b"
       "llama3.1:8b"
