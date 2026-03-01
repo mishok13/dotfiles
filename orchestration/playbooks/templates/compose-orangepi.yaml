@@ -26,7 +26,7 @@ services:
 
   miniflux-db:
     container_name: miniflux-db
-    image: postgres:16@sha256:d4c3314b2dd74ff23cd6cd07e4d7e737cb6ef791c22a7cbd744cfbfb4815df72
+    image: postgres:16@sha256:78df81b1442dcc764c1104154da7162635e40cfffe67579c42a1c1b96dfc209c
     restart: unless-stopped
     environment:
       - POSTGRES_USER=miniflux
