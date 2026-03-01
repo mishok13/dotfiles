@@ -18,7 +18,7 @@ nixos-switch *target:
 
 docker-services *hosts:
     #!/usr/bin/env nu
-    let valid_hosts = [orangepi bigboi beafiboi tiniboi]
+    let valid_hosts = [orangepi bigboi tiniboi]
     let hosts = "{{ hosts }}" | split words | where {|host| $host != ""} | str downcase | uniq
     let invalid = $hosts | where {|h| $h not-in $valid_hosts}
 
