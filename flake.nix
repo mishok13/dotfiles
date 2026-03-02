@@ -95,6 +95,7 @@
       nixosConfigurations = {
         beafiboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit syncthingDevices; };
           modules = [
             ./nixos/beafiboi.nix
             sops-nix.nixosModules.sops
@@ -115,6 +116,7 @@
         };
         tiniboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit syncthingDevices; };
           modules = [
             ./nixos/tiniboi.nix
             sops-nix.nixosModules.sops

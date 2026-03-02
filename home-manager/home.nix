@@ -15,6 +15,8 @@
     ./common.nix
     ./emacs.nix
     ./kitty.nix
+    ./gui.nix
+    ./syncthing.nix
     ./terminal.nix
   ];
 }

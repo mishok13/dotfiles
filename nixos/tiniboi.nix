@@ -12,6 +12,7 @@
     ./alertmanager.nix
     ./grafana.nix
     ./prometheus.nix
+    ./syncthing.nix
     ./tiniboi/hardware-configuration.nix
   ];
 
