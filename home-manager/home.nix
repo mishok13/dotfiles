@@ -14,6 +14,7 @@
   imports = [
     ./common.nix
     ./gui.nix
+    ./syncthing.nix
     ./terminal.nix
   ];
 }

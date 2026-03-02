@@ -8,6 +8,7 @@
 {
   imports = [
     ./common.nix
+    ./syncthing.nix
     ./beafiboi/containers.nix
     ./beafiboi/hardware-configuration.nix
   ];
