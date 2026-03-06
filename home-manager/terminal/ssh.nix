@@ -11,6 +11,8 @@
         };
         "*" = {
           identityAgent = "~/.1password/agent.sock";
+          serverAliveInterval = 60;
+          serverAliveCountMax = 3;
         };
         "shellhub.com" = {
           hostname = "github.com";

@@ -83,8 +83,11 @@
     ];
   };
 
+  systemd.services.tailscaled.serviceConfig.RestartSec = "5s";
+  systemd.services.tailscaled.stopIfChanged = false;
+
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  sops.defaultSopsFile = ./secrets/example.yaml;
+  sops.defaultSopsFile = ./secrets/secrets.yaml;
   sops.secrets.tailscaleAuthKey = { };
   sops.secrets.gitlabRunnerAuthenticationToken = { };
 

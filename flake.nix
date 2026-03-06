@@ -37,6 +37,19 @@
       sops-nix,
       ...
     }:
+    let
+      syncthingDevices = {
+        tiniboi = {
+          id = "KGJIQ7E-4QRMOTX-NWZ4ZCC-4MJFKCD-PDEVO73-OYBEPSK-DIEHTMC-OLRXUAE";
+        };
+        beafiboi = {
+          id = "A43OEPY-MXDKEEL-PWPKD4L-F2SMCPS-OFWR5L4-56WJGBE-CF6LXIE-5EEMCA6";
+        };
+        clydesdale = {
+          id = "3N565CZ-BQ53D2P-CRX2Y75-PH2A3N5-475JVFI-AQAUM4X-BAVS7WG-ITMHFQX";
+        };
+      };
+    in
     {
       homeConfigurations = {
         "trakehner" = home-manager.lib.homeManagerConfiguration {
@@ -59,13 +72,14 @@
         "clydesdale" = home-manager.lib.homeManagerConfiguration {
           modules = [
             ./home-manager/home.nix
+            ./home-manager/syncthing.nix
             {
               home.username = "mishok13";
               home.homeDirectory = "/home/mishok13";
             }
           ];
           extraSpecialArgs = {
-            inherit nixgl;
+            inherit nixgl syncthingDevices;
             system = "x86_64-linux";
             commitSignProgram = "/opt/1Password/op-ssh-sign";
             sshCommand = "ssh";
@@ -95,6 +109,7 @@
       nixosConfigurations = {
         beafiboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit syncthingDevices; };
           modules = [
             ./nixos/beafiboi.nix
             sops-nix.nixosModules.sops
@@ -115,6 +130,7 @@
         };
         tiniboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit syncthingDevices; };
           modules = [
             ./nixos/tiniboi.nix
             sops-nix.nixosModules.sops
