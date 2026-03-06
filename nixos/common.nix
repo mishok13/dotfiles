@@ -33,34 +33,6 @@
     ];
   };
 
-  users.users.mishok13 = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "docker"
-    ];
-
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHq59/s7ucbxhQD4gdjkK6u/mK9P2497o1FpSG5XcgqP"
-    ];
-  };
-
-  users.users.remotebuild = {
-    isSystemUser = true;
-    group = "remotebuild";
-    useDefaultShell = true;
-
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg9UWz1sYTeA0lFV7C9QZGC7J+baSB4ZZAoYyXvS9w4"
-    ];
-  };
-
-  users.groups.remotebuild = { };
-
-  nix.settings.trusted-users = [ "remotebuild" ];
-
-  security.sudo.wheelNeedsPassword = false;
-
   environment.systemPackages = with pkgs; [
     vim
     htop
@@ -96,28 +68,6 @@
     CI_SERVER_URL=https://gitlab.com
     CI_SERVER_TOKEN=${config.sops.placeholder.gitlabRunnerAuthenticationToken}
   '';
-
-  fileSystems."/mnt/media" = {
-    device = "bigboi:/mnt/media";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=600"
-      "ro"
-    ];
-  };
-
-  fileSystems."/mnt/media/share" = {
-    device = "bigboi:/mnt/media/share";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=600"
-      "rw"
-    ];
-  };
 
   services.prometheus.exporters.node = {
     enable = true;

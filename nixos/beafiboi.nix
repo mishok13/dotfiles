@@ -9,6 +9,9 @@
   imports = [
     ./common.nix
     ./syncthing.nix
+    ./user.nix
+    ./remote-builder.nix
+    ./nfs.nix
     ./beafiboi/containers.nix
     ./beafiboi/hardware-configuration.nix
   ];
