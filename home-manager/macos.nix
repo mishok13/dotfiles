@@ -13,7 +13,7 @@
 {
   imports = [
     ./common.nix
-    ./kitty-linux.nix
     ./terminal.nix
+    ./kitty-mac.nix
   ];
 }

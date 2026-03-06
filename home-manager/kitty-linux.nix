@@ -8,14 +8,16 @@
 }:
 
 {
+  imports = [
+    ./fonts.nix
+  ];
+
   targets.genericLinux = {
     nixGL.packages = nixgl.packages;
     nixGL.defaultWrapper = "mesa";
     enable = false;
     gpu.enable = false;
   };
-
-  fonts.fontconfig.enable = true;
 
   programs = {
     kitty = {
@@ -49,23 +51,6 @@
         down = "neighboring_window down";
       };
     };
-  };
-
-  home.packages = [
-    pkgs.aileron
-    pkgs.emacs
-    pkgs.helvetica-neue-lt-std
-    pkgs.inter-nerdfont
-    pkgs.kitty-themes
-    pkgs.nerd-fonts.hack
-    pkgs.uiua386
-    pkgs.open-sans
-    pkgs.spotifyd
-  ];
-
-  home.file = {
-    ".config/emacs".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
   };
 
 }

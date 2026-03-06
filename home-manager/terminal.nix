@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  nixgl,
   system,
   pkgsLLM,
   ...
@@ -43,6 +42,25 @@ in
 
   config = {
     programs = {
+      kubecolor = {
+        enable = true;
+      };
+      docker-cli = {
+        enable = true;
+        settings = {
+          auths = {
+            "ghcr.io" = { };
+          };
+          credsStore = "osxkeychain";
+          cliPluginsExtraDirs = [
+            "/opt/homebrew/lib/docker/cli-plugins"
+          ];
+        };
+      };
+
+      lazydocker = {
+        enable = true;
+      };
       git = {
         enable = true;
         settings = {
@@ -54,8 +72,8 @@ in
             defaultBranch = "main";
             templateDir = "~/.local/share/git/templates/";
           };
-          user = {
-
+          http = {
+            sslVerify = false;
           };
           core = lib.mkIf (config.terminal.sshCommand != null) {
             sshCommand = config.terminal.sshCommand;
@@ -99,11 +117,8 @@ in
                 templatedir = "~/work/.gittemplate";
               };
               url = {
-                "kpn-github:" = {
-                  insteadOf = "git@github.com:";
-                };
-                "kpn-gitlab:" = {
-                  insteadOf = "git@gitlab.com:";
+                "git@shellhub.com:sede-enterprise/" = {
+                  insteadOf = "git@github.com:sede-enterprise/";
                 };
               };
               include = {
@@ -142,6 +157,7 @@ in
         };
         interactiveShellInit = ''
           set fish_greeting
+          printenv PATH
         '';
         shellInitLast = ''
           fzf_configure_bindings
@@ -179,7 +195,7 @@ in
       atuin = {
         enable = true;
         daemon.enable = true;
-        enableFishIntegration = false;
+        enableFishIntegration = true;
         settings = {
           sync_address = "https://atuin.mishok13.me";
           filter_mode_shell_up_key_binding = "directory";
@@ -237,7 +253,10 @@ in
         settings = {
           git_protocol = "ssh";
           aliases = {
+            ci = "pr checks --watch";
             prm = "pr merge -d -s";
+            prv = "pr view";
+            prw = "pr view -w";
           };
         };
       };
@@ -252,17 +271,37 @@ in
           "*" = {
             identityAgent = "~/.1password/agent.sock";
           };
+          "shellhub.com" = {
+            hostname = "github.com";
+            identityFile = "~/.ssh/work";
+          };
         };
       };
     };
 
+    # services = {
+    #   spotifyd = {
+    #     enable = true;
+    #   };
+    #   podman = {
+    #     # `sudo apt-get install uidmap` is required for this to work in debian
+    #     enable = true;
+    #   };
+    # };
+
     services = {
-      spotifyd = {
+      colima = {
         enable = true;
-      };
-      podman = {
-        # `sudo apt-get install uidmap` is required for this to work in debian
-        enable = true;
+        # profiles  = {
+        #   default = {
+        #     isActive = true;
+        #     isService = true;
+        #     settings = {
+        #       cpu = 4;
+        #       memory = 6;
+        #     };
+        #   };
+        # };
       };
     };
 
@@ -270,6 +309,7 @@ in
       pkgs.bat
       pkgs.cabal-install
       pkgs.clang
+      pkgs.dive
       pkgs.eza
       pkgs.fish
       pkgs.fzf
@@ -277,6 +317,7 @@ in
       pkgs.glab
       pkgs.harper
       pkgs.just
+      pkgs.ispell
       pkgs.mise
       pkgs.nixfmt-rfc-style
       pkgs.nixos-rebuild
@@ -296,12 +337,12 @@ in
       pkgs.vim
       pkgs.watchexec
       pkgs.zola
-      pkgsLLM.amp
-      pkgsLLM.claude-code
-      pkgsLLM.codex
-      pkgsLLM.gemini-cli
-      pkgsLLM.goose-cli
-      pkgsLLM.beads
+      # pkgsLLM.amp
+      # pkgsLLM.claude-code
+      # pkgsLLM.codex
+      # pkgsLLM.gemini-cli
+      # pkgsLLM.goose-cli
+      # pkgsLLM.beads
     ];
 
     home.file = {

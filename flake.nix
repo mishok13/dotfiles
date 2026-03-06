@@ -38,23 +38,42 @@
       ...
     }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgsLLM = nix-ai-tools.packages.${system};
       mkHomeConfig =
-        { commitSignProgram, sshCommand }:
         {
-          inherit pkgs;
-          modules = [ ./home-manager/home.nix ];
+          commitSignProgram,
+          sshCommand,
+          system,
+          user,
+        }:
+        {
+          modules =
+            if system == "aarch64-darwin" then
+              [
+                ./home-manager/macos.nix
+                ./home-manager/onepassword.nix
+                {
+                  home.username = user;
+                  home.homeDirectory = "/Users/${user}";
+                }
+              ]
+            else
+              [
+                ./home-manager/home.nix
+                {
+                  home.username = user;
+                  home.homeDirectory = "/home/${user}";
+                }
+              ];
           extraSpecialArgs = {
             inherit
               nixgl
               system
-              pkgsLLM
               commitSignProgram
               sshCommand
               ;
+            pkgsLLM = nix-ai-tools.packages.${system};
           };
+          pkgs = nixpkgs.legacyPackages.${system};
         };
     in
     {
@@ -62,10 +81,20 @@
         "mishok13" = home-manager.lib.homeManagerConfiguration (mkHomeConfig {
           commitSignProgram = "/opt/1Password/op-ssh-sign";
           sshCommand = "ssh";
+          system = "x86_64-linux";
+          user = "mishok13";
+        });
+        "C307G4T99J" = home-manager.lib.homeManagerConfiguration (mkHomeConfig {
+          commitSignProgram = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+          sshCommand = "ssh";
+          system = "aarch64-darwin";
+          user = "Andrii.Mishkovskyi";
         });
         "wsl" = home-manager.lib.homeManagerConfiguration (mkHomeConfig {
           commitSignProgram = "/mnt/c/Users/mishok13/AppData/Local/1Password/app/8/op-ssh-sign-wsl";
           sshCommand = "ssh.exe";
+          system = "x86_64-linux";
+          user = "mishok13";
         });
       };
 
@@ -81,7 +110,8 @@
               home-manager.useUserPackages = true;
               home-manager.users.mishok13 = import ./home-manager/server.nix;
               home-manager.extraSpecialArgs = {
-                inherit nixgl pkgsLLM sops-nix;
+                inherit nixgl sops-nix;
+                pkgsLLM = nix-ai-tools.packages."x86_64-linux";
                 system = "x86_64-linux";
                 commitSignProgram = "/opt/1Password/op-ssh-sign";
                 sshCommand = "ssh";
@@ -100,8 +130,9 @@
               home-manager.useUserPackages = true;
               home-manager.users.mishok13 = import ./home-manager/server.nix;
               home-manager.extraSpecialArgs = {
-                inherit nixgl pkgsLLM sops-nix;
+                inherit nixgl sops-nix;
                 system = "x86_64-linux";
+                pkgsLLM = nix-ai-tools.packages."x86_64-linux";
                 commitSignProgram = "/opt/1Password/op-ssh-sign";
                 sshCommand = "ssh";
               };

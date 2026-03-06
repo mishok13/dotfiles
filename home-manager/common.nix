@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  nixgl,
   system,
   commitSignProgram,
   sshCommand,
@@ -13,14 +12,11 @@
   terminal.commitSignProgram = commitSignProgram;
   terminal.sshCommand = sshCommand;
 
-  home.username = "mishok13";
-  home.homeDirectory = "/home/mishok13";
-
   home.stateVersion = "25.05";
 
   home.sessionVariables = {
     ANSIBLE_NOCOWS = "1";
-    EDITOR = "emacs";
+    EDITOR = "vim";
   };
 
   programs.home-manager.enable = true;

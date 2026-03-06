@@ -1,10 +1,10 @@
 test-renovate:
     nix run nixpkgs#renovate -- --platform=local --repository-cache=reset
 
-apply profile="mishok13":
+apply profile=`hostname`:
     home-manager switch --flake .#{{profile}}
 
-build profile="mishok13":
+build profile=`hostname`:
     home-manager build --flake .#{{profile}}
 
 update input="":

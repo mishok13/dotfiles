@@ -19,15 +19,6 @@ repos:
         language: system
         stages: ["pre-commit", "pre-push"]
 
-  - repo: https://github.com/ansible/ansible-lint
-    rev: v26.2.0
-    hooks:
-      - id: ansible-lint
-        files: ^orchestration/.*\.(ya?ml|yml|j2)$
-        args:
-          - "-p"
-          - "orchestration/playbooks/playbook.yaml"
-
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 43.46.3
     hooks:
