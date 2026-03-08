@@ -54,7 +54,7 @@ in
     pkgs.just
     pkgs.ispell
     pkgs.mise
-    pkgs.nixfmt-rfc-style
+    pkgs.nixfmt
     pkgs.nixos-rebuild
     pkgs.nurl
     pkgs.nushell
