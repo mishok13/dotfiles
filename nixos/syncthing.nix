@@ -7,11 +7,22 @@
 }:
 
 let
-  # Filter out the current host from the device list
-  otherDevices = lib.filterAttrs (name: _: name != config.networking.hostName) syncthingDevices;
+  hostname = config.networking.hostName;
+  otherDevices = lib.filterAttrs (name: _: name != hostname) syncthingDevices;
   otherDeviceNames = builtins.attrNames otherDevices;
 in
 {
+  sops.secrets."syncthing_${hostname}_key" = {
+    owner = "mishok13";
+    group = "users";
+    mode = "0600";
+  };
+  sops.secrets."syncthing_${hostname}_cert" = {
+    owner = "mishok13";
+    group = "users";
+    mode = "0644";
+  };
+
   services.syncthing = {
     enable = true;
     user = "mishok13";
@@ -20,6 +31,9 @@ in
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;
+
+    key = config.sops.secrets."syncthing_${hostname}_key".path;
+    cert = config.sops.secrets."syncthing_${hostname}_cert".path;
 
     settings = {
       devices = otherDevices;

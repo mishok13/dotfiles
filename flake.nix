@@ -37,6 +37,16 @@
       sops-nix,
       ...
     }:
+    let
+      syncthingDevices = {
+        tiniboi = {
+          id = "PLACEHOLDER-TINIBOI";
+        };
+        beafiboi = {
+          id = "PLACEHOLDER-BEAFIBOI";
+        };
+      };
+    in
     {
       homeConfigurations = {
         "trakehner" = home-manager.lib.homeManagerConfiguration {
