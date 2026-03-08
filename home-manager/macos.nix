@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  nixgl,
   system,
   pkgsLLM,
   commitSignProgram,
@@ -13,7 +12,8 @@
 {
   imports = [
     ./common.nix
+    ./emacs.nix
     ./terminal.nix
-    ./kitty-mac.nix
+    ./kitty.nix
   ];
 }
