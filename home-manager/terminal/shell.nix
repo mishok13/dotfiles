@@ -4,6 +4,13 @@
   programs = {
     bash = {
       enable = false;
+      initExtra = ''
+        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+        then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
     };
 
     fish = {
@@ -12,10 +19,21 @@
         l = "eza -la";
         c = "bat";
         hm = "home-manager";
+        kns = "kubens";
+        kx = "kubectx";
+        k = "kubectl";
+        kgp = "kubectl get pods";
+        d = "docker";
+        dbl = "docker build .";
+        drn = "docker run --rm ";
+        dex = "docker exec";
       };
+      # It seems that there's just no other way to make `fish` behave if it's used as the default command in
+      # kitty or ghostty. Just straight up direct manipulation of the PATH.
       interactiveShellInit = ''
         set fish_greeting
-        printenv PATH
+        fish_add_path /nix/var/nix/profiles/default/bin/
+        fish_add_path $HOME/.nix-profile/bin/
       '';
       shellInitLast = ''
         fzf_configure_bindings

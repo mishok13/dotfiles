@@ -15,5 +15,6 @@
     ./emacs.nix
     ./terminal.nix
     ./kitty.nix
+    ./ghostty.nix
   ];
 }
