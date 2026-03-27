@@ -30,6 +30,7 @@ in
       arguments = [
         "--type-add=pypkg:{pyproject.toml,setup.py,setup.cfg,requirements.txt}"
         "--type-add=jenkins:{*.jenkinsfile,Jenkinsfile}"
+        "--hidden"
         "--smart-case"
       ];
     };

@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   options = {
@@ -15,6 +20,11 @@
   };
 
   config = {
+    home.packages = [
+      pkgs.actionlint
+      pkgs.zizmor
+    ];
+
     programs = {
       git = {
         enable = true;

@@ -95,7 +95,7 @@
 
     atuin = {
       enable = true;
-      daemon.enable = true;
+      daemon.enable = pkgs.stdenv.isLinux;
       enableFishIntegration = true;
       settings = {
         sync_address = "https://atuin.mishok13.me";

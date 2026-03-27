@@ -22,8 +22,12 @@ in
       package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
 
       settings = {
+        font-family = "Hack Nerd Font Mono";
         font-size = 14;
+        adjust-cursor-thickness = "50%";
         theme = "Catppuccin Mocha";
+
+        fullscreen = true;
 
         copy-on-select = true;
         right-click-action = "paste";
