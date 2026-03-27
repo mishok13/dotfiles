@@ -2,25 +2,29 @@
   config,
   pkgs,
   lib,
-  nixgl,
-  system,
+  nixgl ? null,
   ...
 }:
 
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
 {
-  targets.genericLinux = {
+  imports = [
+    ./fonts.nix
+  ];
+
+  targets.genericLinux = lib.mkIf isLinux {
     nixGL.packages = nixgl.packages;
     nixGL.defaultWrapper = "mesa";
     enable = false;
     gpu.enable = false;
   };
 
-  fonts.fontconfig.enable = true;
-
   programs = {
     kitty = {
       enable = true;
-      package = (config.lib.nixGL.wrap pkgs.kitty);
+      package = if isLinux then (config.lib.nixGL.wrap pkgs.kitty) else pkgs.kitty;
       font = {
         package = pkgs.nerd-fonts.hack;
         name = "Hack Nerd Font Mono";
@@ -49,23 +53,6 @@
         down = "neighboring_window down";
       };
     };
-  };
-
-  home.packages = [
-    pkgs.aileron
-    pkgs.emacs
-    pkgs.helvetica-neue-lt-std
-    pkgs.inter-nerdfont
-    pkgs.kitty-themes
-    pkgs.nerd-fonts.hack
-    pkgs.uiua386
-    pkgs.open-sans
-    pkgs.spotifyd
-  ];
-
-  home.file = {
-    ".config/emacs".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
   };
 
 }
