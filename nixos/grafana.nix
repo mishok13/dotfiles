@@ -70,6 +70,10 @@ in
     settings = {
       server = {
         http_addr = "0.0.0.0";
+        root_url = "https://grafana.mishok13.me";
+      };
+      security = {
+        secret_key = "SW2YcwTIb9zpOOhoPsMm";
       };
     };
   };

@@ -16,5 +16,6 @@
     ./terminal.nix
     ./kitty.nix
     ./ghostty.nix
+    ./terminal/llm.nix
   ];
 }

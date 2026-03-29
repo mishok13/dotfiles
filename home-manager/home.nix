@@ -16,5 +16,6 @@
     ./emacs.nix
     ./kitty.nix
     ./terminal.nix
+    ./terminal/llm.nix
   ];
 }

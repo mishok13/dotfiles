@@ -20,14 +20,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: mishok13
+          - target: clydesdale
+            type: home-manager
+          - target: trakehner
             type: home-manager
           - target: tiniboi
+            type: nixos
+          - target: beafiboi
             type: nixos
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
+      - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
       - uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
       - if: ${{ matrix.type == 'home-manager' }}
         run: nix run nixpkgs#home-manager -- build --flake .#${{ matrix.target }}
