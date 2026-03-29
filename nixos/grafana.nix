@@ -25,7 +25,6 @@ let
 in
 {
   environment.etc = builtins.listToAttrs (map makeDashboardPath dashboards);
-
   services.grafana = {
     enable = true;
     openFirewall = true;

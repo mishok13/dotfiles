@@ -4,7 +4,7 @@ services:
     container_name: atuin
     restart: always
     image: ghcr.io/atuinsh/atuin:18.13.6@sha256:9bde3fe6b1633c357cb19c07ea49bb9834720e8ff42d04b39ad7865155581150
-    command: server start
+    command: start
     volumes:
       - "~/.config/atuin:/config"
     links:
