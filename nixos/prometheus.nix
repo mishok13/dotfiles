@@ -27,6 +27,7 @@
   services.prometheus = {
     enable = true;
     port = 9090;
+    webExternalUrl = "https://prometheus.mishok13.me";
     checkConfig = "syntax-only";
 
     globalConfig = {
