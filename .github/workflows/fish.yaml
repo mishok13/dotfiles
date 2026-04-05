@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - 'home-manager/fish/**'
+      - '**/*.fish'
+      - '.github/workflows/fish.yaml'
   pull_request:
     branches:
       - main
     paths:
       - 'home-manager/fish/**'
+      - '**.fish'
+      - '.github/workflows/fish.yaml'
 
 permissions: {}
 
@@ -22,10 +26,10 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: homebrew/actions/setup-homebrew@ac2ec1ccabf33716b2fe5f4d467e250296951780
-      - run: brew install fish
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
       - name: Verify Fish scripts
         run: |
+          nix profile install nixpkgs#fish
           find home-manager/fish -name "*.fish" -print0 | while IFS= read -r -d '' file; do
             echo "Checking $file..."
             fish --no-execute "$file"
