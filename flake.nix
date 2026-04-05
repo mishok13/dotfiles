@@ -48,6 +48,9 @@
         clydesdale = {
           id = "3N565CZ-BQ53D2P-CRX2Y75-PH2A3N5-475JVFI-AQAUM4X-BAVS7WG-ITMHFQX";
         };
+        trakehner = {
+          id = "VXRYWMR-I5D6QWT-2PDVTUX-HPIXUTH-WRA3XCZ-YZYCYIG-7AZD2NM-VEUJHAT";
+        };
       };
     in
     {
@@ -62,7 +65,7 @@
             }
           ];
           extraSpecialArgs = {
-            inherit nixgl;
+            inherit nixgl syncthingDevices;
             system = "x86_64-linux";
             commitSignProgram = "/opt/1Password/op-ssh-sign";
             sshCommand = "ssh";
@@ -73,7 +76,6 @@
         "clydesdale" = home-manager.lib.homeManagerConfiguration {
           modules = [
             ./home-manager/home.nix
-            ./home-manager/syncthing.nix
             {
               home.username = "mishok13";
               home.homeDirectory = "/home/mishok13";

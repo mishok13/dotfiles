@@ -17,6 +17,7 @@
     ./kitty.nix
     ./terminal.nix
     ./terminal/llm.nix
+    ./syncthing.nix
   ];
 
   targets.genericLinux = lib.mkIf pkgs.stdenv.isLinux {
