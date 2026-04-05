@@ -18,4 +18,11 @@
     ./terminal.nix
     ./terminal/llm.nix
   ];
+
+  targets.genericLinux = lib.mkIf pkgs.stdenv.isLinux {
+    nixGL.packages = nixgl.packages;
+    nixGL.defaultWrapper = "mesa";
+    enable = false;
+    gpu.enable = false;
+  };
 }
