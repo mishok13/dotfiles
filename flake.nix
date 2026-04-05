@@ -55,6 +55,7 @@
         "trakehner" = home-manager.lib.homeManagerConfiguration {
           modules = [
             ./home-manager/home.nix
+            ./home-manager/ghostty.nix
             {
               home.username = "mishok13";
               home.homeDirectory = "/home/mishok13";
@@ -91,6 +92,7 @@
           modules = [
             ./home-manager/macos.nix
             ./home-manager/onepassword.nix
+            ./home-manager/ghostty.nix
             {
               home.username = "Andrii.Mishkovskyi";
               home.homeDirectory = "/Users/Andrii.Mishkovskyi";

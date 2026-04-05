@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  nixgl ? null,
   ...
 }:
 
@@ -19,7 +20,7 @@ in
       enableFishIntegration = true;
       enableBashIntegration = true;
 
-      package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+      package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else (config.lib.nixGL.wrap pkgs.ghostty);
 
       settings = {
         font-family = "Hack Nerd Font Mono";

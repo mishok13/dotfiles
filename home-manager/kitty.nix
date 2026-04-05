@@ -14,13 +14,6 @@ in
     ./fonts.nix
   ];
 
-  targets.genericLinux = lib.mkIf isLinux {
-    nixGL.packages = nixgl.packages;
-    nixGL.defaultWrapper = "mesa";
-    enable = false;
-    gpu.enable = false;
-  };
-
   programs = {
     kitty = {
       enable = true;
