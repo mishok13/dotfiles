@@ -22,6 +22,17 @@
   "nix": {
     "enabled": true
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["nixos/tiniboi/caddy\\.nix$"],
+      "matchStrings": [
+        "\"github\\.com/caddy-dns/cloudflare@(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "github.com/caddy-dns/cloudflare",
+      "datasourceTemplate": "go"
+    }
+  ],
   "packageRules": [
     {
       "matchPackageNames": [
