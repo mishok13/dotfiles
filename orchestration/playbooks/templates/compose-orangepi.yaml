@@ -7,7 +7,7 @@ services:
 
   miniflux:
     container_name: miniflux
-    image: miniflux/miniflux:2.2.14@sha256:02e50d5b277857e3600c14ec1a6a064a82320077914d8eb546691a5f4c1d406c
+    image: miniflux/miniflux:2.2.19@sha256:8810dfe7f4d9979f9dc1385607695c116f049daa586c635a9a1fb3c58936b074
     restart: unless-stopped
     ports:
       - "127.0.0.1:9081:8080"
