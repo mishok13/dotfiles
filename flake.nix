@@ -16,9 +16,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-ai-tools = {
-      url = "github:numtide/nix-ai-tools";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
     };
 
     sops-nix = {
@@ -33,7 +32,7 @@
       nixpkgs,
       home-manager,
       nixgl,
-      nix-ai-tools,
+      llm-agents,
       sops-nix,
       ...
     }:
@@ -69,7 +68,7 @@
             system = "x86_64-linux";
             commitSignProgram = "/opt/1Password/op-ssh-sign";
             sshCommand = "ssh";
-            pkgsLLM = nix-ai-tools.packages."x86_64-linux";
+            pkgsLLM = llm-agents.packages."x86_64-linux";
           };
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
         };
@@ -86,7 +85,7 @@
             system = "x86_64-linux";
             commitSignProgram = "/opt/1Password/op-ssh-sign";
             sshCommand = "ssh";
-            pkgsLLM = nix-ai-tools.packages."x86_64-linux";
+            pkgsLLM = llm-agents.packages."x86_64-linux";
           };
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
         };
@@ -104,7 +103,7 @@
             system = "aarch64-darwin";
             commitSignProgram = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
             sshCommand = "ssh";
-            pkgsLLM = nix-ai-tools.packages."aarch64-darwin";
+            pkgsLLM = llm-agents.packages."aarch64-darwin";
           };
           pkgs = nixpkgs.legacyPackages."aarch64-darwin";
         };
@@ -124,7 +123,7 @@
               home-manager.users.mishok13 = import ./home-manager/server.nix;
               home-manager.extraSpecialArgs = {
                 inherit nixgl sops-nix;
-                pkgsLLM = nix-ai-tools.packages."x86_64-linux";
+                pkgsLLM = llm-agents.packages."x86_64-linux";
                 system = "x86_64-linux";
                 commitSignProgram = "/opt/1Password/op-ssh-sign";
                 sshCommand = "ssh";
@@ -146,7 +145,7 @@
               home-manager.extraSpecialArgs = {
                 inherit nixgl sops-nix;
                 system = "x86_64-linux";
-                pkgsLLM = nix-ai-tools.packages."x86_64-linux";
+                pkgsLLM = llm-agents.packages."x86_64-linux";
                 commitSignProgram = "/opt/1Password/op-ssh-sign";
                 sshCommand = "ssh";
               };
