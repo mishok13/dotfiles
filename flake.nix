@@ -57,7 +57,7 @@
       homeConfigurations = {
         "trakehner" = home-manager.lib.homeManagerConfiguration {
           modules = [
-            ./home-manager/home.nix
+            ./home-manager/linux.nix
             ./home-manager/ghostty.nix
             {
               home.username = "mishok13";
@@ -75,7 +75,7 @@
         };
         "clydesdale" = home-manager.lib.homeManagerConfiguration {
           modules = [
-            ./home-manager/home.nix
+            ./home-manager/linux.nix
             {
               home.username = "mishok13";
               home.homeDirectory = "/home/mishok13";

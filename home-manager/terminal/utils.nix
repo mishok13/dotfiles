@@ -43,17 +43,16 @@ in
   };
 
   home.packages = [
-    pkgs.bat
     pkgs.cabal-install
     pkgs.clang
     pkgs.eza
     pkgs.fish
     pkgs.fzf
-    pkgs.ghc # Required for nixfmt in pre-commit
     pkgs.glab
     pkgs.harper
-    pkgs.just
+    pkgs.hyperfine
     pkgs.ispell
+    pkgs.just
     pkgs.mise
     pkgs.nixfmt
     pkgs.nixos-rebuild
@@ -73,6 +72,7 @@ in
     pkgs.vim
     pkgs.watchexec
     pkgs.zola
+    pkgs.bat
   ];
 
   home.file = {
