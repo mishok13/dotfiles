@@ -24,7 +24,7 @@ in
       [
         pkgsLLM.amp
         pkgsLLM.claude-code
-        pkgsLLM.claude-code-acp
+        pkgsLLM.claude-agent-acp
         pkgsLLM.codex
         pkgsLLM.gemini-cli
         pkgsLLM.goose-cli
