@@ -17,9 +17,6 @@ jobs:
   build:
     name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
-    permissions:
-      id-token: "write"
-      contents: "read"
     strategy:
       matrix:
         include:
@@ -37,7 +34,6 @@ jobs:
           persist-credentials: false
       - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
       - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
-      - uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
       - if: ${{ matrix.type == 'home-manager' }}
         run: nix run nixpkgs#home-manager -- build --flake .#${{ matrix.target }}
       - if: ${{ matrix.type == 'nixos' }}
