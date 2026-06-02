@@ -22,12 +22,13 @@ in
       ]
     else
       [
-        pkgsLLM.amp
-        pkgsLLM.claude-code
         pkgsLLM.claude-agent-acp
+        pkgsLLM.claude-code
         pkgsLLM.codex
+        pkgsLLM.codex-acp
         pkgsLLM.gemini-cli
-        pkgsLLM.goose-cli
+        pkgsLLM.opencode
+        pkgsLLM.pi
       ];
 
 }
