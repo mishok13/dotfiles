@@ -33,7 +33,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
-      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - if: ${{ matrix.type == 'home-manager' }}
         run: nix run nixpkgs#home-manager -- build --flake .#${{ matrix.target }}
       - if: ${{ matrix.type == 'nixos' }}
