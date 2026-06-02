@@ -75,6 +75,7 @@
         "clydesdale" = home-manager.lib.homeManagerConfiguration {
           modules = [
             ./home-manager/linux.nix
+            ./home-manager/ghostty.nix
             {
               home.username = "mishok13";
               home.homeDirectory = "/home/mishok13";
