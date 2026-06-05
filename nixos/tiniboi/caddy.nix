@@ -17,7 +17,7 @@
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.3" ];
       # Run `nix build .#nixosConfigurations.tiniboi.config.services.caddy.package` to get the correct hash
-      hash = "sha256-+htYZclHv9qI0TeHcBFvPkWzJVAZ5jqzTODrh4YmqXY=";
+      hash = "sha256-8E6OGxwZsjPofmfi1j8dMXTkCkIRxpzhQ/KTXYIGR0w=";
     };
     globalConfig = ''
       acme_dns cloudflare {env.CF_API_TOKEN}
