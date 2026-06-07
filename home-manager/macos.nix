@@ -12,7 +12,7 @@
 {
   imports = [
     ./common.nix
-    ./emacs.nix
+    ./editors.nix
     ./terminal.nix
     ./kitty.nix
     ./ghostty.nix

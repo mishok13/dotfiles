@@ -13,7 +13,7 @@
 {
   imports = [
     ./common.nix
-    ./emacs.nix
+    ./editors.nix
     ./kitty.nix
     ./terminal.nix
     ./terminal/llm.nix

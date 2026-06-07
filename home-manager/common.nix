@@ -16,7 +16,7 @@
 
   home.sessionVariables = {
     ANSIBLE_NOCOWS = "1";
-    EDITOR = "vim";
+    EDITOR = "hx";
   };
 
   programs.home-manager.enable = true;

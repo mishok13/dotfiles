@@ -43,6 +43,7 @@ in
   };
 
   home.packages = [
+    pkgs.bat
     pkgs.cabal-install
     pkgs.clang
     pkgs.eza
@@ -69,10 +70,8 @@ in
     pkgs.typstyle
     pkgs.uiua
     pkgs.uv
-    pkgs.vim
     pkgs.watchexec
     pkgs.zola
-    pkgs.bat
   ];
 
   home.file = {
