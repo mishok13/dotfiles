@@ -61,6 +61,8 @@ in
     pkgs.nushell
     pkgs.pre-commit
     pkgs.ripgrep
+    pkgs.nodejs
+    pkgs.rust-analyzer
     pkgs.rustup
     pkgs.starship
     pkgs.stow

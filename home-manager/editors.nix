@@ -11,11 +11,28 @@
 
   config = {
     home.packages = [
-      pkgs.emacs
-      pkgs.emacsPackages.jinx
       pkgs.aspell
       pkgs.aspellDicts.en
     ];
+
+    programs.emacs = {
+      enable = true;
+      package = pkgs.emacs;
+      extraPackages = epkgs: [
+        epkgs.jinx
+        epkgs.hotfuzz
+        (epkgs.treesit-grammars.with-grammars (g: [
+          g.tree-sitter-python
+          g.tree-sitter-rust
+          g.tree-sitter-typescript
+          g.tree-sitter-terraform
+          g.tree-sitter-dockerfile
+          g.tree-sitter-nix
+          g.tree-sitter-go
+          g.tree-sitter-lua
+        ]))
+      ];
+    };
 
     home.file = {
       ".config/emacs".source =
