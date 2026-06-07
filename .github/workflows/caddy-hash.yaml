@@ -1,0 +1,46 @@
+name: Fix Caddy hash
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'nixos/tiniboi/caddy.nix'
+      - 'flake.lock'
+
+permissions: {}
+
+jobs:
+  fix-caddy-hash:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'renovate[bot]' # Only makes sense for renovate
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true # Must use this to allow git push
+      - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
+      - uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          if build_output=$(nix build .#nixosConfigurations.tiniboi.config.services.caddy.package 2>&1); then
+            echo "::notice::Caddy doesn't require any updates"
+            exit 0
+          fi
+          correct_hash=$(printf '%s' "$build_output" | grep -oP 'got:\s+\K(sha256-[A-Za-z0-9+/]+=)' | head -1)
+          if [[ -z "$correct_hash" ]]; then
+            echo "::error::Build failed; no hash mismatch identified. %OA${build_output}"
+            exit 1
+          fi
+          sed -i "s|hash = \"sha256-[^\"]*\";|hash = \"${correct_hash}\";|" nixos/tiniboi/caddy.nix
+          nix build .#nixosConfigurations.tiniboi.config.services.caddy.package
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nixos/tiniboi/caddy.nix
+          git commit -m "fix(caddy): update vendor hash"
+          git push
+          echo "Caddy build hash output updated to $correct_hash" >> "$GITHUB_STEP_SUMMARY"
