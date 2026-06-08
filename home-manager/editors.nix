@@ -25,7 +25,7 @@
           g.tree-sitter-python
           g.tree-sitter-rust
           g.tree-sitter-typescript
-          g.tree-sitter-terraform
+          g.tree-sitter-hcl
           g.tree-sitter-dockerfile
           g.tree-sitter-nix
           g.tree-sitter-go
