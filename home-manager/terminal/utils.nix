@@ -43,6 +43,7 @@ in
   };
 
   home.packages = [
+    pkgs.bat
     pkgs.cabal-install
     pkgs.clang
     pkgs.eza
@@ -60,6 +61,7 @@ in
     pkgs.nushell
     pkgs.pre-commit
     pkgs.ripgrep
+    pkgs.nodejs
     pkgs.rustup
     pkgs.starship
     pkgs.stow
@@ -69,10 +71,8 @@ in
     pkgs.typstyle
     pkgs.uiua
     pkgs.uv
-    pkgs.vim
     pkgs.watchexec
     pkgs.zola
-    pkgs.bat
   ];
 
   home.file = {

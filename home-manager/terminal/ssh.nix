@@ -5,18 +5,18 @@
     ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
+      settings = {
         "orangepi" = {
-          user = "ubuntu";
+          User = "ubuntu";
         };
         "*" = {
-          identityAgent = "~/.1password/agent.sock";
-          serverAliveInterval = 60;
-          serverAliveCountMax = 3;
+          IdentityAgent = "~/.1password/agent.sock";
+          ServerAliveInterval = 60;
+          ServerAliveCountMax = 3;
         };
         "shellhub.com" = {
-          hostname = "github.com";
-          identityFile = "~/.ssh/work";
+          Hostname = "github.com";
+          IdentityFile = "~/.ssh/work";
         };
       };
     };
