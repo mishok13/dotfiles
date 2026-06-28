@@ -145,7 +145,7 @@
               home-manager.extraSpecialArgs = {
                 inherit nixgl sops-nix;
                 system = "x86_64-linux";
-                pkgsLLM = nix-ai-tools.packages."x86_64-linux";
+                pkgsLLM = llm-agents.packages."x86_64-linux";
                 commitSignProgram = "/opt/1Password/op-ssh-sign";
                 sshCommand = "ssh";
               };

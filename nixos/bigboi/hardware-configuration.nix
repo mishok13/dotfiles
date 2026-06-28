@@ -24,11 +24,11 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/6e75b759-320a-4a0c-9616-50f9fccc13bf";
+    device = "/dev/disk/by-uuid/762b935f-35dc-45c7-baec-ace90c3e7096";
     fsType = "ext4";
   };
 
-  fileSystems."/boot/efi" = {
+  fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/B441-3959";
     fsType = "vfat";
     options = [
@@ -38,7 +38,7 @@
   };
 
   fileSystems."/mnt/media" = {
-    device = "/dev/sdb";
+    device = "/dev/disk/by-uuid/2859e9fb-fac5-4726-acbd-3e2b4a6126fe";
     fsType = "btrfs";
   };
 
@@ -49,6 +49,8 @@
       size = 8192;
     }
   ];
+
+  networking.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

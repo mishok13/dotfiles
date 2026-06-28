@@ -48,7 +48,7 @@ services:
       POSTGRES_DB: immich
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - ~/.config/share/immich-db:/var/lib/postgresql/data
+      - /mnt/media/immich-db:/var/lib/postgresql/data
     restart: always
 
 volumes:
