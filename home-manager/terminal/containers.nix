@@ -15,6 +15,8 @@ in
         auths = {
           "ghcr.io" = { };
           "gnvasandbox.azurecr.io" = { };
+          "gnvatest.azurecr.io" = { };
+          "gnvapreprod.azurecr.io" = { };
           "shellgeneva.azurecr.io" = { };
         };
         credsStore = if isMacOS then "osxkeychain" else "secretservice";
