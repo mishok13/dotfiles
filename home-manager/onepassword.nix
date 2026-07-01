@@ -18,6 +18,10 @@
           item = "GitHub Shell";
           vault = "Shell";
         }
+        {
+          item = "GitLab";
+          vault = "Personal";
+        }
       ];
     };
   };
