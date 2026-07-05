@@ -1,4 +1,0 @@
-include:
-  - compose/transmission.yaml
-  - compose/immich.yaml
-services: {}

@@ -6,6 +6,72 @@
 }:
 
 let
+  mediaCompose = pkgs.writeText "media-compose.yaml" ''
+    services:
+
+      transmission:
+        image: lscr.io/linuxserver/transmission:4.0.6-r0-ls256@sha256:60f620b6597d1a3c06f3faf0ae1af7385b0f8f793b4d425cd4867423dd0800c7
+        container_name: transmission
+        restart: unless-stopped
+        environment:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+          USER: "admin"
+          PASS: "admin"
+        volumes:
+          - /mnt/media/downloads:/downloads
+          - /mnt/media/transmission/watch:/watch
+          - /home/mishok13/.config/transmission:/config
+        ports:
+          - "9091:9091"
+          - "51413:51413"
+          - "51413:51413/udp"
+
+      sonarr:
+        image: lscr.io/linuxserver/sonarr:4.0.17.2952-ls305@sha256:76414c033f290d3c9f1f9dfad71150abe71d92592369a3377a5903d579e6e2b2
+        container_name: sonarr
+        restart: unless-stopped
+        environment:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+        volumes:
+          - /home/mishok13/.config/sonarr:/config
+          - /mnt/media/tv:/tv
+          - /mnt/media/downloads:/downloads
+        ports:
+          - "8989:8989"
+
+      radarr:
+        image: lscr.io/linuxserver/radarr:6.0.4.10291-ls295@sha256:ca43905eaf2dd11425efdcfe184892e43806b1ae0a830440c825cecbc2629cfb
+        container_name: radarr
+        restart: unless-stopped
+        environment:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+        volumes:
+          - /home/mishok13/.config/radarr:/config
+          - /mnt/media/movies:/movies
+          - /mnt/media/downloads:/downloads
+        ports:
+          - "7878:7878"
+
+      prowlarr:
+        image: lscr.io/linuxserver/prowlarr:2.3.0.5236-ls139@sha256:9ef5d8bf832edcacb6082f9262cb36087854e78eb7b1c3e1d4375056055b2d82
+        container_name: prowlarr
+        restart: unless-stopped
+        environment:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+        volumes:
+          - /home/mishok13/.config/prowlarr:/config
+        ports:
+          - "9696:9696"
+  '';
+
   immichCompose = pkgs.writeText "immich-compose.yaml" ''
     services:
 
@@ -83,12 +149,20 @@ in
     '';
   };
 
-  # Open NFS + Immich ports
+  # Open NFS, Immich, and media stack ports
   networking.firewall.allowedTCPPorts = [
     2049
     2283
+    7878
+    8989
+    9091
+    9696
+    51413
   ];
-  networking.firewall.allowedUDPPorts = [ 2049 ];
+  networking.firewall.allowedUDPPorts = [
+    2049
+    51413
+  ];
 
   # Immich via Docker Compose
   # TODO: move DB password to sops secret
@@ -106,6 +180,24 @@ in
       RemainAfterExit = true;
       ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} up -d --remove-orphans";
       ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} down";
+    };
+  };
+
+  # Media stack (transmission, sonarr, radarr, prowlarr) via Docker Compose
+  systemd.services.media = {
+    description = "Media stack (transmission/sonarr/radarr/prowlarr)";
+    after = [
+      "docker.service"
+      "network-online.target"
+    ];
+    wants = [ "network-online.target" ];
+    requires = [ "docker.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${mediaCompose} up -d --remove-orphans";
+      ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${mediaCompose} down";
     };
   };
 

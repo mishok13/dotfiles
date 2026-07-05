@@ -106,6 +106,7 @@
 
         ignores = [
           "**/.claude/settings.local.json"
+          "**/.agent-shell/"
         ];
       };
 
