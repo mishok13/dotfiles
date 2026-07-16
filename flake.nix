@@ -132,6 +132,26 @@
             }
           ];
         };
+        bigboi = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./nixos/bigboi.nix
+            sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.users.mishok13 = import ./home-manager/server.nix;
+              home-manager.extraSpecialArgs = {
+                inherit nixgl sops-nix;
+                system = "x86_64-linux";
+                pkgsLLM = llm-agents.packages."x86_64-linux";
+                commitSignProgram = "/opt/1Password/op-ssh-sign";
+                sshCommand = "ssh";
+              };
+            }
+          ];
+        };
         tiniboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = { inherit syncthingDevices; };

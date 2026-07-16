@@ -4,6 +4,7 @@ keys:
   - &tiniboi age13x06rxv25405a85sqt9cy6vcwuq8nwr9gz7xh4w88vdlc74lkejq8a6u3t
   - &orangepi age124yz8welpvee2dsk927wzxpd0dlrf7akfama34fd6vrrhtqc3u5sydtne5
   - &beafiboi age1qjlvxj4d4ynrev9kjph4wmf0az5e0xm8lpp80yh8lqfc82l9xsqqagvkqm
+  - &bigboi age12ph9dv74qm69t6tfnzesptjk4ev32cskzufz2t2laq0zcxr7we4qewayjd
 creation_rules:
   - path_regex: nixos/secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -11,3 +12,4 @@ creation_rules:
       - *mishok13
       - *tiniboi
       - *beafiboi
+      - *bigboi
