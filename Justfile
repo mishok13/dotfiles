@@ -10,11 +10,14 @@ build profile=`hostname`:
 update input="":
     nix flake update {{input}}
 
-nixos-build *target:
-    nix run 'nixpkgs#nixos-rebuild' -- build --flake '.#{{ target }}' --target-host {{ target }} --sudo --build-host {{ target }}
+nixos-build config host=config:
+    nix run 'nixpkgs#nixos-rebuild' -- build --flake '.#{{ config }}' --target-host {{ host }} --sudo --build-host {{ host }}
 
-nixos-switch *target:
-    nix run 'nixpkgs#nixos-rebuild' -- switch --flake '.#{{ target }}' --target-host {{ target }} --sudo --build-host {{ target }}
+nixos-switch config host=config:
+    nix run 'nixpkgs#nixos-rebuild' -- switch --flake '.#{{ config }}' --target-host {{ host }} --sudo --build-host {{ host }}
+
+nixos-boot config host=config:
+    nix run 'nixpkgs#nixos-rebuild' -- boot --flake '.#{{ config }}' --target-host {{ host }} --sudo --build-host {{ host }}
 
 docker-services *hosts:
     #!/usr/bin/env nu
