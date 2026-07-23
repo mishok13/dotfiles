@@ -89,6 +89,26 @@
                 annotations:
                   summary: "Filesystem almost full on {{ $labels.instance }}"
                   description: "Filesystem {{ $labels.mountpoint }} on {{ $labels.instance }} has less than 15% free space."
+
+          - name: tls
+            rules:
+              - alert: TLSCertExpiringSoon
+                expr: (probe_ssl_earliest_cert_expiry - time()) / 86400 < 21
+                for: 1h
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "TLS cert about to expire: {{ $labels.instance }} "
+                  description: "TLS certificate for {{ $labels.instance }} expires in {{ $value | printf \"%.1f\" }} days."
+
+              - alert: TLSCertExpired
+                expr: (probe_ssl_earliest_cert_expiry - time()) <= 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "TLS cert expired: {{ $labels.instance }}"
+                  description: "TLS certificate for {{ $labels.instance }} has expired"
       ''
     ];
 
@@ -118,6 +138,17 @@
         ];
       }
       {
+        job_name = "blocky";
+        static_configs = [
+          {
+            targets = [
+              "bigboi:4000"
+              "tiniboi:4000"
+            ];
+          }
+        ];
+      }
+      {
         job_name = "blackbox";
         metrics_path = "/probe";
         params = {
@@ -129,6 +160,8 @@
               "https://mishok13.me"
               "https://mishkovskyi.net"
               "https://hass.mishok13.me"
+              "https://grafana.mishok13.me"
+              "https://prometheus.mishok13.me"
             ];
           }
         ];

@@ -141,11 +141,6 @@ in
 
   networking.hostName = "bigboi";
 
-  # Phase 2 (validation): run blocky on a scratch port so it cannot collide with :53
-  # and cannot affect real clients. Remove this override for Phase 2b to move to port 53.
-  services.blocky.settings.ports.dns = lib.mkForce 5353;
-
-  # NFS Server configuration
   services.nfs.server = {
     enable = true;
     exports = ''
@@ -154,7 +149,6 @@ in
     '';
   };
 
-  # Open NFS, Immich, and media stack ports
   networking.firewall.allowedTCPPorts = [
     2049
     2283
