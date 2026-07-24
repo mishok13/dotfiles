@@ -8,16 +8,19 @@
 {
   sops.secrets.cloudflareApiToken = { };
 
-  sops.templates."caddy-env".content = ''
-    CF_API_TOKEN=${config.sops.placeholder.cloudflareApiToken}
-  '';
+  sops.templates."caddy-env" = {
+    content = ''
+      CF_API_TOKEN=${config.sops.placeholder.cloudflareApiToken}
+    '';
+    restartUnits = [ "caddy.service" ];
+  };
 
   services.caddy = {
     enable = true;
     package = pkgs.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.3" ];
+      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
       # Run `nix build .#nixosConfigurations.tiniboi.config.services.caddy.package` to get the correct hash
-      hash = "sha256-8E6OGxwZsjPofmfi1j8dMXTkCkIRxpzhQ/KTXYIGR0w=";
+      hash = "sha256-bzMqxWTqrJ1skZmRTXyEMCKStXpljbqe5r0Ve2cnBfM=";
     };
     globalConfig = ''
       acme_dns cloudflare {env.CF_API_TOKEN}

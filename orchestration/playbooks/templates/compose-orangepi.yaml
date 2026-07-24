@@ -1,5 +1,4 @@
 include:
-  - compose/pihole.yaml
   - compose/atuin.yaml
   - compose/monitoring.yaml
 

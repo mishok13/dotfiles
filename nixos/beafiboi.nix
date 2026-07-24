@@ -25,6 +25,8 @@
   hardware.nvidia = {
     open = false;
     modesetting.enable = true;
+    # Tesla P4 is not supported in newer versions ;(
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
   hardware.nvidia-container-toolkit.enable = true;
 

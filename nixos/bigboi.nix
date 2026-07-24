@@ -135,12 +135,12 @@ in
     ./common.nix
     ./user.nix
     ./remote-builder.nix
+    ./blocky.nix
     ./bigboi/hardware-configuration.nix
   ];
 
   networking.hostName = "bigboi";
 
-  # NFS Server configuration
   services.nfs.server = {
     enable = true;
     exports = ''
@@ -149,7 +149,6 @@ in
     '';
   };
 
-  # Open NFS, Immich, and media stack ports
   networking.firewall.allowedTCPPorts = [
     2049
     2283

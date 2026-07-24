@@ -1,9 +1,6 @@
 setup:
     ansible-galaxy install -r requirements.yml
 
-upgrade:
-    ansible-playbook bootstrap/playbook.yaml -t packages
-
 docker-services:
     just play -l server -t docker
 

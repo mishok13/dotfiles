@@ -10,6 +10,7 @@ let
   targetDashboardDir = "grafana-dashboards";
   dashboards = [
     "blackbox.json"
+    "blocky.json"
     "caddy.json"
     "node-exporter.json"
     "nvidia-gpu.json"
@@ -39,7 +40,7 @@ in
             type = "prometheus";
             uid = "deheily5a2tj4f";
             access = "proxy";
-            url = "https://prometheus.mishok13.me";
+            url = "http://127.0.0.1:9090";
             jsonData = {
               httpMethod = "POST";
             };

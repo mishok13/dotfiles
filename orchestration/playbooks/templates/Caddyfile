@@ -3,14 +3,6 @@
 	metrics
 }
 
-pihole.home.mishok13.me, pihole.tail.mishok13.me, pihole.mishok13.me {
-	redir / /admin{uri}
-	reverse_proxy http://localhost:31480 {
-            header_up Host {upstream_hostport}
-	}
-	encode zstd gzip
-}
-
 syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
 	reverse_proxy http://localhost:8384 {
             header_up Host {upstream_hostport}
@@ -57,10 +49,6 @@ transmission.home.mishok13.me, transmission.tail.mishok13.me, transmission.misho
 
 immich.home.mishok13.me, immich.tail.mishok13.me, immich.mishok13.me {
 	reverse_proxy http://bigboi:2283
-}
-
-frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
-	reverse_proxy http://beafiboi:8971
 }
 
 atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {

@@ -18,8 +18,10 @@
 
   networking.firewall = {
     enable = true;
-    # As per https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111 this is the only way to
-    # get Tailscale to work with exit nodes
+    # Kept loose as a precaution. It was originally required for Tailscale exit-node use
+    # (https://github.com/tailscale/tailscale/issues/4432); these servers no longer use an
+    # exit node (see services.tailscale below / dns-tier2-plan.md Phase 0.5), so strict
+    # would likely also work, but loose is harmless and avoids surprises.
     checkReversePath = "loose";
     # The ports open here are likely excessive and should be trimmed to the minimum required
     allowedTCPPorts = [
@@ -45,13 +47,23 @@
   services.tailscale = {
     enable = true;
     authKeyFile = config.sops.secrets.tailscaleAuthKey.path;
+    # These servers are physically on the LAN and never roam, so they must NOT route their
+    # own 192.168.0.0/24 through tailscale. Accepting orangepi's advertised subnet route
+    # and/or using it as an exit node pushed the whole LAN subnet into tailscale's route
+    # table 52 (consulted before the main table), which broke all direct LAN reachability
+    # to these hosts — tailscale became the only path in. See dns-tier2-plan.md Phase 0.5.
+    #
+    # We keep --accept-dns (MagicDNS) but drop --accept-routes. Exit-node USE is a per-client
+    # choice; orangepi still OFFERS the exit node, so roaming clients (e.g. trakehner) can
+    # still use it. These flags are cleared via `tailscale set` (the tailscaled-set unit runs
+    # on every activation) so already-running nodes converge without needing a re-auth
+    # (tailscaled-autoconnect only runs `tailscale up` when logged out).
     extraUpFlags = [
-      "--accept-routes"
       "--accept-dns"
     ];
     extraSetFlags = [
-      "--exit-node=orangepi"
-      "--exit-node-allow-lan-access"
+      "--accept-routes=false"
+      "--exit-node="
     ];
   };
 

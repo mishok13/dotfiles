@@ -11,6 +11,7 @@
     ./user.nix
     ./remote-builder.nix
     ./nfs.nix
+    ./blocky.nix
     ./tiniboi/caddy.nix
     ./alertmanager.nix
     ./grafana.nix
