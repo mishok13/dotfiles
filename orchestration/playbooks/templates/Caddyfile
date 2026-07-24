@@ -3,14 +3,6 @@
 	metrics
 }
 
-pihole.home.mishok13.me, pihole.tail.mishok13.me, pihole.mishok13.me {
-	redir / /admin{uri}
-	reverse_proxy http://localhost:31480 {
-            header_up Host {upstream_hostport}
-	}
-	encode zstd gzip
-}
-
 syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
 	reverse_proxy http://localhost:8384 {
             header_up Host {upstream_hostport}
