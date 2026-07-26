@@ -6,72 +6,6 @@
 }:
 
 let
-  mediaCompose = pkgs.writeText "media-compose.yaml" ''
-    services:
-
-      transmission:
-        image: lscr.io/linuxserver/transmission:4.0.6-r0-ls256@sha256:60f620b6597d1a3c06f3faf0ae1af7385b0f8f793b4d425cd4867423dd0800c7
-        container_name: transmission
-        restart: unless-stopped
-        environment:
-          PUID: "1000"
-          PGID: "1000"
-          TZ: "Etc/UTC"
-          USER: "admin"
-          PASS: "admin"
-        volumes:
-          - /mnt/media/downloads:/downloads
-          - /mnt/media/transmission/watch:/watch
-          - /home/mishok13/.config/transmission:/config
-        ports:
-          - "9091:9091"
-          - "51413:51413"
-          - "51413:51413/udp"
-
-      sonarr:
-        image: lscr.io/linuxserver/sonarr:4.0.17.2952-ls305@sha256:76414c033f290d3c9f1f9dfad71150abe71d92592369a3377a5903d579e6e2b2
-        container_name: sonarr
-        restart: unless-stopped
-        environment:
-          PUID: "1000"
-          PGID: "1000"
-          TZ: "Etc/UTC"
-        volumes:
-          - /home/mishok13/.config/sonarr:/config
-          - /mnt/media/tv:/tv
-          - /mnt/media/downloads:/downloads
-        ports:
-          - "8989:8989"
-
-      radarr:
-        image: lscr.io/linuxserver/radarr:6.0.4.10291-ls295@sha256:ca43905eaf2dd11425efdcfe184892e43806b1ae0a830440c825cecbc2629cfb
-        container_name: radarr
-        restart: unless-stopped
-        environment:
-          PUID: "1000"
-          PGID: "1000"
-          TZ: "Etc/UTC"
-        volumes:
-          - /home/mishok13/.config/radarr:/config
-          - /mnt/media/movies:/movies
-          - /mnt/media/downloads:/downloads
-        ports:
-          - "7878:7878"
-
-      prowlarr:
-        image: lscr.io/linuxserver/prowlarr:2.3.0.5236-ls139@sha256:9ef5d8bf832edcacb6082f9262cb36087854e78eb7b1c3e1d4375056055b2d82
-        container_name: prowlarr
-        restart: unless-stopped
-        environment:
-          PUID: "1000"
-          PGID: "1000"
-          TZ: "Etc/UTC"
-        volumes:
-          - /home/mishok13/.config/prowlarr:/config
-        ports:
-          - "9696:9696"
-  '';
-
   immichCompose = pkgs.writeText "immich-compose.yaml" ''
     services:
 
@@ -136,6 +70,7 @@ in
     ./user.nix
     ./remote-builder.nix
     ./blocky.nix
+    ./bigboi/caddy.nix
     ./bigboi/hardware-configuration.nix
   ];
 
@@ -177,28 +112,128 @@ in
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      # immich is now the only Docker Compose stack on this host, so the old
+      # docker-compose project-name collision (both stacks resolved to "store",
+      # the basename of /nix/store, and each `--remove-orphans` wiped the other)
+      # can no longer happen. The media stack is now native systemd services below.
       ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} up -d --remove-orphans";
       ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} down";
     };
   };
 
-  # Media stack (transmission, sonarr, radarr, prowlarr) via Docker Compose
-  systemd.services.media = {
-    description = "Media stack (transmission/sonarr/radarr/prowlarr)";
-    after = [
-      "docker.service"
-      "network-online.target"
+  # ---------------------------------------------------------------------------
+  # Media stack, now fully native NixOS services (was Docker Compose before).
+  #
+  # transmission, sonarr and radarr run as mishok13:users (uid 1000) to preserve
+  # ownership of the existing /mnt/media library, exactly as the old containers
+  # did with PUID/PGID=1000. prowlarr never touches the library, so it keeps the
+  # module's hardened DynamicUser.
+  #
+  # Data is migrated from the old Docker bind-mount config dirs under
+  # /home/mishok13/.config/{transmission,sonarr,radarr,prowlarr} into the native
+  # data dirs by scripts/bigboi-arr-migrate.sh (run once after switching).
+  # ---------------------------------------------------------------------------
+
+  # Reproduce the old container bind mounts on the host so that existing state
+  # keeps resolving without rewriting it: transmission's 102 .resume files
+  # reference /downloads/... and /watch, and sonarr/radarr store their root
+  # folders and per-item paths as /tv and /movies (the old container mount
+  # points). There were no remote path mappings, so the native services import
+  # from and write to exactly these paths.
+  fileSystems."/downloads" = {
+    device = "/mnt/media/downloads";
+    fsType = "none";
+    options = [
+      "bind"
+      "x-systemd.requires-mounts-for=/mnt/media"
     ];
-    wants = [ "network-online.target" ];
-    requires = [ "docker.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${mediaCompose} up -d --remove-orphans";
-      ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${mediaCompose} down";
+  };
+  fileSystems."/watch" = {
+    device = "/mnt/media/transmission/watch";
+    fsType = "none";
+    options = [
+      "bind"
+      "x-systemd.requires-mounts-for=/mnt/media"
+    ];
+  };
+  fileSystems."/tv" = {
+    device = "/mnt/media/tv";
+    fsType = "none";
+    options = [
+      "bind"
+      "x-systemd.requires-mounts-for=/mnt/media"
+    ];
+  };
+  fileSystems."/movies" = {
+    device = "/mnt/media/movies";
+    fsType = "none";
+    options = [
+      "bind"
+      "x-systemd.requires-mounts-for=/mnt/media"
+    ];
+  };
+
+  services.transmission = {
+    enable = true;
+    user = "mishok13";
+    group = "users";
+    # Config (settings.json is regenerated from `settings` on every start; the
+    # torrents/ and resume/ state is migrated into the data dir separately).
+    settings = {
+      download-dir = "/downloads/complete";
+      incomplete-dir = "/downloads/incomplete";
+      incomplete-dir-enabled = true;
+      watch-dir = "/watch";
+      watch-dir-enabled = true;
+
+      peer-port = 51413;
+      port-forwarding-enabled = true;
+      utp-enabled = false;
+      umask = "002";
+
+      rpc-enabled = true;
+      rpc-bind-address = "0.0.0.0";
+      rpc-port = 9091;
+      rpc-url = "/transmission/";
+      rpc-authentication-required = true;
+      rpc-username = "admin";
+      # LAN-only, reached via the transmission.mishok13.me reverse proxy; kept as
+      # the previous admin/admin so the migrated sonarr/radarr download clients
+      # keep authenticating. Transmission hashes it on first start.
+      # TODO: move to a sops secret via services.transmission.credentialsFile.
+      rpc-password = "admin";
+      rpc-whitelist-enabled = false;
+      # Must stay false: the daemon is fronted by the transmission.mishok13.me
+      # reverse proxy, and transmission 4 otherwise rejects that Host header.
+      rpc-host-whitelist-enabled = false;
     };
   };
+
+  # transmission's sandbox bind-mounts these; make sure they are mounted first.
+  systemd.services.transmission.unitConfig.RequiresMountsFor = [
+    "/downloads"
+    "/watch"
+  ];
+
+  services.sonarr = {
+    enable = true;
+    user = "mishok13";
+    group = "users";
+  };
+  # sonarr's root folder and series paths are /tv (old container mount point).
+  systemd.services.sonarr.unitConfig.RequiresMountsFor = [ "/tv" ];
+
+  services.radarr = {
+    enable = true;
+    user = "mishok13";
+    group = "users";
+  };
+  # radarr's root folder and movie paths are /movies (old container mount point).
+  systemd.services.radarr.unitConfig.RequiresMountsFor = [ "/movies" ];
+
+  # prowlarr only manages indexers and never touches the media library, so the
+  # module's default hardened DynamicUser is fine here.
+  services.prowlarr.enable = true;
 
   # Samba server configuration
   services.samba = {
