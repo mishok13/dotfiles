@@ -32,10 +32,8 @@ in
         pkgsLLM.pi
       ];
 
-  # Emacs-style keybindings for pi.
   # See: https://github.com/earendil-works/pi-coding-agent/blob/main/docs/keybindings.md
   home.file.".pi/agent/keybindings.json".text = builtins.toJSON {
-    # Cursor movement
     "tui.editor.cursorUp" = [
       "up"
       "ctrl+p"
@@ -71,7 +69,6 @@ in
       "ctrl+e"
     ];
 
-    # Deletion
     "tui.editor.deleteCharBackward" = [
       "backspace"
       "ctrl+h"
@@ -91,16 +88,34 @@ in
     "tui.editor.deleteToLineStart" = [ "ctrl+u" ];
     "tui.editor.deleteToLineEnd" = [ "ctrl+k" ];
 
-    # Kill ring
     "tui.editor.yank" = [ "ctrl+y" ];
     "tui.editor.yankPop" = [ "alt+y" ];
 
-    # Newline vs submit (emacs uses C-j for newline)
+    # pi's default model cycle bindings are C-p/C-S-p, which fucks with my emacs memory.
+    "app.model.cycleForward" = [ "alt+m" ];
+    "app.model.cycleBackward" = [ "shift+alt+m" ];
+
     "tui.input.newLine" = [
       "shift+enter"
       "ctrl+j"
     ];
     "tui.input.submit" = [ "enter" ];
+
+    # arrow keys are used for pane nav
+    "tui.select.up" = [
+      "ctrl+p"
+    ];
+    "tui.select.down" = [
+      "ctrl+n"
+    ];
+    "tui.select.pageUp" = [
+      "pageUp"
+      "alt+v"
+    ];
+    "tui.select.pageDown" = [
+      "pageDown"
+      "ctrl+v"
+    ];
   };
 
 }
