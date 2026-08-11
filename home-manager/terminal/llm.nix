@@ -116,6 +116,40 @@ in
       "pageDown"
       "ctrl+v"
     ];
+
+    # App-level bindings carried over from the previously hand-managed
+    # ~/.pi/agent/keybindings.json so nothing regresses on the Linux hosts.
+    "app.message.dequeue" = [
+      "alt+up"
+      "alt+p"
+    ];
+    "app.tree.foldOrUp" = [
+      "ctrl+left"
+      "alt+left"
+      "ctrl+b"
+    ];
+    "app.tree.unfoldOrDown" = [
+      "ctrl+right"
+      "alt+right"
+      "ctrl+f"
+    ];
+    "app.session.togglePath" = [ "alt+p" ];
+    "app.session.toggleNamedFilter" = [ "alt+n" ];
+    "app.models.toggleProvider" = [ "alt+g" ];
+    "app.models.reorderUp" = [
+      "alt+up"
+      "alt+p"
+    ];
+    "app.models.reorderDown" = [
+      "alt+down"
+      "alt+n"
+    ];
   };
+
+  # Global agent guidelines and skills, previously unmanaged real files under
+  # ~/.pi/agent. settings.json is intentionally left out for now because pi
+  # mutates it at runtime (e.g. lastChangelogVersion).
+  home.file.".pi/agent/AGENTS.md".source = ../pi/AGENTS.md;
+  home.file.".pi/agent/skills".source = ../pi/skills;
 
 }
