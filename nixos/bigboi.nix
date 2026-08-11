@@ -195,13 +195,11 @@ in
       rpc-bind-address = "0.0.0.0";
       rpc-port = 9091;
       rpc-url = "/transmission/";
-      rpc-authentication-required = true;
-      rpc-username = "admin";
-      # LAN-only, reached via the transmission.mishok13.me reverse proxy; kept as
-      # the previous admin/admin so the migrated sonarr/radarr download clients
-      # keep authenticating. Transmission hashes it on first start.
-      # TODO: move to a sops secret via services.transmission.credentialsFile.
-      rpc-password = "admin";
+      # No RPC auth: transmission is only reachable on the LAN/tailnet and via the
+      # transmission.mishok13.me reverse proxy on bigboi, which is a strong enough
+      # boundary here. The migrated sonarr/radarr download clients connect fine
+      # without credentials (any Basic-auth header they still send is ignored).
+      rpc-authentication-required = false;
       rpc-whitelist-enabled = false;
       # Must stay false: the daemon is fronted by the transmission.mishok13.me
       # reverse proxy, and transmission 4 otherwise rejects that Host header.
