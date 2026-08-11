@@ -3,6 +3,14 @@
 	metrics
 }
 
+pihole.home.mishok13.me, pihole.tail.mishok13.me, pihole.mishok13.me {
+	redir / /admin{uri}
+	reverse_proxy http://localhost:31480 {
+            header_up Host {upstream_hostport}
+	}
+	encode zstd gzip
+}
+
 syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
 	reverse_proxy http://localhost:8384 {
             header_up Host {upstream_hostport}
@@ -31,28 +39,20 @@ jellyfin.home.mishok13.me, jellyfin.tail.mishok13.me, jellyfin.mishok13.me {
 	reverse_proxy http://beafiboi:8096
 }
 
-radarr.home.mishok13.me, radarr.tail.mishok13.me, radarr.mishok13.me {
-	reverse_proxy http://bigboi:7878
-}
-
-sonarr.home.mishok13.me, sonarr.tail.mishok13.me, sonarr.mishok13.me {
-	reverse_proxy http://bigboi:8989
-}
-
-prowlarr.home.mishok13.me, prowlarr.tail.mishok13.me, prowlarr.mishok13.me {
-	reverse_proxy http://bigboi:9696
-}
-
-transmission.home.mishok13.me, transmission.tail.mishok13.me, transmission.mishok13.me {
-	reverse_proxy http://bigboi:9091
-}
-
-immich.home.mishok13.me, immich.tail.mishok13.me, immich.mishok13.me {
-	reverse_proxy http://bigboi:2283
+frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
+	reverse_proxy http://beafiboi:8971
 }
 
 atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {
 	reverse_proxy http://localhost:8888
+}
+
+prometheus.home.mishok13.me, prometheus.tail.mishok13.me, prometheus.mishok13.me {
+	reverse_proxy http://localhost:9090
+}
+
+grafana.home.mishok13.me, grafana.tail.mishok13.me, grafana.mishok13.me {
+	reverse_proxy http://localhost:3000
 }
 
 llm.home.mishok13.me, llm.tail.mishok13.me, llm.mishok13.me {
