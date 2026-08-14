@@ -30,6 +30,8 @@ in
 
         fullscreen = true;
 
+        scrollback-limit = 20000000;
+
         copy-on-select = true;
         right-click-action = "paste";
         command = "${pkgs.fish}/bin/fish";

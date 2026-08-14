@@ -22,6 +22,10 @@
   config = {
     home.packages = [
       pkgs.actionlint
+      pkgs.git-absorb
+      pkgs.git-autofixup
+      pkgs.glab
+      pkgs.pinact
       pkgs.zizmor
     ];
 
@@ -117,6 +121,7 @@
         ];
         settings = {
           git_protocol = "ssh";
+          editor = "hx";
           aliases = {
             ci = "pr checks --watch";
             prm = "pr merge -d -s";

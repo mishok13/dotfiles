@@ -5,7 +5,10 @@
 }:
 
 let
-  ignoredPaths =
+  ignoredPaths = [
+    ".git/"
+  ]
+  ++
     builtins.map
       (
         path:
@@ -49,7 +52,6 @@ in
     pkgs.eza
     pkgs.fish
     pkgs.fzf
-    pkgs.glab
     pkgs.harper
     pkgs.hyperfine
     pkgs.ispell
