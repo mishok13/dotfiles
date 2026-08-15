@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'nixos/tiniboi/caddy.nix'
-      - 'flake.lock'
+      - 'flake.nix'
 
 permissions: {}
 
@@ -27,20 +27,28 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
+          # Renovate's regex manager bumps the nixpkgs-caddy commit in flake.nix but
+          # does not touch flake.lock; re-lock so the new caddy version is used.
+          nix flake lock
           if build_output=$(nix build .#nixosConfigurations.tiniboi.config.services.caddy.package 2>&1); then
-            echo "::notice::Caddy doesn't require any updates"
-            exit 0
+            echo "::notice::Caddy builds with the pinned hash"
+          else
+            correct_hash=$(printf '%s' "$build_output" | grep -oP 'got:\s+\K(sha256-[A-Za-z0-9+/]+=)' | head -1)
+            if [[ -z "$correct_hash" ]]; then
+              echo "::error::Build failed; no hash mismatch identified. ${build_output}"
+              exit 1
+            fi
+            sed -i "s|hash = \"sha256-[^\"]*\";|hash = \"${correct_hash}\";|" nixos/tiniboi/caddy.nix
+            nix build .#nixosConfigurations.tiniboi.config.services.caddy.package
+            echo "Caddy vendor hash updated to $correct_hash" >> "$GITHUB_STEP_SUMMARY"
           fi
-          correct_hash=$(printf '%s' "$build_output" | grep -oP 'got:\s+\K(sha256-[A-Za-z0-9+/]+=)' | head -1)
-          if [[ -z "$correct_hash" ]]; then
-            echo "::error::Build failed; no hash mismatch identified. %OA${build_output}"
-            exit 1
+          # Commit the lock re-sync and/or hash fix, if anything changed.
+          if ! git diff --quiet -- flake.lock nixos/tiniboi/caddy.nix; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add flake.lock nixos/tiniboi/caddy.nix
+            git commit -m "fix(caddy): sync lock and vendor hash"
+            git push
+          else
+            echo "::notice::Caddy requires no lock or hash changes"
           fi
-          sed -i "s|hash = \"sha256-[^\"]*\";|hash = \"${correct_hash}\";|" nixos/tiniboi/caddy.nix
-          nix build .#nixosConfigurations.tiniboi.config.services.caddy.package
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add nixos/tiniboi/caddy.nix
-          git commit -m "fix(caddy): update vendor hash"
-          git push
-          echo "Caddy build hash output updated to $correct_hash" >> "$GITHUB_STEP_SUMMARY"

@@ -31,9 +31,41 @@
       ],
       "depNameTemplate": "github.com/caddy-dns/cloudflare",
       "datasourceTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^flake\\.nix$/"],
+      "matchStrings": [
+        "nixpkgs-caddy\\.url = \"github:nixos/nixpkgs/(?<currentDigest>[0-9a-f]{7,40})\""
+      ],
+      "currentValueTemplate": "nixos-unstable",
+      "depNameTemplate": "nixpkgs-caddy",
+      "packageNameTemplate": "https://github.com/nixos/nixpkgs",
+      "datasourceTemplate": "git-refs"
     }
   ],
   "packageRules": [
+    {
+      "description": "Bundle caddy's nixpkgs pin + cloudflare plugin into one monthly PR; the caddy-hash workflow syncs the lock and vendor hash",
+      "matchDepNames": [
+        "nixpkgs-caddy",
+        "github.com/caddy-dns/cloudflare"
+      ],
+      "groupName": "caddy",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    },
+    {
+      "description": "Only the custom regex manager may bump the caddy nixpkgs pin; disable the built-in nix manager for it so the two don't emit conflicting digest updates",
+      "matchManagers": [
+        "nix"
+      ],
+      "matchDepNames": [
+        "nixpkgs-caddy"
+      ],
+      "enabled": false
+    },
     {
       "matchPackageNames": [
         "/immich/"
