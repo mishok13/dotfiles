@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     # Dedicated nixpkgs pin for caddy so its FOD vendor hash only churns when this
     # input is bumped, not on weekly lockfile maintenance. Kept as a fixed commit on
@@ -39,6 +39,7 @@
     {
       nixpkgs,
       nixpkgs-caddy,
+      nixpkgs-stable,
       home-manager,
       nixgl,
       llm-agents,
@@ -46,6 +47,25 @@
       ...
     }:
     let
+      stableOverlay =
+        system:
+        (
+          _final: _prev:
+          let
+            stable = import nixpkgs-stable { inherit system; };
+          in
+          {
+            inherit (stable) emacs emacsPackagesFor;
+          }
+        );
+      pkgsFor =
+        system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ (stableOverlay system) ];
+        };
+      linuxPkgs = pkgsFor "x86_64-linux";
+      darwinPkgs = pkgsFor "aarch64-darwin";
       syncthingDevices = {
         tiniboi = {
           id = "KGJIQ7E-4QRMOTX-NWZ4ZCC-4MJFKCD-PDEVO73-OYBEPSK-DIEHTMC-OLRXUAE";
@@ -79,7 +99,7 @@
             sshCommand = "ssh";
             pkgsLLM = llm-agents.packages."x86_64-linux";
           };
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
+          pkgs = linuxPkgs;
         };
         "clydesdale" = home-manager.lib.homeManagerConfiguration {
           modules = [
@@ -97,7 +117,7 @@
             sshCommand = "ssh";
             pkgsLLM = llm-agents.packages."x86_64-linux";
           };
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
+          pkgs = linuxPkgs;
         };
         "C307G4T99J" = home-manager.lib.homeManagerConfiguration {
           modules = [
@@ -115,7 +135,7 @@
             sshCommand = "ssh";
             pkgsLLM = llm-agents.packages."aarch64-darwin";
           };
-          pkgs = nixpkgs.legacyPackages."aarch64-darwin";
+          pkgs = darwinPkgs;
         };
       };
 
