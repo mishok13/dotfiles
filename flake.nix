@@ -163,6 +163,9 @@
         };
         bigboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = {
+            pkgsCaddy = nixpkgs-caddy.legacyPackages."x86_64-linux";
+          };
           modules = [
             ./nixos/bigboi.nix
             sops-nix.nixosModules.sops
