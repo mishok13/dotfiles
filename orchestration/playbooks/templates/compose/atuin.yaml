@@ -3,7 +3,7 @@ services:
   atuin:
     container_name: atuin
     restart: always
-    image: ghcr.io/atuinsh/atuin:18.13.6@sha256:9bde3fe6b1633c357cb19c07ea49bb9834720e8ff42d04b39ad7865155581150
+    image: ghcr.io/atuinsh/atuin:18.19.0@sha256:4d0ccca1d151f860b3f469c60df78bf1ab798f15e88dc1912d31d6741653eb99
     command: start
     volumes:
       - "~/.config/atuin:/config"
