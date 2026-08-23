@@ -62,6 +62,7 @@ in
     pkgs.nurl
     pkgs.nushell
     pkgs.pre-commit
+    pkgs.prek
     pkgs.ripgrep
     pkgs.nodejs
     pkgs.rustup
