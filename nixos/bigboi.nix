@@ -98,8 +98,8 @@ in
     51413
   ];
 
-  # Immich via Docker Compose
   # TODO: move DB password to sops secret
+  # TODO: move immich under native nix package
   systemd.services.immich = {
     description = "Immich photo management";
     after = [
@@ -112,34 +112,11 @@ in
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      # immich is now the only Docker Compose stack on this host, so the old
-      # docker-compose project-name collision (both stacks resolved to "store",
-      # the basename of /nix/store, and each `--remove-orphans` wiped the other)
-      # can no longer happen. The media stack is now native systemd services below.
       ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} up -d --remove-orphans";
       ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${immichCompose} down";
     };
   };
 
-  # ---------------------------------------------------------------------------
-  # Media stack, now fully native NixOS services (was Docker Compose before).
-  #
-  # transmission, sonarr and radarr run as mishok13:users (uid 1000) to preserve
-  # ownership of the existing /mnt/media library, exactly as the old containers
-  # did with PUID/PGID=1000. prowlarr never touches the library, so it keeps the
-  # module's hardened DynamicUser.
-  #
-  # Data is migrated from the old Docker bind-mount config dirs under
-  # /home/mishok13/.config/{transmission,sonarr,radarr,prowlarr} into the native
-  # data dirs by scripts/bigboi-arr-migrate.sh (run once after switching).
-  # ---------------------------------------------------------------------------
-
-  # Reproduce the old container bind mounts on the host so that existing state
-  # keeps resolving without rewriting it: transmission's 102 .resume files
-  # reference /downloads/... and /watch, and sonarr/radarr store their root
-  # folders and per-item paths as /tv and /movies (the old container mount
-  # points). There were no remote path mappings, so the native services import
-  # from and write to exactly these paths.
   fileSystems."/downloads" = {
     device = "/mnt/media/downloads";
     fsType = "none";
@@ -177,8 +154,6 @@ in
     enable = true;
     user = "mishok13";
     group = "users";
-    # Config (settings.json is regenerated from `settings` on every start; the
-    # torrents/ and resume/ state is migrated into the data dir separately).
     settings = {
       download-dir = "/downloads/complete";
       incomplete-dir = "/downloads/incomplete";
@@ -195,19 +170,11 @@ in
       rpc-bind-address = "0.0.0.0";
       rpc-port = 9091;
       rpc-url = "/transmission/";
-      # No RPC auth: transmission is only reachable on the LAN/tailnet and via the
-      # transmission.mishok13.me reverse proxy on bigboi, which is a strong enough
-      # boundary here. The migrated sonarr/radarr download clients connect fine
-      # without credentials (any Basic-auth header they still send is ignored).
       rpc-authentication-required = false;
       rpc-whitelist-enabled = false;
-      # Must stay false: the daemon is fronted by the transmission.mishok13.me
-      # reverse proxy, and transmission 4 otherwise rejects that Host header.
       rpc-host-whitelist-enabled = false;
     };
   };
-
-  # transmission's sandbox bind-mounts these; make sure they are mounted first.
   systemd.services.transmission.unitConfig.RequiresMountsFor = [
     "/downloads"
     "/watch"
@@ -218,7 +185,6 @@ in
     user = "mishok13";
     group = "users";
   };
-  # sonarr's root folder and series paths are /tv (old container mount point).
   systemd.services.sonarr.unitConfig.RequiresMountsFor = [ "/tv" ];
 
   services.radarr = {
@@ -226,14 +192,11 @@ in
     user = "mishok13";
     group = "users";
   };
-  # radarr's root folder and movie paths are /movies (old container mount point).
   systemd.services.radarr.unitConfig.RequiresMountsFor = [ "/movies" ];
 
-  # prowlarr only manages indexers and never touches the media library, so the
-  # module's default hardened DynamicUser is fine here.
   services.prowlarr.enable = true;
+  services.flaresolverr.enable = true;
 
-  # Samba server configuration
   services.samba = {
     enable = true;
     openFirewall = true;
@@ -256,8 +219,6 @@ in
       };
     };
   };
-
-  # Enable winbind for Samba
   services.samba-wsdd = {
     enable = true;
     openFirewall = true;
