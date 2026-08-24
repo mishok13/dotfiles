@@ -20,7 +20,7 @@
     ./syncthing.nix
   ];
 
-  targets.genericLinux = lib.mkIf pkgs.stdenv.isLinux {
+  targets.genericLinux = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     nixGL.packages = nixgl.packages;
     nixGL.defaultWrapper = "mesa";
     enable = false;
