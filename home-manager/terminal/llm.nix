@@ -7,7 +7,7 @@
 }:
 
 let
-  isMacOS = pkgs.stdenv.isDarwin;
+  isMacOS = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
   # FIXME: Make this explicit per package instead of a global setting

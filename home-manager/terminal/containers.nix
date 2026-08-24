@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  isMacOS = pkgs.stdenv.isDarwin;
+  isMacOS = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
   programs = {
