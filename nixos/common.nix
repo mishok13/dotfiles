@@ -42,6 +42,10 @@
     dig
   ];
 
+  # Install terminfo for all terminal emulators so SSH sessions from any client
+  # (kitty, alacritty, wezterm, etc.) get a matching terminfo entry.
+  environment.enableAllTerminfo = true;
+
   services.openssh.enable = true;
 
   services.tailscale = {
