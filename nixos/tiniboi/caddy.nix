@@ -36,6 +36,16 @@
         reverse_proxy :9090
       '';
     };
+    virtualHosts."rss.mishok13.me" = {
+      extraConfig = ''
+        reverse_proxy localhost:8080
+      '';
+    };
+    virtualHosts."atuin.mishok13.me" = {
+      extraConfig = ''
+        reverse_proxy localhost:8888
+      '';
+    };
     extraConfig = ''
       :2019 {
         @tailscale {

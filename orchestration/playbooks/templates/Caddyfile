@@ -23,20 +23,12 @@ omada.home.mishok13.me, omada.tail.mishok13.me, omada.mishok13.me {
 	}
 }
 
-rss.home.mishok13.me, rss.tail.mishok13.me, rss.mishok13.me {
-	reverse_proxy http://localhost:9081
-}
-
 jellyfin.home.mishok13.me, jellyfin.tail.mishok13.me, jellyfin.mishok13.me {
 	reverse_proxy http://beafiboi:8096
 }
 
 frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
 	reverse_proxy http://beafiboi:8971
-}
-
-atuin.home.mishok13.me, atuin.tail.mishok13.me, atuin.mishok13.me {
-	reverse_proxy http://localhost:8888
 }
 
 llm.home.mishok13.me, llm.tail.mishok13.me, llm.mishok13.me {

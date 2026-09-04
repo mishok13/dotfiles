@@ -13,6 +13,7 @@
     ./nfs.nix
     ./blocky.nix
     ./tiniboi/caddy.nix
+    ./tiniboi/services.nix
     ./alertmanager.nix
     ./grafana.nix
     ./prometheus.nix
