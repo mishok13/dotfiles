@@ -40,6 +40,7 @@ in
         right-click-action = "paste";
         command = "${pkgs.fish}/bin/fish";
         shell-integration-features = "sudo";
+        macos-option-as-alt = true;
 
         keybind = [
           "left=goto_split:left"
