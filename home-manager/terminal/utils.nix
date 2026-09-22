@@ -53,6 +53,7 @@ in
     pkgs.fish
     pkgs.fzf
     pkgs.harper
+    pkgs.hledger
     pkgs.hyperfine
     pkgs.ispell
     pkgs.just
