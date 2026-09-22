@@ -2,64 +2,39 @@
   config,
   lib,
   pkgs,
-  pkgsCaddy,
   ...
 }:
 
+let
+  services = {
+    grafana = 3000;
+    prometheus = 9090;
+    rss = 8080;
+    atuin = 8888;
+  };
+in
 {
-  sops.secrets.cloudflareApiToken = { };
+  imports = [ ../caddy.nix ];
 
-  sops.templates."caddy-env" = {
-    content = ''
-      CF_API_TOKEN=${config.sops.placeholder.cloudflareApiToken}
+  services.caddy.virtualHosts = lib.mapAttrs' (name: port: {
+    name = "${name}.mishok13.me";
+    value.extraConfig = ''
+      reverse_proxy :${toString port}
     '';
-    restartUnits = [ "caddy.service" ];
-  };
+  }) services;
 
-  services.caddy = {
-    enable = true;
-    package = pkgsCaddy.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-      # Run `nix build .#nixosConfigurations.tiniboi.config.services.caddy.package` to get the correct hash
-      hash = "sha256-bzMqxWTqrJ1skZmRTXyEMCKStXpljbqe5r0Ve2cnBfM=";
-    };
-    globalConfig = ''
-      acme_dns cloudflare {env.CF_API_TOKEN}
-    '';
-    virtualHosts."grafana.mishok13.me" = {
-      extraConfig = ''
-        reverse_proxy :3000
-      '';
-    };
-    virtualHosts."prometheus.mishok13.me" = {
-      extraConfig = ''
-        reverse_proxy :9090
-      '';
-    };
-    virtualHosts."rss.mishok13.me" = {
-      extraConfig = ''
-        reverse_proxy localhost:8080
-      '';
-    };
-    virtualHosts."atuin.mishok13.me" = {
-      extraConfig = ''
-        reverse_proxy localhost:8888
-      '';
-    };
-    extraConfig = ''
-      :2019 {
-        @tailscale {
-          remote_ip 100.64.0.0/10
-        }
-        handle @tailscale {
-          metrics /metrics
-        }
-        handle {
-          respond "Forbidden" 403
-        }
+  services.caddy.extraConfig = ''
+    :2019 {
+      @tailscale {
+        remote_ip 100.64.0.0/10
       }
-    '';
-  };
+      handle @tailscale {
+        metrics /metrics
+      }
+      handle {
+        respond "Forbidden" 403
+      }
+    }
+  '';
 
-  systemd.services.caddy.serviceConfig.EnvironmentFile = config.sops.templates."caddy-env".path;
 }
