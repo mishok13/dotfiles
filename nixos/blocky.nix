@@ -13,6 +13,10 @@ let
     "tiniboi.home.mishok13.me" = "192.168.0.67";
     "beafiboi.home.mishok13.me" = "192.168.0.52";
     "orangepi.home.mishok13.me" = "192.168.0.20";
+
+    "syncthing.bigboi.mishok13.me" = "192.168.0.51";
+    "syncthing.tiniboi.mishok13.me" = "192.168.0.67";
+    "syncthing.beafiboi.mishok13.me" = "192.168.0.52";
   };
 in
 {

@@ -1,0 +1,21 @@
+builtins.mapAttrs (name: attrs: attrs // { inherit name; }) {
+  tiniboi = {
+    id = "KGJIQ7E-4QRMOTX-NWZ4ZCC-4MJFKCD-PDEVO73-OYBEPSK-DIEHTMC-OLRXUAE";
+  };
+  beafiboi = {
+    id = "A43OEPY-MXDKEEL-PWPKD4L-F2SMCPS-OFWR5L4-56WJGBE-CF6LXIE-5EEMCA6";
+  };
+  bigboi = {
+    id = "FYDZVF3-HZ2X4KE-5RHS4RX-L2JFU2U-EDGZUQ5-5BZFPOL-NQ62IIW-3JJEGQ7";
+  };
+  clydesdale = {
+    id = "3N565CZ-BQ53D2P-CRX2Y75-PH2A3N5-475JVFI-AQAUM4X-BAVS7WG-ITMHFQX";
+  };
+  trakehner = {
+    id = "VXRYWMR-I5D6QWT-2PDVTUX-HPIXUTH-WRA3XCZ-YZYCYIG-7AZD2NM-VEUJHAT";
+  };
+  phone = {
+    id = "3TN6RYX-TDTZ5VB-CBJDYEV-SPKAE7J-33RE2ES-ZKSHCDR-MWCOMKL-MVZIUQ517";
+    introducer = false;
+  };
+}

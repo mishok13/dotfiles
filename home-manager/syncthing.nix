@@ -1,11 +1,16 @@
 {
   config,
   lib,
-  pkgs,
-  syncthingDevices,
+  hostname,
   ...
 }:
 
+let
+  syncthing = import ../syncthing/lib.nix {
+    inherit lib hostname;
+    homeDir = config.home.homeDirectory;
+  };
+in
 {
   services.syncthing = {
     enable = true;
@@ -13,30 +18,7 @@
     overrideFolders = false;
 
     settings = {
-      devices = syncthingDevices;
-
-      folders = {
-        "Downloads" = {
-          path = "${config.home.homeDirectory}/Downloads";
-          devices = builtins.attrNames syncthingDevices;
-          ignoreDelete = false;
-        };
-        "Screenshots" = {
-          path = "${config.home.homeDirectory}/Screenshots";
-          devices = builtins.attrNames syncthingDevices;
-          ignoreDelete = false;
-        };
-        "Documents" = {
-          path = "${config.home.homeDirectory}/Documents";
-          devices = builtins.attrNames syncthingDevices;
-          ignoreDelete = true;
-        };
-        "notes" = {
-          path = "${config.home.homeDirectory}/nonwork/notes";
-          devices = builtins.attrNames syncthingDevices;
-          ignoreDelete = true;
-        };
-      };
+      inherit (syncthing) devices folders;
     };
   };
 }

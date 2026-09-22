@@ -12,6 +12,7 @@
     ./user.nix
     ./remote-builder.nix
     ./nfs.nix
+    ./beafiboi/caddy.nix
     ./beafiboi/containers.nix
     ./beafiboi/hardware-configuration.nix
   ];

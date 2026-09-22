@@ -2,14 +2,17 @@
   config,
   lib,
   pkgs,
-  syncthingDevices,
   ...
 }:
 
 let
   hostname = config.networking.hostName;
-  otherDevices = lib.filterAttrs (name: _: name != hostname) syncthingDevices;
-  otherDeviceNames = builtins.attrNames otherDevices;
+  home = "/home/mishok13";
+
+  syncthing = import ../syncthing/lib.nix {
+    inherit lib hostname;
+    homeDir = home;
+  };
 in
 {
   sops.secrets."syncthing/${hostname}/key" = {
@@ -22,34 +25,28 @@ in
     group = "users";
     mode = "0644";
   };
+  sops.secrets."syncthing/gui-password" = {
+    owner = "mishok13";
+    group = "users";
+    mode = "0400";
+  };
 
   services.syncthing = {
     enable = true;
     user = "mishok13";
     group = "users";
-    dataDir = "/home/mishok13";
+    dataDir = home;
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;
 
     key = config.sops.secrets."syncthing/${hostname}/key".path;
     cert = config.sops.secrets."syncthing/${hostname}/cert".path;
+    guiPasswordFile = config.sops.secrets."syncthing/gui-password".path;
 
     settings = {
-      devices = otherDevices;
-
-      folders = {
-        "Downloads" = {
-          path = "/home/mishok13/Downloads";
-          devices = otherDeviceNames;
-          ignoreDelete = false;
-        };
-        "notes" = {
-          path = "/home/mishok13/nonwork/notes";
-          devices = otherDeviceNames;
-          ignoreDelete = true;
-        };
-      };
+      gui.user = "mishok13";
+      inherit (syncthing) devices folders;
     };
   };
 
