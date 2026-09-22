@@ -30,8 +30,6 @@ in
       acme_dns cloudflare {env.CF_API_TOKEN}
     '';
 
-    # Front the Syncthing GUI at whatever address the service actually listens
-    # on, so a change to guiAddress can't silently desync from this proxy.
     virtualHosts = lib.mkIf config.services.syncthing.enable {
       "syncthing.${hostname}.mishok13.me".extraConfig = ''
         reverse_proxy ${config.services.syncthing.guiAddress} {
