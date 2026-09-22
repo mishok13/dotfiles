@@ -43,6 +43,10 @@ in
   };
 
   home.packages = [
+    (pkgs.azure-cli.withExtensions [
+      pkgs.azure-cli.extensions.azure-devops
+      pkgs.azure-cli.extensions.init
+    ])
   ];
 
 }
