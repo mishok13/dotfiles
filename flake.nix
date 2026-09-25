@@ -12,7 +12,7 @@
     # maintenance leaves caddy untouched. Renovate bumps this commit monthly via the
     # `nixpkgs-caddy` customManager in renovate.json; the caddy-hash workflow then
     # syncs flake.lock and fixes the vendor hash.
-    nixpkgs-caddy.url = "github:nixos/nixpkgs/4df1b885d76a54e1aa1a318f8d16fd6005b6401f";
+    nixpkgs-caddy.url = "github:nixos/nixpkgs/34ab99075ac4f7e40cf037eef32cb1c360bb85e9";
 
     home-manager = {
       url = "github:nix-community/home-manager";
