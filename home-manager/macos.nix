@@ -41,4 +41,8 @@ in
       RunAtLoad = true;
     };
   };
+
+  home.packages = [
+  ];
+
 }
