@@ -79,7 +79,12 @@
         };
         kubernetes = {
           disabled = false;
-          detect_files = [ "k8s" ];
+          detect_folders = [
+            "k8s"
+            "helm"
+          ];
+          detect_files = [ "values.yaml" ];
+          detect_extensions = [ "values.yaml" ];
         };
         package = {
           disabled = true;
