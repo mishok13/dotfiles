@@ -37,6 +37,8 @@
     home.file = {
       ".config/emacs".source =
         config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
+      ".emacs.d".source =
+        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
     };
 
     programs.vim = {
