@@ -5,26 +5,14 @@
 }:
 
 let
-  ignoredPaths = [
-    ".git/"
-  ]
-  ++
-    builtins.map
-      (
-        path:
-        builtins.concatStringsSep "/" [
-          config.home.homeDirectory
-          path
-          "**"
-        ]
-      )
-      [
-        "Library"
-        "Music"
-        "Pictures"
-        "Movies"
-        "Videos"
-      ];
+  homeIgnores = builtins.concatStringsSep "\n" (
+    [ "/*" ]
+    ++ builtins.map (dir: "!/${dir}/") [
+      "work"
+      "nonwork"
+      ".config"
+    ]
+  );
 in
 {
   programs = {
@@ -41,7 +29,7 @@ in
     fd = {
       enable = true;
       hidden = true;
-      ignores = ignoredPaths;
+      ignores = [ ".git/" ];
     };
   };
 
@@ -80,6 +68,7 @@ in
   ];
 
   home.file = {
-    ".rgignore".text = builtins.concatStringsSep "\n" ignoredPaths;
+    ".rgignore".text = ".git/\n" + homeIgnores;
+    ".fdignore".text = homeIgnores;
   };
 }
