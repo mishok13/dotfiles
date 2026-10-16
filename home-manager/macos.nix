@@ -36,7 +36,7 @@ in
       ProgramArguments = [
         "/bin/sh"
         "-c"
-        "launchctl setenv EMACSLOADPATH '${emacsDeps}/share/emacs/site-lisp:'; launchctl setenv EMACSNATIVELOADPATH '${emacsDeps}/share/emacs/native-lisp:'"
+        "launchctl setenv EMACSLOADPATH '${emacsDeps}/share/emacs/site-lisp:'; launchctl setenv EMACSNATIVELOADPATH '${emacsDeps}/share/emacs/native-lisp:'; launchctl setenv NIX_PROFILES '${config.home.profileDirectory}'"
       ];
       RunAtLoad = true;
     };
