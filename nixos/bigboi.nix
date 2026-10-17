@@ -71,6 +71,7 @@ in
     ./remote-builder.nix
     ./blocky.nix
     ./caddy.nix
+    ./bigboi/cache.nix
     ./bigboi/hardware-configuration.nix
   ];
 

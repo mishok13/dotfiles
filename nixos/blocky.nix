@@ -13,6 +13,8 @@ let
     "tiniboi.home.mishok13.me" = "192.168.0.67";
     "beafiboi.home.mishok13.me" = "192.168.0.52";
     "orangepi.home.mishok13.me" = "192.168.0.20";
+    # Harmonia binary cache, fronted by Caddy on bigboi.
+    "nix-cache.mishok13.me" = "192.168.0.51";
   };
 in
 {

@@ -11,6 +11,7 @@
     ./syncthing.nix
     ./user.nix
     ./remote-builder.nix
+    ./build-offload.nix
     ./nfs.nix
     ./caddy.nix
     ./beafiboi/containers.nix
