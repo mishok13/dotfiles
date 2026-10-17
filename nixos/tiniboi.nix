@@ -10,6 +10,7 @@
     ./common.nix
     ./user.nix
     ./remote-builder.nix
+    ./build-offload.nix
     ./nfs.nix
     ./blocky.nix
     ./caddy.nix

@@ -19,6 +19,16 @@
 
   nix.settings.auto-optimise-store = true;
 
+  # Harmonia@bigboi caching
+  nix.settings.substituters = [
+    "https://nix-cache.mishok13.me"
+    "https://cache.nixos.org"
+  ];
+  nix.settings.trusted-public-keys = [
+    "cache.bigboi-1:s/pHwN4PlQy9Nk48gjV4qQEeiT/bm9UY8XPwi7U2BhY="
+    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+  ];
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
