@@ -70,11 +70,19 @@ in
     ./user.nix
     ./remote-builder.nix
     ./blocky.nix
-    ./bigboi/caddy.nix
+    ./caddy.nix
     ./bigboi/hardware-configuration.nix
   ];
 
   networking.hostName = "bigboi";
+
+  caddy.services = {
+    radarr = 7878;
+    sonarr = 8989;
+    prowlarr = 9696;
+    transmission = 9091;
+    immich = 2283;
+  };
 
   services.nfs.server = {
     enable = true;
