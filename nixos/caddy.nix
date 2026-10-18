@@ -9,19 +9,12 @@ let
   cfg = config.caddy;
 in
 {
-  options.caddy = {
-    services = lib.mkOption {
-      type = lib.types.attrsOf lib.types.port;
-      default = { };
-    };
-
-    extraConfig = lib.mkOption {
-      type = lib.types.lines;
-      default = "";
-    };
+  options.caddy = lib.mkOption {
+    type = lib.types.attrsOf lib.types.port;
+    default = { };
   };
 
-  config = lib.mkIf (cfg.services != { } || cfg.extraConfig != "") {
+  config = lib.mkIf (cfg != { }) {
     sops.secrets.cloudflareApiToken = { };
 
     sops.templates."caddy-env" = {
@@ -46,8 +39,20 @@ in
         value.extraConfig = ''
           reverse_proxy localhost:${toString port}
         '';
-      }) cfg.services;
-      inherit (cfg) extraConfig;
+      }) cfg;
+      extraConfig = ''
+        :2019 {
+          @metrics {
+            remote_ip 100.64.0.0/10 192.168.0.0/24
+          }
+          handle @metrics {
+            metrics /metrics
+          }
+          handle {
+            respond "Forbidden" 403
+          }
+        }
+      '';
     };
 
     systemd.services.caddy.serviceConfig.EnvironmentFile = config.sops.templates."caddy-env".path;
@@ -55,6 +60,7 @@ in
     networking.firewall.allowedTCPPorts = [
       80
       443
+      2019
     ];
   };
 }

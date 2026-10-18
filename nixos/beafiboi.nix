@@ -20,7 +20,7 @@
   networking.firewall.allowedTCPPorts = [ 9400 ];
   system.stateVersion = "25.05";
 
-  caddy.services = {
+  caddy = {
     jellyfin = 8096;
     ollama = 11434;
   };

@@ -76,7 +76,7 @@ in
 
   networking.hostName = "bigboi";
 
-  caddy.services = {
+  caddy = {
     radarr = 7878;
     sonarr = 8989;
     prowlarr = 9696;
