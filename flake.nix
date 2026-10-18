@@ -142,7 +142,10 @@
       nixosConfigurations = {
         beafiboi = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit syncthingDevices; };
+          specialArgs = {
+            inherit syncthingDevices;
+            pkgsCaddy = nixpkgs-caddy.legacyPackages."x86_64-linux";
+          };
           modules = [
             ./nixos/beafiboi.nix
             sops-nix.nixosModules.sops

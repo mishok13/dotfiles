@@ -12,12 +12,18 @@
     ./user.nix
     ./remote-builder.nix
     ./nfs.nix
+    ./caddy.nix
     ./beafiboi/containers.nix
     ./beafiboi/hardware-configuration.nix
   ];
   networking.hostName = "beafiboi";
   networking.firewall.allowedTCPPorts = [ 9400 ];
   system.stateVersion = "25.05";
+
+  caddy = {
+    jellyfin = 8096;
+    ollama = 11434;
+  };
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -52,7 +58,7 @@
       "llama3.2:3b"
       "phi3:3.8b"
     ];
-    openFirewall = true;
-    host = "0.0.0.0";
+    openFirewall = false;
+    host = "127.0.0.1";
   };
 }

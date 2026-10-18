@@ -12,7 +12,7 @@
     ./remote-builder.nix
     ./nfs.nix
     ./blocky.nix
-    ./tiniboi/caddy.nix
+    ./caddy.nix
     ./tiniboi/services.nix
     ./alertmanager.nix
     ./grafana.nix
@@ -23,4 +23,11 @@
 
   networking.hostName = "tiniboi";
   system.stateVersion = "25.05";
+
+  caddy = {
+    grafana = 3000;
+    prometheus = 9090;
+    rss = 8080;
+    atuin = 8888;
+  };
 }
