@@ -9,7 +9,9 @@
 ### Git
 
 - Every repository is managed by git.
-- Do NOT commit, rebase, merge, or otherwise modify commit history without an explicit request from the user.
+- NEVER run `git commit` without the user's explicit approval for that specific commit. Staging changes is fine; creating the commit is not, until the user says so.
+- Do NOT rebase, merge, push, or otherwise modify commit history without an explicit request from the user.
+- When work is ready, stage the changes and ask for approval; propose a commit message and wait for a clear yes before committing.
 
 ### just
 
