@@ -42,6 +42,7 @@ in
     ./waybar.nix
     ./mako.nix
     ./swaylock.nix
+    ./wlogout.nix
   ];
 
   home.sessionVariables = {
@@ -84,6 +85,20 @@ in
 
         Print       { spawn "${screenshotRegion}"; }
         Shift+Print { spawn "${screenshotFull}"; }
+
+        Mod+Shift+Q { spawn "wlogout"; }
+
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+        XF86AudioMute         allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+        XF86AudioMicMute      allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+        XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
+        XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+
+        XF86AudioPlay  { spawn "playerctl" "play-pause"; }
+        XF86AudioNext  { spawn "playerctl" "next"; }
+        XF86AudioPrev  { spawn "playerctl" "previous"; }
 
         Mod+Q       { close-window; }
         Mod+Shift+E { quit; }
