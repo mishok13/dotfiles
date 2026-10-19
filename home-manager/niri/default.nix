@@ -19,6 +19,23 @@ let
   clipPicker = pkgs.writeShellScript "niri-clip-picker" ''
     cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
   '';
+
+  screenshotRegion = pkgs.writeShellScript "niri-screenshot-region" ''
+    dir="$HOME/Pictures/Screenshots"
+    mkdir -p "$dir"
+    file="$dir/screenshot-$(date +%Y%m%d-%H%M%S).png"
+    geom=$(slurp) || exit 1
+    grim -g "$geom" - | tee "$file" | wl-copy
+    notify-send "Screenshot saved" "$file"
+  '';
+
+  screenshotFull = pkgs.writeShellScript "niri-screenshot-full" ''
+    dir="$HOME/Pictures/Screenshots"
+    mkdir -p "$dir"
+    file="$dir/screenshot-$(date +%Y%m%d-%H%M%S).png"
+    grim - | tee "$file" | wl-copy
+    notify-send "Screenshot saved" "$file"
+  '';
 in
 {
   imports = [
@@ -64,6 +81,9 @@ in
         Mod+R      { spawn "fuzzel"; }
         Mod+V      { spawn "${clipPicker}"; }
         Mod+Escape { spawn "swaylock" "-f"; }
+
+        Print       { spawn "${screenshotRegion}"; }
+        Shift+Print { spawn "${screenshotFull}"; }
 
         Mod+Q       { close-window; }
         Mod+Shift+E { quit; }
