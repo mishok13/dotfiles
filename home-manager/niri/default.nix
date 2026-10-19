@@ -15,6 +15,10 @@ let
       timeout 600 'systemctl suspend' \
       before-sleep 'swaylock -f'
   '';
+
+  clipPicker = pkgs.writeShellScript "niri-clip-picker" ''
+    cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
+  '';
 in
 {
   imports = [
@@ -41,8 +45,6 @@ in
         }
     }
 
-    // niri children inherit this block. A GDM-launched compositor does not source
-    // the shell profile, so the 1Password agent socket is set explicitly here too.
     environment {
         SSH_AUTH_SOCK "${onePasswordAgentSocket}"
     }
@@ -53,12 +55,14 @@ in
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
     spawn-at-startup "swaybg" "-c" "#1e1e2e"
+    spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+    spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
     spawn-at-startup "${idleScript}"
 
     binds {
         Mod+Return { spawn "${config.programs.ghostty.package}/bin/ghostty"; }
-        // fuzzel comes from dnf (on /usr/bin), so a bare name resolves fine.
         Mod+R      { spawn "fuzzel"; }
+        Mod+V      { spawn "${clipPicker}"; }
         Mod+Escape { spawn "swaylock" "-f"; }
 
         Mod+Q       { close-window; }

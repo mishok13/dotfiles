@@ -1,13 +1,6 @@
 { ... }:
 
 {
-  # waybar config for niri. The binary comes from the distro (dnf install waybar);
-  # Home Manager owns only the config + stylesheet below, so it stays portable
-  # across laptops. niri launches it via `spawn-at-startup "waybar"` and, being the
-  # parent process, passes the niri IPC socket down so the workspace/window modules
-  # work automatically. Hardware (battery, backlight) is auto-detected rather than
-  # hardcoded, so the same config works on clydesdale.
-
   xdg.configFile."waybar/config".text = ''
     {
         "layer": "top",
@@ -67,7 +60,6 @@
     }
   '';
 
-  # Catppuccin Mocha, to match ghostty.
   xdg.configFile."waybar/style.css".text = ''
     * {
         font-family: "Hack Nerd Font", sans-serif;
