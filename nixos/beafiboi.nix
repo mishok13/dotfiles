@@ -41,7 +41,7 @@
   services.ollama = {
     enable = true;
     package = pkgs.ollama-cuda.override {
-      # Workaround from https://github.com/NixOS/nixpkgs/issues/421775#issuecomment-3689793418
+      cudaPackages = pkgs.cudaPackages_12;
       # Query with `nvidia-smi --query-gpu=compute_cap`
       cudaArches = [ "61" ];
     };
