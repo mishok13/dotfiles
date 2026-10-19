@@ -9,7 +9,10 @@ let
   onePasswordAgentSocket = "${config.home.homeDirectory}/.1password/agent.sock";
 in
 {
-  imports = [ ./waybar.nix ];
+  imports = [
+    ./waybar.nix
+    ./mako.nix
+  ];
 
   home.sessionVariables = {
     SSH_AUTH_SOCK = onePasswordAgentSocket;
@@ -39,6 +42,7 @@ in
 
     spawn-at-startup "/opt/1Password/1password" "--silent"
     spawn-at-startup "waybar"
+    spawn-at-startup "mako"
 
     binds {
         Mod+Return { spawn "${config.programs.ghostty.package}/bin/ghostty"; }
