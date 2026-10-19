@@ -7,11 +7,20 @@
 
 let
   onePasswordAgentSocket = "${config.home.homeDirectory}/.1password/agent.sock";
+
+  idleScript = pkgs.writeShellScript "niri-swayidle" ''
+    exec swayidle -w \
+      timeout 180 'swaylock -f' \
+      timeout 300 'niri msg action power-off-monitors' \
+      timeout 600 'systemctl suspend' \
+      before-sleep 'swaylock -f'
+  '';
 in
 {
   imports = [
     ./waybar.nix
     ./mako.nix
+    ./swaylock.nix
   ];
 
   home.sessionVariables = {
@@ -43,11 +52,13 @@ in
     spawn-at-startup "/opt/1Password/1password" "--silent"
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
+    spawn-at-startup "${idleScript}"
 
     binds {
         Mod+Return { spawn "${config.programs.ghostty.package}/bin/ghostty"; }
         // fuzzel comes from dnf (on /usr/bin), so a bare name resolves fine.
         Mod+R      { spawn "fuzzel"; }
+        Mod+Escape { spawn "swaylock" "-f"; }
 
         Mod+Q       { close-window; }
         Mod+Shift+E { quit; }
