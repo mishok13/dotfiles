@@ -5,6 +5,9 @@
   ...
 }:
 
+# Provision on fedora:
+# sudo dnf install niri fuzzel waybar mako swayidle swaylock swaybg wl-clipboard cliphist grim slurp brightnessctl pavucontrol wlr-randr wlogout playerctl libnotify
+
 let
   onePasswordAgentSocket = "${config.home.homeDirectory}/.1password/agent.sock";
 
