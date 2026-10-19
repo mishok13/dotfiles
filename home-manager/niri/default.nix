@@ -9,6 +9,8 @@ let
   onePasswordAgentSocket = "${config.home.homeDirectory}/.1password/agent.sock";
 in
 {
+  imports = [ ./waybar.nix ];
+
   home.sessionVariables = {
     SSH_AUTH_SOCK = onePasswordAgentSocket;
   };
@@ -36,9 +38,12 @@ in
     prefer-no-csd
 
     spawn-at-startup "/opt/1Password/1password" "--silent"
+    spawn-at-startup "waybar"
 
     binds {
         Mod+Return { spawn "${config.programs.ghostty.package}/bin/ghostty"; }
+        // fuzzel comes from dnf (on /usr/bin), so a bare name resolves fine.
+        Mod+R      { spawn "fuzzel"; }
 
         Mod+Q       { close-window; }
         Mod+Shift+E { quit; }
