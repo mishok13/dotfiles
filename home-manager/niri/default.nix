@@ -52,6 +52,7 @@ in
     spawn-at-startup "/opt/1Password/1password" "--silent"
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
+    spawn-at-startup "swaybg" "-c" "#1e1e2e"
     spawn-at-startup "${idleScript}"
 
     binds {
