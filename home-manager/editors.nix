@@ -17,7 +17,8 @@
 
     programs.emacs = {
       enable = true;
-      package = pkgs.emacs;
+      # Use Wayland-native pure GTK emacs build on linux hosts
+      package = pkgs.emacs.override { withPgtk = pkgs.stdenv.hostPlatform.isLinux; };
       extraPackages = epkgs: [
         epkgs.jinx
         epkgs.hotfuzz
