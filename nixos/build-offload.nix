@@ -1,12 +1,9 @@
-# Offload builds to bigboi so built paths land in its store, which Harmonia then
-# serves back to everyone. Auth uses this host's SSH host key as root's identity
-# (bigboi's `remotebuild` user authorises it, see nixos/remote-builder.nix).
+# Offload builds to bigboi; its store is served back via Harmonia. Auth is this
+# host's SSH host key, authorised as bigboi's `remotebuild` (see remote-builder.nix).
 { ... }:
 
 {
   nix.distributedBuilds = true;
-  # Let bigboi fetch dependencies from substituters itself instead of copying
-  # them over from this host.
   nix.settings.builders-use-substitutes = true;
 
   nix.buildMachines = [

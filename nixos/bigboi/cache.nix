@@ -13,7 +13,5 @@
     };
   };
 
-  services.caddy.virtualHosts."nix-cache.mishok13.me".extraConfig = ''
-    reverse_proxy localhost:5000
-  '';
+  caddy.nix-cache = 5000;
 }
