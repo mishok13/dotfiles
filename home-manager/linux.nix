@@ -14,6 +14,7 @@
   imports = [
     ./common.nix
     ./editors.nix
+    ./niri
     ./kitty.nix
     ./terminal.nix
     ./terminal/llm.nix
