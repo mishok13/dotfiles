@@ -149,6 +149,15 @@
         ];
       }
       {
+        job_name = "harmonia";
+        scheme = "https";
+        static_configs = [
+          {
+            targets = [ "nix-cache.mishok13.me" ];
+          }
+        ];
+      }
+      {
         job_name = "blackbox";
         metrics_path = "/probe";
         params = {

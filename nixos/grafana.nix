@@ -12,6 +12,7 @@ let
     "blackbox.json"
     "blocky.json"
     "caddy.json"
+    "harmonia.json"
     "node-exporter.json"
     "nvidia-gpu.json"
   ];
