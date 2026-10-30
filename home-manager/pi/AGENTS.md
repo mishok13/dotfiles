@@ -13,6 +13,11 @@
 - Do NOT rebase, merge, push, or otherwise modify commit history without an explicit request from the user.
 - When work is ready, stage the changes and ask for approval; propose a commit message and wait for a clear yes before committing.
 
+### gh stack
+
+- Always pass `--base <default-branch>` to `gh stack init`. Get the default branch from GitHub (`gh repo view --json defaultBranchRef -q .defaultBranchRef.name`), never from local `origin/HEAD`.
+- Before any `gh stack push` / `submit` / `link`, check `gh stack view --json | jq -r .trunk` matches that branch. Stop if it does not.
+
 ### just
 
 - Prefer `just` for common repository tasks.
