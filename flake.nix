@@ -55,7 +55,7 @@
             stable = import nixpkgs-stable { inherit system; };
           in
           {
-            inherit (stable) emacs emacsPackagesFor;
+            inherit (stable) emacs emacsPackagesFor azure-cli;
           }
         );
       pkgsFor =
