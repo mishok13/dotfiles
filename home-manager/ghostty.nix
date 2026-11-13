@@ -46,6 +46,7 @@ in
           "right=goto_split:right"
           "up=goto_split:up"
           "down=goto_split:down"
+          "f9=prompt_tab_title"
         ];
       };
     };
