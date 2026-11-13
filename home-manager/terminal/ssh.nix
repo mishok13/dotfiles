@@ -16,7 +16,9 @@
         };
         "shellhub.com" = {
           Hostname = "github.com";
+          # Note that ~/.ssh/work would need to be generated with `op` if it's not present
           IdentityFile = "~/.ssh/work";
+          IdentitiesOnly = true;
         };
       };
     };

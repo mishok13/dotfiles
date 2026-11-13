@@ -39,12 +39,14 @@ in
         copy-on-select = true;
         right-click-action = "paste";
         command = "${pkgs.fish}/bin/fish";
+        macos-option-as-alt = true;
 
         keybind = [
           "left=goto_split:left"
           "right=goto_split:right"
           "up=goto_split:up"
           "down=goto_split:down"
+          "f9=prompt_tab_title"
         ];
       };
     };
