@@ -39,6 +39,7 @@ in
         copy-on-select = true;
         right-click-action = "paste";
         command = "${pkgs.fish}/bin/fish";
+        shell-integration-features = "sudo";
 
         keybind = [
           "left=goto_split:left"
