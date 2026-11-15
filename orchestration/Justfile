@@ -1,9 +1,6 @@
 setup:
     ansible-galaxy install -r requirements.yml
 
-docker-services:
-    just play -l server -t docker
-
 packages:
     ansible-playbook playbooks/playbook.yaml -l server -i inventory.yml -D -t apt
 

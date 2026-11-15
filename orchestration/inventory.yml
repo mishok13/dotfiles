@@ -28,7 +28,6 @@ server:
     orangepi:
       host: orangepi
       ansible_host: orangepi
-      compose_file: templates/compose.yaml
       firewall_rules:
         - { rule: 'limit', port: '22', proto: 'tcp' }
         - { rule: 'allow', port: '53', proto: 'tcp' }

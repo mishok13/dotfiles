@@ -9,13 +9,3 @@
   ansible.builtin.service:
     name: systemd-resolved
     state: restarted
-
-- name: Docker Compose | Up
-  community.docker.docker_compose_v2:
-    project_src: ~/.config
-    state: present
-
-- name: Docker Compose | Restart
-  community.docker.docker_compose_v2:
-    project_src: ~/.config
-    state: restarted
