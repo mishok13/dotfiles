@@ -114,13 +114,25 @@
 
   virtualisation.docker = {
     enable = true;
+    autoPrune = {
+      enable = true;
+      dates = "daily";
+      flags = [
+        "--all"
+        "--filter"
+        "until=72h"
+      ];
+    };
   };
+
+  services.journald.settings.Journal.SystemMaxUse = "1G";
 
   services.gitlab-runner = {
     enable = true;
     settings = {
       concurrent = 4;
     };
+    clear-docker-cache.enable = true;
     services = {
       default = {
         authenticationTokenConfigFile = config.sops.templates."gitlab-runner-auth".path;
