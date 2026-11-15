@@ -39,3 +39,12 @@ repos:
         args: [ --fix ]
       - id: ruff-format
         types_or: [ python ]
+
+  - repo: local
+    hooks:
+      - id: gh-actions-lock
+        name: gh actions-lock --verify-local
+        entry: gh actions-lock --verify-local
+        language: system
+        files: ^\.github/
+        pass_filenames: false
