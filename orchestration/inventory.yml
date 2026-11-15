@@ -58,14 +58,3 @@ server:
         - url: https://downloads.1password.com/linux/keys/1password.asc
           path: /usr/share/keyrings/1password-archive-keyring.asc
           repo: "https://downloads.1password.com/linux/debian/amd64 stable main"
-
-nfsclient:
-  hosts:
-    orangepi:
-      nfs_mounts:
-        - path: /mnt/share
-          source: bigboi:/mnt/media/share
-          opts: rw,sync
-        - path: /mnt/media
-          source: bigboi:/mnt/media
-          opts: ro,sync
