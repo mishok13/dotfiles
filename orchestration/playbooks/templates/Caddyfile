@@ -3,17 +3,11 @@
 	metrics
 }
 
-syncthing.home.mishok13.me, syncthing.tail.mishok13.me  {
-	reverse_proxy http://localhost:8384 {
-            header_up Host {upstream_hostport}
-	}
-}
-
-hass.home.mishok13.me, hass.mishok13.me, hass.tail.mishok13.me {
+hass.mishok13.me {
 	reverse_proxy http://localhost:8123
 }
 
-omada.home.mishok13.me, omada.tail.mishok13.me, omada.mishok13.me {
+omada.mishok13.me {
 	reverse_proxy https://localhost:8043  {
                 transport http {
                         tls_insecure_skip_verify
@@ -23,15 +17,7 @@ omada.home.mishok13.me, omada.tail.mishok13.me, omada.mishok13.me {
 	}
 }
 
-jellyfin.home.mishok13.me, jellyfin.tail.mishok13.me, jellyfin.mishok13.me {
-	reverse_proxy http://beafiboi:8096
-}
-
-frigate.home.mishok13.me, frigate.tail.mishok13.me, frigate.mishok13.me {
-	reverse_proxy http://beafiboi:8971
-}
-
-llm.home.mishok13.me, llm.tail.mishok13.me, llm.mishok13.me {
+llm.mishok13.me {
 	reverse_proxy http://beafiboi:8080
 }
 
