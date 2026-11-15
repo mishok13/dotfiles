@@ -35,7 +35,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: wimpysworld/nothing-but-nix@v10
-      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/install-nix-action@v31.11.5
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           github_access_token: ${{ secrets.GITHUB_TOKEN }}

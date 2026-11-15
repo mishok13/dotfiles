@@ -5,7 +5,7 @@ version: 'v0.0.3'
 workflows:
     '.github/workflows/caddy-hash.yaml':
         - 'actions/checkout@v7.0.1'
-        - 'cachix/install-nix-action@v31.11.1'
+        - 'cachix/install-nix-action@v31.11.5'
         - 'wimpysworld/nothing-but-nix@v10'
     '.github/workflows/fish.yaml':
         - 'actions/checkout@v7.0.1'
@@ -15,7 +15,7 @@ workflows:
         - 'actions/checkout@v7.0.1'
     '.github/workflows/nix.yaml':
         - 'actions/checkout@v7.0.1'
-        - 'cachix/install-nix-action@v31.11.1'
+        - 'cachix/install-nix-action@v31.11.5'
         - 'wimpysworld/nothing-but-nix@v10'
     '.github/workflows/zizmor.yml':
         - 'actions/checkout@v7.0.1'
@@ -26,9 +26,9 @@ dependencies:
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
-    'cachix/install-nix-action@v31.11.1':
-        ref: 'v31.11.1'
-        commit: 'sha1-13d8dd58da0234aa297dedd986986ccb8e7f3e24'
+    'cachix/install-nix-action@v31.11.5':
+        ref: 'v31.11.5'
+        commit: 'sha1-3dc140bfc76c49fbd4dd958429132e3746bcb086'
         owner_id: 36824654
         repo_id: 212301524
     'determinatesystems/magic-nix-cache-action@v14':
