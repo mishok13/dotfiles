@@ -26,6 +26,8 @@
     ollama = 11434;
   };
 
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -33,7 +35,13 @@
     open = false;
     modesetting.enable = true;
     # Tesla P4 is not supported in newer versions ;(
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version = "580.196.07";
+      sha256_64bit = "sha256-CqsFGNtTz3PEEtx/MrvIUMqV6DnYkj0N5L/0LByRac4=";
+      openSha256 = "sha256-vCC4RST8aILkEgmM9i29UEyLORLQ5eRvX2LgNypsO4U=";
+      settingsSha256 = "sha256-j7ENxh4VYIirMJSVVs2ei+NQULW5an8s4VQEwhVAqhc=";
+      persistencedSha256 = "sha256-s7nI5BlnUwwPVoDjdete6B2wjDcoVgDd0UK9aZBrk00=";
+    };
   };
   hardware.nvidia-container-toolkit.enable = true;
 
