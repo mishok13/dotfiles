@@ -54,6 +54,7 @@ in
     pkgs.fzf
     pkgs.harper
     pkgs.hledger
+    pkgs.htop
     pkgs.hyperfine
     pkgs.ispell
     pkgs.just
