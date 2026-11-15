@@ -94,24 +94,6 @@
         - path: "~/.config/home-assistant"
           mode: '0755'
 
-    # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
-    - name: Resolved | Disable stub
-      become: true
-      block:
-        - name: Resolved | Update config
-          ansible.builtin.lineinfile:
-            path: /etc/systemd/resolved.conf
-            regexp: '#?DNSStubListener=yes'
-            line: 'DNSStubListener=no'
-          notify:
-            - Resolved | Restart
-        - name: Resolved | Link resolv.conf
-          ansible.builtin.file:
-            path: "/etc/resolv.conf"
-            src: "/run/systemd/resolve/resolv.conf"
-            state: link
-            force: true
-
     - name: Caddy | Configure
       become: true
       ansible.builtin.copy:

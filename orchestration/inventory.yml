@@ -30,8 +30,6 @@ server:
       ansible_host: orangepi
       firewall_rules:
         - { rule: 'limit', port: '22', proto: 'tcp' }
-        - { rule: 'allow', port: '53', proto: 'tcp' }
-        - { rule: 'allow', port: '53', proto: 'udp' }
         - { rule: 'allow', port: '80', proto: 'tcp' }
         - { rule: 'allow', port: '443', proto: 'tcp' }
         - { rule: 'allow', port: '8043', proto: 'tcp' }
@@ -40,7 +38,6 @@ server:
         - { rule: 'allow', port: '27001', proto: 'udp' }
         - { rule: 'allow', port: '29810', proto: 'udp' }
         - { rule: 'allow', port: '29811:29816', proto: 'tcp' }
-        - { rule: 'allow', port: '54320', proto: 'tcp' }
       apt_repos_extra:
         - url: "https://packages.gitlab.com/runner/gitlab-runner/gpgkey"
           path: /usr/share/keyrings/runner_gitlab-runner-archive-keyring.asc
