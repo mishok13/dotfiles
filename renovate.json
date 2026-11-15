@@ -3,13 +3,15 @@
   "extends": [
     "config:recommended",
     "docker:pinDigests",
-    "helpers:pinGitHubActionDigests",
     ":configMigration",
     ":pinDevDependencies",
     "schedule:weekends",
     ":maintainLockFilesWeekly",
     ":prConcurrentLimitNone"
   ],
+  "constraints": {
+    "ghActionsLock": "v0.4.1"
+  },
   "docker-compose": {
     "managerFilePatterns": [
       "/^orchestration/playbooks/templates/compose/[^/]+.ya?ml$/",
@@ -23,6 +25,19 @@
     "enabled": true
   },
   "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/gh-actions\\.yaml$/",
+        "/^renovate\\.json$/"
+      ],
+      "matchStrings": [
+        "gh extension install github/gh-actions-lock --pin (?<currentValue>\\S+)",
+        "\"ghActionsLock\": \"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "github/gh-actions-lock",
+      "datasourceTemplate": "github-releases"
+    },
     {
       "customType": "regex",
       "managerFilePatterns": ["nixos/tiniboi/caddy\\.nix$"],
