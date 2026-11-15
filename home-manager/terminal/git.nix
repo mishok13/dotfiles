@@ -117,6 +117,7 @@
       gh = {
         enable = true;
         extensions = [
+          pkgs.gh-actions-lock
           pkgs.gh-stack
         ];
         settings = {
