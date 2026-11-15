@@ -36,7 +36,6 @@ docker-services *hosts:
     $targets | par-each { |target|
         print $"==> Deploying Docker Compose files to ($target)..."
         rsync -avz orchestration/playbooks/templates/compose-$"($target)".yaml $"($target):~/.config/compose.yaml"
-        rsync -avz orchestration/playbooks/templates/compose/ $"($target):~/.config/compose/"
         print $"==> Running docker compose up -d on ($target)..."
         ssh $target "cd ~/.config && docker compose up -d --remove-orphans --pull always"
         print $"==> Successfully deployed to ($target)"
