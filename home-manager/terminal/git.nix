@@ -20,6 +20,10 @@
   };
 
   config = {
+    xdg.configFile."git/allowed_signers.nonwork".text = ''
+      548482+mishok13@users.noreply.github.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG7AIn/xIHtxP6BIJzzc1RtljcQ1d8K0EEraz3ugFi4A
+    '';
+
     home.packages = [
       pkgs.actionlint
       pkgs.git-absorb
@@ -93,6 +97,9 @@
               include = {
                 path = "~/.config/git/sensitive.work";
               };
+              "gpg \"ssh\"" = {
+                allowedSignersFile = "~/.config/git/allowed_signers.work";
+              };
             };
           }
           {
@@ -103,6 +110,9 @@
               };
               include = {
                 path = "~/.config/git/sensitive.nonwork";
+              };
+              "gpg \"ssh\"" = {
+                allowedSignersFile = "~/.config/git/allowed_signers.nonwork";
               };
             };
           }

@@ -55,7 +55,7 @@
             stable = import nixpkgs-stable { inherit system; };
           in
           {
-            inherit (stable) emacs emacsPackagesFor;
+            inherit (stable) emacs emacsPackagesFor azure-cli;
           }
         );
       pkgsFor =
@@ -119,7 +119,7 @@
           };
           pkgs = linuxPkgs;
         };
-        "C307G4T99J" = home-manager.lib.homeManagerConfiguration {
+        "F14H6N9DF0" = home-manager.lib.homeManagerConfiguration {
           modules = [
             ./home-manager/macos.nix
             ./home-manager/onepassword.nix

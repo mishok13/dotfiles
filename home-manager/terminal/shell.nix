@@ -43,7 +43,19 @@
         bind ctrl-r _atuin_search
       '';
       binds = {
-        "alt-c".command = "commandline ~/ && _fzf_search_directory";
+        "alt-c".command = "_fzf_search_home_directories";
+      };
+      functions = {
+        _fzf_search_home_directories = ''
+          set -f selected (fd --type=directory --color=always --base-directory=$HOME \
+              | awk -F/ '{ print NF "\t" length($0) "\t" $0 }' | sort -s -n -k1,1 -k2,2 | cut -f3- \
+              | _fzf_wrapper --multi --ansi --tiebreak=index --prompt="Directory ~/> " \
+                  --preview="_fzf_preview_file $HOME/{}" $fzf_directory_opts)
+          if test $status -eq 0
+              commandline --current-token --replace -- (string escape -- $HOME/$selected | string join ' ')
+          end
+          commandline --function repaint
+        '';
       };
       plugins = [
         {

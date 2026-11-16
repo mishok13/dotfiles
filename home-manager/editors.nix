@@ -36,6 +36,8 @@
     };
 
     home.file = {
+      ".emacs.d".source =
+        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
       ".config/emacs".source =
         config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nonwork/emacsen";
     };
