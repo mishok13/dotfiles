@@ -18,7 +18,7 @@
     ];
   };
 
-  fileSystems."/mnt/media/share" = {
+  fileSystems."/mnt/share" = {
     device = "bigboi:/mnt/media/share";
     fsType = "nfs";
     options = [
@@ -27,5 +27,10 @@
       "x-systemd.idle-timeout=600"
       "rw"
     ];
+  };
+
+  systemd.services.tailscaled = {
+    wants = [ "remote-fs-pre.target" ];
+    before = [ "remote-fs-pre.target" ];
   };
 }
