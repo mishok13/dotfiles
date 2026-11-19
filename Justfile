@@ -1,3 +1,5 @@
+export NIX_CONFIG := "access-tokens = github.com=" + `gh auth token`
+
 test-renovate:
     nix run nixpkgs#renovate -- --platform=local --repository-cache=reset
 
@@ -6,6 +8,13 @@ apply profile=`hostname`:
 
 build profile=`hostname`:
     home-manager build --flake .#{{profile}}
+
+cache-push:
+    #!/usr/bin/env sh
+    set -eu
+    gen=$(readlink -f ~/.local/state/nix/profiles/home-manager)
+    nix copy -s --no-check-sigs --to ssh-ng://bigboi "$gen"
+    ssh bigboi "mkdir -p gcroots && nix-store --realise $gen --add-root gcroots/$(hostname)-home"
 
 update input="":
     nix flake update {{input}}

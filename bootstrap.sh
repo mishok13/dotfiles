@@ -28,4 +28,7 @@ if ! type nix 2>&1 >/dev/null; then
     . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
+sudo install -m 644 $HOME/nonwork/dotfiles/nix.custom.conf /etc/nix/nix.custom.conf
+sudo systemctl restart nix-daemon
+
 nix run home-manager/master -- switch --flake $HOME/nonwork/dotfiles/home-manager#mishok13

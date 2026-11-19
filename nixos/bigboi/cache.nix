@@ -14,4 +14,6 @@
   };
 
   caddy.nix-cache = 5000;
+
+  nix.settings.trusted-users = [ "mishok13" ];
 }
