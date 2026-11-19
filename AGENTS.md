@@ -8,6 +8,7 @@
 - `nixos/common.nix` — Shared NixOS config (docker, tailscale, gitlab-runner, etc.)
 - `orchestration/` — Ansible playbooks and Docker Compose templates (legacy, being migrated to NixOS)
 - `flake.nix` — Nix flake entry point
+- `nix.custom.conf` — `/etc/nix/nix.custom.conf` for non-NixOS machines (homelab cache, bigboi builder), installed by `bootstrap.sh`
 - `Justfile` — Task runner commands
 
 ## Building and Deploying
