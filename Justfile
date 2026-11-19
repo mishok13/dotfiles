@@ -1,3 +1,5 @@
+export NIX_CONFIG := "access-tokens = github.com=" + `gh auth token`
+
 test-renovate:
     nix run nixpkgs#renovate -- --platform=local --repository-cache=reset
 
