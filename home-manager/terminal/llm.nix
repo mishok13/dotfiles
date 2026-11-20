@@ -151,5 +151,8 @@ in
   # mutates it at runtime (e.g. lastChangelogVersion).
   home.file.".pi/agent/AGENTS.md".source = ../pi/AGENTS.md;
   home.file.".pi/agent/skills".source = ../pi/skills;
+  home.file.".claude/CLAUDE.md".source = ../pi/AGENTS.md;
+  home.file.".gemini/GEMINI.md".source = ../pi/AGENTS.md;
+  home.file.".copilot/copilot-instructions.md".source = ../pi/AGENTS.md;
 
 }
