@@ -48,12 +48,11 @@ just docker-services [hosts...]  # Deploy compose files via rsync+ssh
 - **bigboi** — NixOS media server (immich, transmission, sonarr, radarr, prowlarr, NFS, Samba)
 - **beafiboi** — NixOS (nvidia/CUDA, ollama, jellyfin, syncthing, NFS client)
 - **tiniboi** — NixOS (caddy, grafana, prometheus, alertmanager, syncthing, NFS client)
-- **orangepi** — Debian-based (managed via Ansible/compose)
+- **orangepi** — Orange Pi 5 Plus, Ubuntu 22.04 (home assistant, omada controller, tailscale exit node; managed via Ansible/compose)
 
 ## Known Issues
 
 - `/etc/localtime` on NixOS is a symlink — do not bind-mount it into Docker containers; use `TZ` env var instead
-- The `--exit-node=orangepi` in `common.nix` requires Tailscale to be connected first
 
 ## Workflow
 
