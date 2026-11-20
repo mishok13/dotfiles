@@ -33,7 +33,7 @@ The `<host>` must be resolvable via SSH (either DNS, Tailscale, or SSH config).
 ### Docker Services (legacy, prefer NixOS systemd services)
 
 ```
-just docker-services [hosts...]  # Deploy compose files via rsync+ssh
+just docker-services  # Deploy orangepi compose file via rsync+ssh
 ```
 
 ## NixOS Host Conventions
