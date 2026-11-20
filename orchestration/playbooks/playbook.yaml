@@ -56,33 +56,6 @@
             append: true
 
 
-- name: Copy shared Docker Compose definitions
-  hosts: server
-  tags:
-    - docker
-  tasks:
-
-    - name: Copy Compose definitions
-      ansible.posix.synchronize:
-        src: templates/compose/
-        dest: ~/.config/compose/
-        rsync_opts:
-          - "--archive"
-          - "--delete"
-      notify:
-        - Docker Compose | Up
-
-    - name: Docker Compose | Install compose.yaml
-      ansible.posix.synchronize:
-        src: "{{ compose_file }}"
-        dest: "~/.config/compose.yaml"
-      notify:
-        - "Docker Compose | Up"
-
-  handlers:
-    - name: Handlers
-      ansible.builtin.import_tasks: tasks/handlers.yaml
-
 - name: Provision OrangePi
   hosts: orangepi
   tasks:
@@ -119,8 +92,6 @@
         mode: "{{ item.mode }}"
       loop:
         - path: "~/.config/home-assistant"
-          mode: '0755'
-        - path: "~/.config/atuin"
           mode: '0755'
 
     # https://github.com/pi-hole/docker-pi-hole/tree/v5.8.1?tab=readme-ov-file#installing-on-ubuntu
