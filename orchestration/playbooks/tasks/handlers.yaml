@@ -3,9 +3,3 @@
   ansible.builtin.service:
     name: caddy
     state: restarted
-
-- name: Resolved | Restart
-  become: true
-  ansible.builtin.service:
-    name: systemd-resolved
-    state: restarted
