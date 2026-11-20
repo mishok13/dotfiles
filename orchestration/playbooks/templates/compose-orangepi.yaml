@@ -1,6 +1,3 @@
-include:
-  - compose/monitoring.yaml
-
 services:
 
   omada-controller:
@@ -60,8 +57,3 @@ volumes:
   omada-data:
   omada-logs:
   hass-matter-data:
-
-networks:
-  omada:
-  normal:
-    driver: bridge

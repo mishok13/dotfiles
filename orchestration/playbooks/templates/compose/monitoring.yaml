@@ -1,8 +1,0 @@
-services:
-
-  blackbox_exporter:
-    image: quay.io/prometheus/blackbox-exporter:v0.29.1@sha256:ea1c7aa3ef3f307cd03e85f34abb604478ccb90b567fc690da0cd9776da76b13
-    restart: always
-    container_name: blackbox_exporter
-    ports:
-      - "127.0.0.1:9115:9115"
